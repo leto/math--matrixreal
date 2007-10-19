@@ -1,0 +1,58 @@
+use Math::MatrixReal;
+use Benchmark;
+do 'funcs.pl';
+my $matrix1 = random_matrix(15);
+my $matrix2 = $matrix1->new_diag( [ 1,2,3,4,5,6,7,8,9,10 ] );
+
+
+$det = $matrix1->det;
+timethese( 10,
+	{ 'LR' => sub { $matrix1->decompose_LR->invert_LR; },
+	  'inverse' => sub { $matrix1->inverse(); },
+	  'cofactor' => sub { (~$matrix1->cofactor)->each ( sub { (shift)/$det; } ) } 
+	} );
+	
+
+exit;
+srand;
+
+my $n = rand() * (time() % 1000);
+print "n = $n\n";
+timethese( 50000,
+	{ 'int' => sub { $n == int($n) } ,
+	  're'  => sub { $n =~ m/^\d+$/ }
+	}
+);
+exit;
+
+timethese( 250,
+	{ 'det' => sub { $matrix2->det },
+	  'LR'  => sub { $matrix2->decompose_LR->det_LR }
+	} );
+exit;
+
+timethese( 25,
+	{ 'inverse' => sub { $matrix2->inverse() },
+	  'toneg1'  => sub { $matrix2 ** -1 },
+	  'LR'	    => sub { $matrix2->decompose_LR->invert_LR }
+	}
+);
+
+timethese( 10,
+	{ 'cofactor' => sub { $matrix2->cofactor() } }
+);
+exit;
+
+timethese( 100,
+	{ 'diag_exponent' => sub { $matrix2 ** 5; },
+	'diag_mult'	   => sub { $matrix2 * $matrix2 * $matrix2 * $matrix2 * $matrix2; }
+	});
+
+timethese( 10,
+        { 'exponent' => sub { $matrix1 ** 10; },
+        'mult'     => sub { $matrix1 = $matrix1 * $matrix1 * $matrix1 * $matrix1 * $matrix1
+				* $matrix1 * $matrix1 * $matrix1 * $matrix1 * $matrix1;
+			     }
+        });
+
+	

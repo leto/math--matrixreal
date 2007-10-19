@@ -1,0 +1,166 @@
+Math::MatrixReal v2.01
+http://leto.net/code/Math-MatrixReal/
+
+Contents of this file:
+----------------------
+
+    -   Legal stuff
+    -   Requirements
+    -   What does it do
+    -   Preliminary steps for use with Perl prior to version 5.002
+    -   How to install it
+    -   Version history
+    -   Credits
+    -   Final note
+
+
+Legal stuff:
+------------
+
+Copyright (c) 1996, 1997 by Steffen Beyer.
+              1999 by Rodolphe Ortalo.
+	      2001-2002 by Jonathan Leto.
+All rights reserved.
+This package is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+
+Requirements:
+-------------
+
+Perl version 5.000 or higher capable of "overloading" (overload.pm).
+
+
+What does it do:
+----------------
+
+Math::MatrixReal - Matrix of Reals
+
+Implements the data type "matrix of reals" (and consequently also
+"vector of reals") which can be used almost like any other basic
+Perl type thanks to OPERATOR OVERLOADING, i.e.,
+
+    $product = $matrix1 * $matrix2;
+
+does what you would like it to do (a matrix multiplication).
+
+Also features many important operations and methods: matrix norm,
+matrix transposition, matrix inverse, determinant of a matrix, order
+and numerical condition of a matrix, scalar product of vectors, vector
+product of vectors, vector length, projection of row and column vectors,
+a comfortable way for reading in a matrix from a file, the keyboard or
+your code, and many more.
+
+Allows to solve linear equation systems using an efficient algorithm
+known as "L-R-decomposition" and several approximative (iterative) methods.
+
+Features an implementation of Kleene's algorithm to compute the minimal
+costs for all paths in a graph with weighted edges (the "weights" being
+the costs associated with each edge).
+
+Allows to solve the eigensystem of a real symmetric matrix, using
+Householder transformation and QL decomposition.
+
+Preliminary steps for use with Perl prior to version 5.002:
+-----------------------------------------------------------
+
+Edit the "Makefile.PL" file in this package and change the line
+
+    'VERSION_FROM'	=> 'MatrixReal.pm',
+
+to
+
+    'VERSION'		=> '1.5',
+
+
+How to install it:
+------------------
+
+Please unpack and build this package OUTSIDE the Perl source and distribution
+tree!!
+
+ 1) Change directory to the directory that has been created by unpacking this
+    package ("Math-MatrixReal-1.3/").
+
+ 2) Type "perl Makefile.PL".
+    (Or whatever the name and path of your Perl 5 binary is)
+    Alternatively you can type, e.g., "perl Makefile.PL PREFIX=/home/doe"
+    to install the module in the home directory, e.g. John Doe...
+
+ 3) Type "make".
+
+ 3.5) Optionally, type "make test" to test the build and/or benchmark
+    your system a little.
+
+ 4) Type "make install".
+
+
+Version history:
+----------------
+
+Version 1.0 was the initial release.
+
+Version 1.1 fixed a bug in the "kleene()" method.
+
+Version 1.2 changed the "new()" and "new_from_string()" methods so
+that they don't fail anymore if an empty class name is given to them
+(instead, "Math::MatrixReal" is used as the default).
+
+The documentation of the "new_from_string()" method was also slightly
+changed because it had proven to be incomplete and misleading.
+
+Version 1.3 included the eigenvalues/eigenvectors computation methods,
+added by Rodolphe Ortalo. Some test/bench programs were added also,
+especially for these methods.
+
+Please see the CHANGES file for newer version history.
+
+(NOTE:  The change from 1.9 to version 2.01 was not a major change, 
+we just didn't start out with leading zeroes in the original versioning,
+and ran out of decimal digits for minor updates.)
+
+Credits:
+--------
+
+As always, many thanks to Andreas Koenig <andreas.koenig@mind.de>
+for his relentless support and efforts as upload manager of the CPAN!
+
+Also many thanks to Stu Smith <stu@cs.uml.edu> for raising the questions
+concerning the "new_from_string()" method (whose documentation was mis-
+leading and incomplete)!
+
+Many thanks to Steffen Beyer himself for being very open to third-party
+additions. (Of course, this acknowledgment is due to Rodolphe. :-)
+
+Final note:
+-----------
+
+Please send all comments/bugs/patches to Jonathan Leto <jonathan@leto.net>,
+as I have taken over module maintainer-ship as of version 1.4.
+
+Original Final note:
+
+If you need any assistance or have any comments, problems, suggestions,
+findings, complaints, questions, insights, compliments or donations to give ;-)
+then please don't hesitate to send me a mail:
+
+sb@engelschall.com (Steffen Beyer)
+
+You can also contact me if you think it's relevant (e.g. especially
+for compliments or donations ;-)):
+
+ortalo@laas.fr (Rodolphe Ortalo)
+
+In fact I'd be glad if you could drop me an e-mail when you are using this
+package, so I can see how much interest exists in it and how much time is
+reasonable to spend on its further development.
+
+Therefore, I would also be glad to know what you liked and what you disliked
+about this package!
+
+And I would also be very interested to know what your application is in
+which you found this package to be useful, just to get an idea what can
+all be done with it and in which direction it should be developed further.
+
+Many thanks in advance!!
+

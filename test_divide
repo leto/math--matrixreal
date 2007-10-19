@@ -1,0 +1,36 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+require './MatrixReal.pm';
+
+my $a = Math::MatrixReal->new_diag([ 0.51, 0.420, 0.15] );
+my $b = Math::MatrixReal->new_diag([ 0.43, 13.4, 1110.5] );
+my $c = Math::MatrixReal->new_diag([ 2.3, 554.4, 30.5] );
+
+my $full = Math::MatrixReal->new_from_string(<<MATRIX);
+[ 3 4.84 1 ]
+[ 4 3 5 ]
+[ 1 2 3 ]
+MATRIX
+print "full=\n$full\n";
+print "-" x 50 . "\n";
+
+my $full2 = $full  * $full;
+print "Matrix mult\n";
+print $full2;
+print "-" x 50 . "\n";
+print "Div matrix by scalar\n";
+my $half = $full / 2;
+print $half;
+print "-" x 50 . "\n";
+
+print "One over matrix is:\n";
+print  1/$b;
+print "-" x 50 . "\n";
+
+print "Matrix Division\n";
+my $z =  $full / $a;
+print $z;
+
+

@@ -1,0 +1,144 @@
+Changes in v2.02 - leto
+Sat Jun 09 12:29:08 EDT 2007 
+----------------------------
+    * Fixed the overloading for the division operator which did not recognize $a/2, reported
+	by Daniel Brooks <db48x@yahoo.com>
+    * Added support for matrix division notation, so that $a/$b = $a*$b**(-1) when $a and $b are square matrices
+    * t/div.t created
+
+Changes in v2.01 - msouth
+Fri Aug 19 23:40:24 EDT 2005
+----------------------------
+    * Changed versioning format to leading zero after the
+      dot to make more minor versions possible this time
+    * Integration of Math::MatrixReal::Ext1 0.07
+        * merged new_from_cols and new_from_rows into one private
+          function which is called by wrappers with the old
+          names
+        * added tests to exercise all of the known failure modes
+          in new_from_{rows,cols} calls
+    * Fixes for POD
+        * added a much needed =over 4 to the start of the POD
+        * removed tabs
+    * reformatted indentation of the all of the code to 4 space
+      indent (from a mixture of tabs, 8 space, 4 space, and 2 space)
+
+Changes in v1.9 - leto
+Wed May 15 03:19:34 EST 2002 
+----------------------------
+	* as_yacas() function added
+	* t/yacas.t created
+	* Fixed issue with infinity norm and Irix, thanks to 
+	  Allen Smith <easmith@beatrice.rutgers.edu> and the CPAN testers
+
+Changes in v1.8 -- leto
+Sat Mar 23 00:13:48 EST 2002 
+----------------------------
+	* as_matlab() function added
+	* as_scilab() function added
+	* t/matlab.t created
+	* is_row_vector() function added
+	* is_col_vector() function added
+	* t/isrowcol.t created
+	* norm_p() function added
+	* norm_frobenius () function added
+	* t/vecnorm.t created
+
+
+
+Changes in v1.7 -- leto
+Fri Mar 15 13:09:49 EST 2002 
+---------------------------
+	* each() and each_diag() are now one-based for consistency
+	* removed _trace() comments
+	* as_latex() function created
+	* t/latex.t created
+	* t/bool.t created
+	* t/periodic.t created
+	* t/rank.t created
+	* new_from_string() shouldn't care about the case of the scientific E
+		notation (pointed out by Jim Bowery <jim_bowery@hotmail.com>)
+	* t/scinotation.t created
+	* is_idempotent() function added
+	* is_periodic() function added
+	* rank_LR() function added
+	* make is_orthogonal return 0 instead of croak when matrix
+		is not quadratic
+
+Changes in v1.6 -- leto
+Sat Feb 16 09:46:51 EST 2002 
+-------------------------
+	* is_skew_symmetric() function added
+	* fixed logic error is sym_eigenvalues ( didn't notice if not square! )
+	* spectral_radius() function added
+	* is_binary() function added
+	* is_LR() function added
+	* t/spectral.t created
+	* t/binary.t created
+	* t/is_LR.t created
+	* t/gramian.t created
+	* is_skew_symmetric() tests added to t/symmetric.t
+	* is_gramian() function added
+
+Changes in v1.5 -- leto
+Sat Jan 12 04:20:48 EST 2002 
+-------------------------
+	* t/inverse.t test 6 was numerically instable, commented out
+		I ran it 10000 times and got values from 1e-2 to 1e-16,
+		this caused the test to randomly fail, because it checked
+		that the value was less than 1e-10
+		I did not notice this problem because my default perl install
+		has USE_LONG_DOUBLE
+	* changed epsilon to be 1e-8 in funcs.pl ( was 1e-10)
+
+Changes in v1.4 -- leto
+Jan 10 2002
+--------------------------
+	* Steffen Beyer gave maintainer-ship to Jonathan Leto
+	* exponent() function added
+	* trace() function added
+	* "**" and "**="  overloaded to exponent()
+	* $matrix ** -1 is now a quick way to compute the inverse, if it exists
+	* new_from_rows and new_from_cols integrated from Math::MatrixReal::Ext1
+	* is_diagonal() function added
+	* is_tridiagonal() function added
+	* each() function added
+	* each_diag() function added
+	* put functions used by all the test scripts into funcs.pl instead
+		of all of them having copy+paste code
+	* t/inverse.t created 
+	* t/diag.t created 
+	* t/exponent.t created
+	* t/trace.t created
+	* t/ext1.t created
+	* some documentation spelling errors corrected
+	* perl operators exp(),sin(),cos() overloaded 
+		only works with diagonal matrices for now
+	* new_diag() function added
+	* is_upper_triangular() function added
+	* is_lower_triangular() function added
+	* t/triang.t created
+	* t/det.t created
+	* inverse() function added
+	* det() function added
+		should be much faster for diagonal and triangular matrices
+	* tri_diagonalize() tri_eigenvalues() and now do real tridiag check, as per TODO
+	* t/minor.t created
+	* t/cofactor.t created
+	* t/adjoint.t created
+	* t/quadratic.t created
+	* norm_sum() function added
+	* t/norm.t created
+	* check if $rows and $cols are integers in new()
+	* t/condition.t created
+	* t/product.t created
+	* eigenvalues() function added
+	* t/eigen_NxN.t - added test for eigenvalues()
+	* swap_row() function added
+	* swap_col() function added
+	* t/swap.t created
+	* t/orthogonal.t created
+	* is_orthogonal() function added
+	
+
+	

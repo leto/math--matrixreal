@@ -1,0 +1,2017 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Math::MatrixReal - Matrix of Reals</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:root@jail-99255.freebsd.org" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<ul>
+
+		<li><a href="#constructor_methods_and_such">Constructor Methods And Such</a></li>
+		<li><a href="#matrix_row__column_and_element_operations">Matrix Row, Column and Element operations</a></li>
+		<li><a href="#matrix_operations">Matrix Operations</a></li>
+		<li><a href="#arithmetic_operations">Arithmetic Operations</a></li>
+		<li><a href="#boolean_matrix_operations">Boolean Matrix Operations</a></li>
+		<li><a href="#eigensystems">Eigensystems</a></li>
+		<li><a href="#miscellaneous">Miscellaneous</a></li>
+	</ul>
+
+	<li><a href="#overloaded_operators">OVERLOADED OPERATORS</a></li>
+	<ul>
+
+		<li><a href="#synopsis">SYNOPSIS</a></li>
+		<li><a href="#description">DESCRIPTION</a></li>
+	</ul>
+
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#authors">AUTHORS</a></li>
+	<li><a href="#credits">CREDITS</a></li>
+	<li><a href="#copyright">COPYRIGHT</a></li>
+	<li><a href="#license_agreement">LICENSE AGREEMENT</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Math::MatrixReal - Matrix of Reals</p>
+<p>Implements the data type ``matrix of reals'' (and consequently also
+``vector of reals'').</p>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Implements the data type ``matrix of reals'', which can be used almost
+like any other basic Perl type thanks to <strong>OPERATOR OVERLOADING</strong>, i.e.,</p>
+<pre>
+  $product = $matrix1 * $matrix2;</pre>
+<p>does what you would like it to do (a matrix multiplication).</p>
+<p>Also features many important operations and methods: matrix norm,
+matrix transposition, matrix inverse, determinant of a matrix, order
+and numerical condition of a matrix, scalar product of vectors, vector
+product of vectors, vector length, projection of row and column vectors,
+a comfortable way for reading in a matrix from a file, the keyboard or
+your code, and many more.</p>
+<p>Allows to solve linear equation systems using an efficient algorithm
+known as ``L-R-decomposition'' and several approximative (iterative) methods.</p>
+<p>Features an implementation of Kleene's algorithm to compute the minimal
+costs for all paths in a graph with weighted edges (the ``weights'' being
+the costs associated with each edge).</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>
+</p>
+<h2><a name="constructor_methods_and_such">Constructor Methods And Such</a></h2>
+<ul>
+<li>
+<p><code>use Math::MatrixReal;</code></p>
+<p>Makes the methods and overloaded operators of this module available
+to your program.</p>
+</li>
+<li>
+<p><code>$new_matrix = new Math::MatrixReal($rows,$columns);</code></p>
+<p>The matrix object constructor method. A new matrix of size $rows by $columns
+will be created, with the value <code>0.0</code> for all elements.</p>
+<p>Note that this method is implicitly called by many of the other methods
+in this module.</p>
+</li>
+<li>
+<p><code>$new_matrix = $some_matrix-&gt;</code><code>new($rows,$columns);</code></p>
+<p>Another way of calling the matrix object constructor method.</p>
+<p>Matrix ``<code>$some_matrix</code>'' is not changed by this in any way.</p>
+</li>
+<li>
+<p><code>$new_matrix = $matrix-&gt;new_from_cols( [ $column_vector|$array_ref|$string, ... ] )</code></p>
+<p>Creates a new matrix given a reference to an array of any of the following:</p>
+<ul>
+<li><strong><a name="item_vectors">column vectors ( n by 1 Math::MatrixReal matrices )</a></strong>
+
+<li><strong><a name="item_references_to_arrays">references to arrays</a></strong>
+
+<li><strong><a name="item_strings_properly_formatted_to_create_a_column_with">strings properly formatted to create a column with Math::MatrixReal's
+<code>new_from_string</code> command</a></strong>
+
+</ul>
+<p>You may mix and match these as you wish.  However, all must be of the
+same dimension--no padding happens automatically.  Example:</p>
+<pre>
+    my $matrix = Math::MatrixReal-&gt;new_from_cols( [ [1,2], [3,4] ] );
+    print $matrix;</pre>
+<p>will print</p>
+<pre>
+    [  1.000000000000E+00  3.000000000000E+00 ]
+    [  2.000000000000E+00  4.000000000000E+00 ]</pre>
+<li>
+<p><code>new_from_rows( [ $row_vector|$array_ref|$string, ... ] )</code></p>
+<p>Creates a new matrix given a reference to an array of any of the following:</p>
+<ul>
+<li><strong>row vectors ( 1 by n Math::MatrixReal matrices )</strong>
+
+<li><strong>references to arrays</strong>
+
+<li><strong><a name="item_strings_properly_formatted_to_create_a_row_with_ma">strings properly formatted to create a row with Math::MatrixReal's <code>new_from_string</code> command</a></strong>
+
+</ul>
+<p>You may mix and match these as you wish.  However, all must be of the
+same dimension--no padding happens automatically. Example:</p>
+<pre>
+        my $matrix = Math::MatrixReal-&gt;new_from_rows( [ [1,2], [3,4] ] );
+        print $matrix;</pre>
+<p>will print</p>
+<pre>
+        [  1.000000000000E+00  2.000000000000E+00 ]
+        [  3.000000000000E+00  4.000000000000E+00 ]</pre>
+<li>
+<p><code>$new_matrix = Math::MatrixReal-&gt;new_diag( $array_ref );</code></p>
+<p>This method allows you to create a diagonal matrix by only specifying
+the diagonal elements. Example:</p>
+<pre>
+    $matrix = Math::MatrixReal-&gt;new_diag( [ 1,2,3,4 ] );
+    print $matrix;</pre>
+<p>will print</p>
+<pre>
+    [  1.000000000000E+00  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  2.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  0.000000000000E+00  3.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00  4.000000000000E+00 ]</pre>
+</li>
+<li>
+<p><code>$new_matrix = Math::MatrixReal-&gt;</code><code>new_from_string($string);</code></p>
+<p>This method allows you to read in a matrix from a string (for
+instance, from the keyboard, from a file or from your code).</p>
+<p>The syntax is simple: each row must start with ``<code>[ </code>'' and end with
+``<code> ]\n</code>'' (``<code>\n</code>'' being the newline character and ``<code> </code>'' a space or
+tab) and contain one or more numbers, all separated from each other
+by spaces or tabs.</p>
+<p>Additional spaces or tabs can be added at will, but no comments.</p>
+<p>Examples:</p>
+<pre>
+  $string = &quot;[ 1 2 3 ]\n[ 2 2 -1 ]\n[ 1 1 1 ]\n&quot;;
+  $matrix = Math::MatrixReal-&gt;new_from_string($string);
+  print &quot;$matrix&quot;;</pre>
+<p>By the way, this prints</p>
+<pre>
+  [  1.000000000000E+00  2.000000000000E+00  3.000000000000E+00 ]
+  [  2.000000000000E+00  2.000000000000E+00 -1.000000000000E+00 ]
+  [  1.000000000000E+00  1.000000000000E+00  1.000000000000E+00 ]</pre>
+<p>But you can also do this in a much more comfortable way using the
+shell-like ``here-document'' syntax:</p>
+<pre>
+  $matrix = Math::MatrixReal-&gt;new_from_string(&lt;&lt;'MATRIX');
+  [  1  0  0  0  0  0  1  ]
+  [  0  1  0  0  0  0  0  ]
+  [  0  0  1  0  0  0  0  ]
+  [  0  0  0  1  0  0  0  ]
+  [  0  0  0  0  1  0  0  ]
+  [  0  0  0  0  0  1  0  ]
+  [  1  0  0  0  0  0 -1  ]
+  MATRIX</pre>
+<p>You can even use variables in the matrix:</p>
+<pre>
+  $c1 =   2  /  3;
+  $c2 =  -2  /  5;
+  $c3 =  26  /  9;</pre>
+<pre>
+  $matrix = Math::MatrixReal-&gt;new_from_string(&lt;&lt;&quot;MATRIX&quot;);</pre>
+<pre>
+      [   3    2    0   ]
+      [   0    3    2   ]
+      [  $c1  $c2  $c3  ]</pre>
+<pre>
+  MATRIX</pre>
+<p>(Remember that you may use spaces and tabs to format the matrix to
+your taste)</p>
+<p>Note that this method uses exactly the same representation for a
+matrix as the ``stringify'' operator ``'': this means that you can convert
+any matrix into a string with <code>$string = &quot;$matrix&quot;;</code> and read it back
+in later (for instance from a file!).</p>
+<p>Note however that you may suffer a precision loss in this process
+because only 13 digits are supported in the mantissa when printed!!</p>
+<p>If the string you supply (or someone else supplies) does not obey
+the syntax mentioned above, an exception is raised, which can be
+caught by ``eval'' as follows:</p>
+<pre>
+  print &quot;Please enter your matrix (in one line): &quot;;
+  $string = &lt;STDIN&gt;;
+  $string =~ s/\\n/\n/g;
+  eval { $matrix = Math::MatrixReal-&gt;new_from_string($string); };
+  if ($@)
+  {
+      print &quot;$@&quot;;
+      # ...
+      # (error handling)
+  }
+  else
+  {
+      # continue...
+  }</pre>
+<p>or as follows:</p>
+<pre>
+  eval { $matrix = Math::MatrixReal-&gt;new_from_string(&lt;&lt;&quot;MATRIX&quot;); };
+  [   3    2    0   ]
+  [   0    3    2   ]
+  [  $c1  $c2  $c3  ]
+  MATRIX
+  if ($@)
+  # ...</pre>
+<p>Actually, the method shown above for reading a matrix from the keyboard
+is a little awkward, since you have to enter a lot of ``\n'''s for the
+newlines.</p>
+<p>A better way is shown in this piece of code:</p>
+<pre>
+  while (1)
+  {
+      print &quot;\nPlease enter your matrix &quot;;
+      print &quot;(multiple lines, &lt;ctrl-D&gt; = done):\n&quot;;
+      eval { $new_matrix =
+          Math::MatrixReal-&gt;new_from_string(join('',&lt;STDIN&gt;)); };
+      if ($@)
+      {
+          $@ =~ s/\s+at\b.*?$//;
+          print &quot;${@}Please try again.\n&quot;;
+      }
+      else { last; }
+  }</pre>
+<p>Possible error messages of the ``new_from_string()'' method are:</p>
+<pre>
+  Math::MatrixReal::new_from_string(): syntax error in input string
+  Math::MatrixReal::new_from_string(): empty input string</pre>
+<p>If the input string has rows with varying numbers of columns,
+the following warning will be printed to STDERR:</p>
+<pre>
+  Math::MatrixReal::new_from_string(): missing elements will be set to zero!</pre>
+<p>If everything is okay, the method returns an object reference to the
+(newly allocated) matrix containing the elements you specified.</p>
+</li>
+<li>
+<p><code>$new_matrix = $some_matrix-&gt;shadow();</code></p>
+<p>Returns an object reference to a <strong>NEW</strong> but <strong>EMPTY</strong> matrix
+(filled with zero's) of the <strong>SAME SIZE</strong> as matrix ``<code>$some_matrix</code>''.</p>
+<p>Matrix ``<code>$some_matrix</code>'' is not changed by this in any way.</p>
+</li>
+<li>
+<p><code>$matrix1-&gt;copy($matrix2);</code></p>
+<p>Copies the contents of matrix ``<code>$matrix2</code>'' to an <strong>ALREADY EXISTING</strong>
+matrix ``<code>$matrix1</code>'' (which must have the same size as matrix ``<code>$matrix2</code>''!).</p>
+<p>Matrix ``<code>$matrix2</code>'' is not changed by this in any way.</p>
+</li>
+<li>
+<p><code>$twin_matrix = $some_matrix-&gt;clone();</code></p>
+<p>Returns an object reference to a <strong>NEW</strong> matrix of the <strong>SAME SIZE</strong> as
+matrix ``<code>$some_matrix</code>''. The contents of matrix ``<code>$some_matrix</code>'' have
+<strong>ALREADY BEEN COPIED</strong> to the new matrix ``<code>$twin_matrix</code>''. This
+is the method that the operator ``='' is overloaded to when you type
+<code>$a = $b</code>, when <code>$a</code> and <code>$b</code> are matrices.</p>
+<p>Matrix ``<code>$some_matrix</code>'' is not changed by this in any way.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="matrix_row__column_and_element_operations">Matrix Row, Column and Element operations</a></h2>
+<ul>
+<li>
+<p><code>$row_vector = $matrix-&gt;row($row);</code></p>
+<p>This is a projection method which returns an object reference to
+a <strong>NEW</strong> matrix (which in fact is a (row) vector since it has only
+one row) to which row number ``<code>$row</code>'' of matrix ``<code>$matrix</code>'' has
+already been copied.</p>
+<p>Matrix ``<code>$matrix</code>'' is not changed by this in any way.</p>
+</li>
+<li>
+<p><code>$column_vector = $matrix-&gt;column($column);</code></p>
+<p>This is a projection method which returns an object reference to
+a <strong>NEW</strong> matrix (which in fact is a (column) vector since it has
+only one column) to which column number ``<code>$column</code>'' of matrix
+``<code>$matrix</code>'' has already been copied.</p>
+<p>Matrix ``<code>$matrix</code>'' is not changed by this in any way.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;assign($row,$column,$value);</code></p>
+<p>Explicitly assigns a value ``<code>$value</code>'' to a single element of the
+matrix ``<code>$matrix</code>'', located in row ``<code>$row</code>'' and column ``<code>$column</code>'',
+thereby replacing the value previously stored there.</p>
+</li>
+<li>
+<p><code>$value = $matrix-&gt;</code><code>element($row,$column);</code></p>
+<p>Returns the value of a specific element of the matrix ``<code>$matrix</code>'',
+located in row ``<code>$row</code>'' and column ``<code>$column</code>''.</p>
+</li>
+<li>
+<p><code>$new_matrix = $matrix-&gt;each( \&amp;function )</code>;</p>
+<p>Creates a new matrix by evaluating a code reference on each element of the 
+given matrix. The function is passed the element, the row index and the column
+index, in that order. The value the function returns ( or the value of the last
+executed statement ) is the value given to the corresponding element in $new_matrix.</p>
+<p>Example:</p>
+<pre>
+    # add 1 to every element in the matrix
+    $matrix = $matrix-&gt;each ( sub { (shift) + 1 } );</pre>
+<p>Example:</p>
+<pre>
+    my $cofactor = $matrix-&gt;each( sub { my(undef,$i,$j) = @_;
+        ($i+$j) % 2 == 0 ? $matrix-&gt;minor($i,$j)-&gt;det()
+        : -1*$matrix-&gt;minor($i,$j)-&gt;det();
+        } );</pre>
+<p>This code needs some explanation. For each element of $matrix, it throws away the actual value
+and stores the row and column indexes in $i and $j. Then it sets element [$i,$j] in $cofactor
+to the determinant of <code>$matrix-&gt;minor($i,$j)</code> if it is an ``even'' element, or <code>-1*$matrix-&gt;minor($i,$j)</code>
+if it is an ``odd'' element.</p>
+</li>
+<li>
+<p><code>$new_matrix = $matrix-&gt;each_diag( \&amp;function )</code>;</p>
+<p>Creates a new matrix by evaluating a code reference on each diagonal element of the 
+given matrix. The function is passed the element, the row index and the column
+index, in that order. The value the function returns ( or the value of the last
+executed statement ) is the value given to the corresponding element in $new_matrix.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;swap_col( $col1, $col2 );</code></p>
+<p>This method takes two one-based column numbers and swaps the values of each element in each column.
+<code>$matrix-&gt;swap_col(2,3)</code> would replace column 2 in $matrix with column 3, and replace column
+3 with column 2.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;swap_row( $row1, $row2 );</code></p>
+<p>This method takes two one-based row numbers and swaps the values of each element in each row.
+<code>$matrix-&gt;swap_row(2,3)</code> would replace row 2 in $matrix with row 3, and replace row
+3 with row 2.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="matrix_operations">Matrix Operations</a></h2>
+<ul>
+<li>
+<p><code>$det = $matrix-&gt;det();</code></p>
+<p>Returns the determinant of the matrix, without going through
+the rigamarole of computing a LR decomposition. This method should
+be much faster than LR decomposition if the matrix is diagonal or
+triangular. Otherwise, it is just a wrapper for 
+<code>$matrix-&gt;decompose_LR-&gt;det_LR</code>. If the determinant is zero, 
+there is no inverse and vice-versa. Only quadratic matrices have 
+determinants.</p>
+</li>
+<li>
+<p><code>$inverse = $matrix-&gt;inverse();</code></p>
+<p>Returns the inverse of a matrix, without going through the
+rigamarole of computing a LR decomposition. If no inverse exists,
+undef is returned and an error is printed via <code>carp()</code>.
+This is nothing but a wrapper for <code>$matrix-&gt;decompose_LR-&gt;invert_LR</code>.</p>
+</li>
+<li>
+<p><code>($rows,$columns) = $matrix-&gt;dim();</code></p>
+<p>Returns a list of two items, representing the number of rows
+and columns the given matrix ``<code>$matrix</code>'' contains.</p>
+</li>
+<li>
+<p><code>$norm_one = $matrix-&gt;norm_one();</code></p>
+<p>Returns the ``one''-norm of the given matrix ``<code>$matrix</code>''.</p>
+<p>The ``one''-norm is defined as follows:</p>
+<p>For each column, the sum of the absolute values of the elements in the
+different rows of that column is calculated. Finally, the maximum
+of these sums is returned.</p>
+<p>Note that the ``one''-norm and the ``maximum''-norm are mathematically
+equivalent, although for the same matrix they usually yield a different
+value.</p>
+<p>Therefore, you should only compare values that have been calculated
+using the same norm!</p>
+<p>Throughout this package, the ``one''-norm is (arbitrarily) used
+for all comparisons, for the sake of uniformity and comparability,
+except for the iterative methods ``solve_GSM()'', ``solve_SSM()'' and
+``solve_RM()'' which use either norm depending on the matrix itself.</p>
+</li>
+<li>
+<p><code>$norm_max = $matrix-&gt;norm_max();</code></p>
+<p>Returns the ``maximum''-norm of the given matrix $matrix.</p>
+<p>The ``maximum''-norm is defined as follows:</p>
+<p>For each row, the sum of the absolute values of the elements in the
+different columns of that row is calculated. Finally, the maximum
+of these sums is returned.</p>
+<p>Note that the ``maximum''-norm and the ``one''-norm are mathematically
+equivalent, although for the same matrix they usually yield a different
+value.</p>
+<p>Therefore, you should only compare values that have been calculated
+using the same norm!</p>
+<p>Throughout this package, the ``one''-norm is (arbitrarily) used
+for all comparisons, for the sake of uniformity and comparability,
+except for the iterative methods ``solve_GSM()'', ``solve_SSM()'' and
+``solve_RM()'' which use either norm depending on the matrix itself.</p>
+</li>
+<li>
+<p><code>$norm_sum = $matrix-&gt;norm_sum();</code></p>
+<p>This is a very simple norm which is defined as the sum of the 
+absolute values of every element.</p>
+</li>
+<li>
+<p><code>$p_norm</code> = $matrix-&gt;norm_p($n);&gt;</p>
+<p>This function returns the ``p-norm'' of a vector. The argument $n
+must be a number greater than or equal to 1 or the string ``Inf''.
+The p-norm is defined as (sum(x_i^p))^(1/p). In words, it raised
+each element to the p-th power, adds them up, and then takes the
+p-th root of that number. If the string ``Inf'' is passed, the
+``infinity-norm'' is computed, which is really the limit of the 
+p-norm as p goes to infinity. It is defined as the maximum element
+of the vector. Also, note that the familiar Euclidean distance 
+between two vectors is just a special case of a p-norm, when p is
+equal to 2.</p>
+<p>Example:
+    $a = Math::MatrixReal-&gt;new_from_cols([[1,2,3]]);
+    $p1   = $a-&gt;norm_p(1);
+        $p2   = $a-&gt;norm_p(2);    
+        $p3   = $a-&gt;norm_p(3);    
+    $pinf = $a-&gt;norm_p(``Inf'');</p>
+<pre>
+    print &quot;(1,2,3,Inf) norm:\n$p1\n$p2\n$p3\n$pinf\n&quot;;</pre>
+<pre>
+    $i1 = $a-&gt;new_from_rows([[1,0]]);
+    $i2 = $a-&gt;new_from_rows([[0,1]]);</pre>
+<pre>
+    # this should be sqrt(2) since it is the same as the 
+    # hypotenuse of a 1 by 1 right triangle</pre>
+<pre>
+    $dist  = ($i1-$i2)-&gt;norm_p(2);
+    print &quot;Distance is $dist, which should be &quot; . sqrt(2) . &quot;\n&quot;;</pre>
+<p>Output:</p>
+<pre>
+    (1,2,3,Inf) norm:
+    6
+    3.74165738677394139
+    3.30192724889462668
+    3</pre>
+<pre>
+    Distance is 1.41421356237309505, which should be 1.41421356237309505</pre>
+</li>
+<li>
+<p><code>$frob_norm</code> = <code>$matrix-&gt;norm_frobenius();</code></p>
+<p>This norm is similar to that of a p-norm where p is 2, except it
+acts on a <strong>matrix</strong>, not a vector. Each element of the matrix is 
+squared, this is added up, and then a square root is taken.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;spectral_radius();</code></p>
+<p>Returns the maximum value of the absolute value of all eigenvalues.
+Currently this computes <strong>all</strong> eigenvalues, then sifts through them
+to find the largest in absolute value. Needless to say, this is very
+inefficient, and in the future an algorithm that computes only the 
+largest eigenvalue may be implemented.</p>
+</li>
+<li>
+<p><code>$matrix1-&gt;transpose($matrix2);</code></p>
+<p>Calculates the transposed matrix of matrix $matrix2 and stores
+the result in matrix ``<code>$matrix1</code>'' (which must already exist and have
+the same size as matrix ``<code>$matrix2</code>''!).</p>
+<p>This operation can also be carried out ``in-place'', i.e., input and
+output matrix may be identical.</p>
+<p>Transposition is a symmetry operation: imagine you rotate the matrix
+along the axis of its main diagonal (going through elements (1,1),
+(2,2), (3,3) and so on) by 180 degrees.</p>
+<p>Another way of looking at it is to say that rows and columns are
+swapped. In fact the contents of element <code>(i,j)</code> are swapped
+with those of element <code>(j,i)</code>.</p>
+<p>Note that (especially for vectors) it makes a big difference if you
+have a row vector, like this:</p>
+<pre>
+  [ -1 0 1 ]</pre>
+<p>or a column vector, like this:</p>
+<pre>
+  [ -1 ]
+  [  0 ]
+  [  1 ]</pre>
+<p>the one vector being the transposed of the other!</p>
+<p>This is especially true for the matrix product of two vectors:</p>
+<pre>
+               [ -1 ]
+  [ -1 0 1 ] * [  0 ]  =  [ 2 ] ,  whereas
+               [  1 ]</pre>
+<pre>
+                             *     [ -1  0  1 ]
+  [ -1 ]                                            [  1  0 -1 ]
+  [  0 ] * [ -1 0 1 ]  =  [ -1 ]   [  1  0 -1 ]  =  [  0  0  0 ]
+  [  1 ]                  [  0 ]   [  0  0  0 ]     [ -1  0  1 ]
+                          [  1 ]   [ -1  0  1 ]</pre>
+<p>So be careful about what you really mean!</p>
+<p>Hint: throughout this module, whenever a vector is explicitly required
+for input, a <strong>COLUMN</strong> vector is expected!</p>
+</li>
+<li>
+<p><code>$trace = $matrix-&gt;trace();</code></p>
+<p>This returns the trace of the matrix, which is defined as
+the sum of the diagonal elements. The matrix must be
+quadratic.</p>
+</li>
+<li>
+<p><code>$minor = $matrix-&gt;minor($row,$col);</code></p>
+<p>Returns the minor matrix corresponding to $row and $col. $matrix must be quadratic.
+If $matrix is n rows by n cols, the minor of $row and $col will be an (n-1) by (n-1)
+matrix. The minor is defined as crossing out the row and the col specified and returning
+the remaining rows and columns as a matrix. This method is used by <code>cofactor()</code>.</p>
+</li>
+<li>
+<p><code>$cofactor = $matrix-&gt;cofactor();</code></p>
+<p>The cofactor matrix is constructed as follows:</p>
+<p>For each element, cross out the row and column that it sits in.
+Now, take the determinant of the matrix that is left in the other
+rows and columns.
+Multiply the determinant by (-1)^(i+j), where i is the row index,
+and j is the column index. 
+Replace the given element with this value.</p>
+<p>The cofactor matrix can be used to find the inverse of the matrix. One formula for the
+inverse of a matrix is the cofactor matrix transposed divided by the original
+determinant of the matrix.</p>
+<p>The following two inverses should be exactly the same:</p>
+<pre>
+    my $inverse1 = $matrix-&gt;inverse;
+    my $inverse2 = ~($matrix-&gt;cofactor)-&gt;each( sub { (shift)/$matrix-&gt;det() } );</pre>
+<p>Caveat: Although the cofactor matrix is simple algorithm to compute the inverse of a matrix, and
+can be used with pencil and paper for small matrices, it is comically slower than 
+the native <code>inverse()</code> function. Here is a small benchmark:</p>
+<pre>
+    # $matrix1 is 15x15
+    $det = $matrix1-&gt;det;
+    timethese( 10,
+        {'inverse' =&gt; sub { $matrix1-&gt;inverse(); },
+          'cofactor' =&gt; sub { (~$matrix1-&gt;cofactor)-&gt;each ( sub { (shift)/$det; } ) }
+        } );</pre>
+<pre>
+    Benchmark: timing 10 iterations of LR, cofactor, inverse...
+        inverse:  1 wallclock secs ( 0.56 usr +  0.00 sys =  0.56 CPU) @ 17.86/s (n=10)
+    cofactor: 36 wallclock secs (36.62 usr +  0.01 sys = 36.63 CPU) @  0.27/s (n=10)</pre>
+</li>
+<li>
+<p><code>$adjoint = $matrix-&gt;adjoint();</code></p>
+<p>The adjoint is just the transpose of the cofactor matrix. This method is 
+just an alias for <code> ~($matrix-&gt;cofactor)</code>.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="arithmetic_operations">Arithmetic Operations</a></h2>
+<ul>
+<li>
+<p><code>$matrix1-&gt;add($matrix2,$matrix3);</code></p>
+<p>Calculates the sum of matrix ``<code>$matrix2</code>'' and matrix ``<code>$matrix3</code>''
+and stores the result in matrix ``<code>$matrix1</code>'' (which must already exist
+and have the same size as matrix ``<code>$matrix2</code>'' and matrix ``<code>$matrix3</code>''!).</p>
+<p>This operation can also be carried out ``in-place'', i.e., the output and
+one (or both) of the input matrices may be identical.</p>
+</li>
+<li>
+<p><code>$matrix1-&gt;subtract($matrix2,$matrix3);</code></p>
+<p>Calculates the difference of matrix ``<code>$matrix2</code>'' minus matrix ``<code>$matrix3</code>''
+and stores the result in matrix ``<code>$matrix1</code>'' (which must already exist
+and have the same size as matrix ``<code>$matrix2</code>'' and matrix ``<code>$matrix3</code>''!).</p>
+<p>This operation can also be carried out ``in-place'', i.e., the output and
+one (or both) of the input matrices may be identical.</p>
+<p>Note that this operation is the same as
+<code>$matrix1-&gt;add($matrix2,-$matrix3);</code>, although the latter is
+a little less efficient.</p>
+</li>
+<li>
+<p><code>$matrix1-&gt;multiply_scalar($matrix2,$scalar);</code></p>
+<p>Calculates the product of matrix ``<code>$matrix2</code>'' and the number ``<code>$scalar</code>''
+(i.e., multiplies each element of matrix ``<code>$matrix2</code>'' with the factor
+``<code>$scalar</code>'') and stores the result in matrix ``<code>$matrix1</code>'' (which must
+already exist and have the same size as matrix ``<code>$matrix2</code>''!).</p>
+<p>This operation can also be carried out ``in-place'', i.e., input and
+output matrix may be identical.</p>
+</li>
+<li>
+<p><code>$product_matrix = $matrix1-&gt;multiply($matrix2);</code></p>
+<p>Calculates the product of matrix ``<code>$matrix1</code>'' and matrix ``<code>$matrix2</code>''
+and returns an object reference to a new matrix ``<code>$product_matrix</code>'' in
+which the result of this operation has been stored.</p>
+<p>Note that the dimensions of the two matrices ``<code>$matrix1</code>'' and ``<code>$matrix2</code>''
+(i.e., their numbers of rows and columns) must harmonize in the following
+way (example):</p>
+<pre>
+                          [ 2 2 ]
+                          [ 2 2 ]
+                          [ 2 2 ]</pre>
+<pre>
+              [ 1 1 1 ]   [ * * ]
+              [ 1 1 1 ]   [ * * ]
+              [ 1 1 1 ]   [ * * ]
+              [ 1 1 1 ]   [ * * ]</pre>
+<p>I.e., the number of columns of matrix ``<code>$matrix1</code>'' has to be the same
+as the number of rows of matrix ``<code>$matrix2</code>''.</p>
+<p>The number of rows and columns of the resulting matrix ``<code>$product_matrix</code>''
+is determined by the number of rows of matrix ``<code>$matrix1</code>'' and the number
+of columns of matrix ``<code>$matrix2</code>'', respectively.</p>
+</li>
+<li>
+<p><code>$matrix1-&gt;negate($matrix2);</code></p>
+<p>Calculates the negative of matrix ``<code>$matrix2</code>'' (i.e., multiplies
+all elements with ``-1'') and stores the result in matrix ``<code>$matrix1</code>''
+(which must already exist and have the same size as matrix ``<code>$matrix2</code>''!).</p>
+<p>This operation can also be carried out ``in-place'', i.e., input and
+output matrix may be identical.</p>
+</li>
+<li>
+<p><code>$matrix_to_power = $matrix1-&gt;exponent($integer);</code></p>
+<p>Raises the matrix to the <code>$integer</code> power. Obviously, <code>$integer</code> must
+be an integer. If it is zero, the identity matrix is returned. If a negative
+integer is given, the inverse will be computed (if it exists) and then raised
+the the absolute value of <code>$integer</code>. The matrix must be quadratic.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="boolean_matrix_operations">Boolean Matrix Operations</a></h2>
+<ul>
+<li>
+<p><code>$matrix-&gt;is_quadratic();</code></p>
+<p>Returns a boolean value indicating if the given matrix is 
+quadratic (also know as ``square'' or ``n by n''). A matrix is 
+quadratic if it has the same number of rows as it does columns.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_square();</code></p>
+<p>This is an alias for <code>is_quadratic()</code>.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_symmetric();</code></p>
+<p>Returns a boolean value indicating if the given matrix is
+symmetric. By definition, a matrix is symmetric if and only
+if (<strong>M</strong>[<em>i</em>,<em>j</em>]=<strong>M</strong>[<em>j</em>,<em>i</em>]). This is equivalent to
+<code>($matrix == ~$matrix)</code> but without memory allocation.
+Only quadratic matrices can be symmetric.</p>
+<p>Notes: A symmetric matrix always has real eigenvalues/eigenvectors.
+A matrix plus its transpose is always symmetric.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_skew_symmetric();</code></p>
+<p>Returns a boolean value indicating if the given matrix is
+skew symmetric. By definition, a matrix is symmetric if and only
+if (<strong>M</strong>[<em>i</em>,<em>j</em>]=<strong>-M</strong>[<em>j</em>,<em>i</em>]). This is equivalent to
+<code>($matrix == -(~$matrix))</code> but without memory allocation.
+Only quadratic matrices can be skew symmetric.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_diagonal();</code></p>
+<p>Returns a boolean value indicating if the given matrix is
+diagonal, i.e. all of the nonzero elements are on the main diagonal.
+Only quadratic matrices can be diagonal.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_tridiagonal();</code></p>
+<p>Returns a boolean value indicating if the given matrix is 
+tridiagonal, i.e. all of the nonzero elements are on the main diagonal
+or the diagonals above and below the main diagonal.
+Only quadratic matrices can be tridiagonal.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_upper_triangular();</code></p>
+<p>Returns a boolean value indicating if the given matrix is upper triangular, 
+i.e. all of the nonzero elements not on the main diagonal are above it.
+Only quadratic matrices can be upper triangular.
+Note: diagonal matrices are both upper and lower triangular.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_lower_triangular();</code></p>
+<p>Returns a boolean value indicating if the given matrix is lower triangular,
+i.e. all of the nonzero elements not on the main diagonal are below it.
+Only quadratic matrices can be lower triangular.
+Note: diagonal matrices are both upper and lower triangular.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_orthogonal();</code></p>
+<p>Returns a boolean value indicating if the given matrix is orthogonal.
+An orthogonal matrix is has the property that the transpose equals the
+inverse of the matrix. Instead of computing each and comparing them, this
+method multiplies the matrix by it's transpose, and returns true if this 
+turns out to be the identity matrix, false otherwise.
+Only quadratic matrices can orthogonal.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_binary();</code></p>
+<p>Returns a boolean value indicating if the given matrix is binary.
+A matrix is binary if it contains only zeroes or ones.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_gramian();</code></p>
+<p>Returns a boolean value indicating if the give matrix is Gramian.
+A matrix <code>$A</code> is Gramian if and only if there exists a
+square matrix <code>$B</code> such that <code>$A = ~$B*$B</code>. This is equivalent to
+checking if <code>$A</code> is symmetric and has all nonnegative eigenvalues, which
+is what Math::MatrixReal uses to check for this property.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_LR();</code></p>
+<p>Returns a boolean value indicating if the matrix is an LR decomposition
+matrix.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_positive();</code></p>
+<p>Returns a boolean value indicating if the matrix contains only
+positive entries. Note that a zero entry is not positive and
+will cause <code>is_positive()</code> to return false.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_negative();</code></p>
+<p>Returns a boolean value indicating if the matrix contains only
+negative entries. Note that a zero entry is not negative and
+will cause <code>is_negative()</code> to return false.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_periodic($k);</code></p>
+<p>Returns a boolean value indicating if the matrix is periodic
+with period $k. This is true if <code>$matrix ** ($k+1) == $matrix</code>.
+When <code>$k == 1</code>, this reduces down to the <code>is_idempotent()</code>
+function.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_idempotent();</code></p>
+<p>Returns a boolean value indicating if the matrix is idempotent,
+which is defined as the square of the matrix being equal to 
+the original matrix, i.e <code>$matrix ** 2 == $matrix</code>.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_row_vector();</code></p>
+<p>Returns a boolean value indicating if the matrix is a row vector.
+A row vector is a matrix which is 1xn. Note that the 1x1 matrix is
+both a row and column vector.</p>
+</li>
+<li>
+<p><code>$matrix-&gt;is_col_vector();</code></p>
+<p>Returns a boolean value indicating if the matrix is a col vector.
+A col vector is a matrix which is nx1. Note that the 1x1 matrix is
+both a row and column vector.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="eigensystems">Eigensystems</a></h2>
+<ul>
+<li>
+<p><code>($l, $V) = $matrix-&gt;sym_diagonalize();</code></p>
+<p>This method performs the diagonalization of the quadratic
+<em>symmetric</em> matrix <strong>M</strong> stored in $matrix.
+On output, <strong>l</strong> is a column vector containing all the eigenvalues
+of <strong>M</strong> and <strong>V</strong> is an orthogonal matrix which columns are the
+corresponding normalized eigenvectors.
+The primary property of an eigenvalue <em>l</em> and an eigenvector
+<strong>x</strong> is of course that: <strong>M</strong> * <strong>x</strong> = <em>l</em> * <strong>x</strong>.</p>
+<p>The method uses a Householder reduction to tridiagonal form
+followed by a QL algoritm with implicit shifts on this
+tridiagonal. (The tridiagonal matrix is kept internally
+in a compact form in this routine to save memory.)
+In fact, this routine wraps the <code>householder()</code> and
+<code>tri_diagonalize()</code> methods described below when their
+intermediate results are not desired.
+The overall algorithmic complexity of this technique
+is O(N^3). According to several books, the coefficient
+hidden by the 'O' is one of the best possible for general
+(symmetric) matrixes.</p>
+</li>
+<li>
+<p><code>($T, $Q) = $matrix-&gt;householder();</code></p>
+<p>This method performs the Householder algorithm which reduces
+the <em>n</em> by <em>n</em> real <em>symmetric</em> matrix <strong>M</strong> contained
+in $matrix to tridiagonal form.
+On output, <strong>T</strong> is a symmetric tridiagonal matrix (only
+diagonal and off-diagonal elements are non-zero) and <strong>Q</strong>
+is an <em>orthogonal</em> matrix performing the tranformation
+between <strong>M</strong> and <strong>T</strong> (<code>$M == $Q * $T * ~$Q</code>).</p>
+</li>
+<li>
+<p><code>($l, $V) = $T-&gt;tri_diagonalize([$Q]);</code></p>
+<p>This method diagonalizes the symmetric tridiagonal
+matrix <strong>T</strong>. On output, $l and $V are similar to the
+output values described for sym_diagonalize().</p>
+<p>The optional argument $Q corresponds to an orthogonal
+transformation matrix <strong>Q</strong> that should be used additionally
+during <strong>V</strong> (eigenvectors) computation. It should be supplied
+if the desired eigenvectors correspond to a more general
+symmetric matrix <strong>M</strong> previously reduced by the
+<code>householder()</code> method, not a mere tridiagonal. If <strong>T</strong> is
+really a tridiagonal matrix, <strong>Q</strong> can be omitted (it
+will be internally created in fact as an identity matrix).
+The method uses a QL algorithm (with implicit shifts).</p>
+</li>
+<li>
+<p><code>$l = $matrix-&gt;sym_eigenvalues();</code></p>
+<p>This method computes the eigenvalues of the quadratic
+<em>symmetric</em> matrix <strong>M</strong> stored in $matrix.
+On output, <strong>l</strong> is a column vector containing all the eigenvalues
+of <strong>M</strong>. Eigenvectors are not computed (on the contrary of
+<code>sym_diagonalize()</code>) and this method is more efficient
+(even though it uses a similar algorithm with two phases).
+However, understand that the algorithmic complexity of this
+technique is still also O(N^3). But the coefficient hidden
+by the 'O' is better by a factor of..., well, see your
+benchmark, it's wiser.</p>
+<p>This routine wraps the <code>householder_tridiagonal()</code> and
+<code>tri_eigenvalues()</code> methods described below when the
+intermediate tridiagonal matrix is not needed.</p>
+</li>
+<li>
+<p><code>$T = $matrix-&gt;householder_tridiagonal();</code></p>
+<p>This method performs the Householder algorithm which reduces
+the <em>n</em> by <em>n</em> real <em>symmetric</em> matrix <strong>M</strong> contained
+in $matrix to tridiagonal form.
+On output, <strong>T</strong> is the obtained symmetric tridiagonal matrix
+(only diagonal and off-diagonal elements are non-zero). The
+operation is similar to the <code>householder()</code> method, but potentially
+a little more efficient as the transformation matrix is not
+computed.</p>
+</li>
+<li>
+<p><code>$l = $T-&gt;tri_eigenvalues();</code></p>
+<p>This method computesthe eigenvalues of the symmetric
+tridiagonal matrix <strong>T</strong>. On output, $l is a vector
+containing the eigenvalues (similar to <code>sym_eigenvalues()</code>).
+This method is much more efficient than <code>tri_diagonalize()</code>
+when eigenvectors are not needed.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="miscellaneous">Miscellaneous</a></h2>
+<ul>
+<li>
+<p><code>$matrix-&gt;zero();</code></p>
+<p>Assigns a zero to every element of the matrix ``<code>$matrix</code>'', i.e.,
+erases all values previously stored there, thereby effectively
+transforming the matrix into a ``zero''-matrix or ``null''-matrix,
+the neutral element of the addition operation in a Ring.</p>
+<p>(For instance the (quadratic) matrices with ``n'' rows and columns
+and matrix addition and multiplication form a Ring. Most prominent
+characteristic of a Ring is that multiplication is not commutative,
+i.e., in general, ``<code>matrix1 * matrix2</code>'' is not the same as
+``<code>matrix2 * matrix1</code>''!)</p>
+</li>
+<li>
+<p><code>$matrix-&gt;one();</code></p>
+<p>Assigns one's to the elements on the main diagonal (elements (1,1),
+(2,2), (3,3) and so on) of matrix ``<code>$matrix</code>'' and zero's to all others,
+thereby erasing all values previously stored there and transforming the
+matrix into a ``one''-matrix, the neutral element of the multiplication
+operation in a Ring.</p>
+<p>(If the matrix is quadratic (which this method doesn't require, though),
+then multiplying this matrix with itself yields this same matrix again,
+and multiplying it with some other matrix leaves that other matrix
+unchanged!)</p>
+</li>
+<li>
+<p><code>$latex_string = $matrix-&gt;as_latex( align=&gt; &quot;c&quot;, format =&gt; &quot;%s&quot;, name =&gt; &quot;&quot; );</code></p>
+<p>This function returns the matrix as a LaTeX string. It takes a hash as an
+argument which is used to control the style of the output. The hash element <code>align</code>
+may be ``c'',``l'' or ``r'', corresponding to center, left and right, respectively. The
+<code>format</code> element is a format string that is given to <code>sprintf</code> to control the
+style of number format, such a floating point or scientific notation. The <code>name</code>
+element can be used so that a LaTeX string of ``$name = '' is prepended to the string.</p>
+<p>Example:</p>
+<pre>
+    my $a = Math::MatrixReal-&gt;new_from_cols([[ 1.234, 5.678, 9.1011],[1,2,3]] );
+    print $a-&gt;as_latex( ( format =&gt; &quot;%.2f&quot;, align =&gt; &quot;l&quot;,name =&gt; &quot;A&quot; ) );</pre>
+<pre>
+    Output:
+    $A = $ $
+    \left( \begin{array}{ll}
+    1.23&amp;1.00 \\
+    5.68&amp;2.00 \\
+    9.10&amp;3.00
+    \end{array} \right)
+    $</pre>
+</li>
+<li>
+<p><code>$yacas_string = $matrix-&gt;as_yacas( format =&gt; &quot;%s&quot;, name =&gt; &quot;&quot;, semi =&gt; 0 );</code></p>
+<p>This function returns the matrix as a string that can be read by Yacas.
+It takes a hash as
+an an argument which controls the style of the output. The
+<code>format</code> element is a format string that is given to <code>sprintf</code> to control the
+style of number format, such a floating point or scientific notation. The <code>name</code>
+element can be used so that ``$name = '' is prepended to the string. The &lt;semi&gt; element can
+be set to 1 to that a semicolon is appended (so Matlab does not print out the matrix.)</p>
+<p>Example:</p>
+<pre>
+    $a = Math::MatrixReal-&gt;new_from_cols([[ 1.234, 5.678, 9.1011],[1,2,3]] );
+    print $a-&gt;as_yacas( ( format =&gt; &quot;%.2f&quot;, align =&gt; &quot;l&quot;,name =&gt; &quot;A&quot; ) );</pre>
+<p>Output:</p>
+<pre>
+    A := {{1.23,1.00},{5.68,2.00},{9.10,3.00}}</pre>
+</li>
+<li>
+<p><code>$matlab_string = $matrix-&gt;as_matlab( format =&gt; &quot;%s&quot;, name =&gt; &quot;&quot;, semi =&gt; 0 );</code></p>
+<p>This function returns the matrix as a string that can be read by Matlab. It takes a hash as
+an an argument which controls the style of the output. The
+<code>format</code> element is a format string that is given to <code>sprintf</code> to control the
+style of number format, such a floating point or scientific notation. The <code>name</code>
+element can be used so that ``$name = '' is prepended to the string. The &lt;semi&gt; element can
+be set to 1 to that a semicolon is appended (so Matlab does not print out the matrix.)</p>
+<p>Example:</p>
+<pre>
+        my $a = Math::MatrixReal-&gt;new_from_rows([[ 1.234, 5.678, 9.1011],[1,2,3]] );
+        print $a-&gt;as_matlab( ( format =&gt; &quot;%.3f&quot;, name =&gt; &quot;A&quot;,semi =&gt; 1 ) );</pre>
+<p>Output:
+        A = [ 1.234 5.678 9.101;
+         1.000 2.000 3.000];</p>
+</li>
+<li>
+<p><code>$scilab_string = $matrix-&gt;as_scilab( format =&gt; &quot;%s&quot;, name =&gt; &quot;&quot;, semi =&gt; 0 );</code></p>
+<p>This function is just an alias for <code>as_matlab()</code>, since both Scilab and Matlab have the
+same matrix format.</p>
+</li>
+<li>
+<p><code>$minimum = Math::MatrixReal::min($number1,$number2);</code></p>
+<p>Returns the minimum of the two numbers ``<code>number1</code>'' and ``<code>number2</code>''.</p>
+</li>
+<li>
+<p><code>$maximum = Math::MatrixReal::max($number1,$number2);</code></p>
+<p>Returns the maximum of the two numbers ``<code>number1</code>'' and ``<code>number2</code>''.</p>
+</li>
+<li>
+<p><code>$minimal_cost_matrix = $cost_matrix-&gt;kleene();</code></p>
+<p>Copies the matrix ``<code>$cost_matrix</code>'' (which has to be quadratic!) to
+a new matrix of the same size (i.e., ``clones'' the input matrix) and
+applies Kleene's algorithm to it.</p>
+<p>See <a href="/Math/Kleene(3).html">the Math::Kleene(3) manpage</a> for more details about this algorithm!</p>
+<p>The method returns an object reference to the new matrix.</p>
+<p>Matrix ``<code>$cost_matrix</code>'' is not changed by this method in any way.</p>
+</li>
+<li>
+<p><code>($norm_matrix,$norm_vector) = $matrix-&gt;normalize($vector);</code></p>
+<p>This method is used to improve the numerical stability when solving
+linear equation systems.</p>
+<p>Suppose you have a matrix ``A'' and a vector ``b'' and you want to find
+out a vector ``x'' so that <code>A * x = b</code>, i.e., the vector ``x'' which
+solves the equation system represented by the matrix ``A'' and the
+vector ``b''.</p>
+<p>Applying this method to the pair (A,b) yields a pair (A',b') where
+each row has been divided by (the absolute value of) the greatest
+coefficient appearing in that row. So this coefficient becomes equal
+to ``1'' (or ``-1'') in the new pair (A',b') (all others become smaller
+than one and greater than minus one).</p>
+<p>Note that this operation does not change the equation system itself
+because the same division is carried out on either side of the equation
+sign!</p>
+<p>The method requires a quadratic (!) matrix ``<code>$matrix</code>'' and a vector
+``<code>$vector</code>'' for input (the vector must be a column vector with the same
+number of rows as the input matrix) and returns a list of two items
+which are object references to a new matrix and a new vector, in this
+order.</p>
+<p>The output matrix and vector are clones of the input matrix and vector
+to which the operation explained above has been applied.</p>
+<p>The input matrix and vector are not changed by this in any way.</p>
+<p>Example of how this method can affect the result of the methods to solve
+equation systems (explained immediately below following this method):</p>
+<p>Consider the following little program:</p>
+<pre>
+  #!perl -w</pre>
+<pre>
+  use Math::MatrixReal qw(new_from_string);</pre>
+<pre>
+  $A = Math::MatrixReal-&gt;new_from_string(&lt;&lt;&quot;MATRIX&quot;);
+  [  1   2   3  ]
+  [  5   7  11  ]
+  [ 23  19  13  ]
+  MATRIX</pre>
+<pre>
+  $b = Math::MatrixReal-&gt;new_from_string(&lt;&lt;&quot;MATRIX&quot;);
+  [   0   ]
+  [   1   ]
+  [  29   ]
+  MATRIX</pre>
+<pre>
+  $LR = $A-&gt;decompose_LR();
+  if (($dim,$x,$B) = $LR-&gt;solve_LR($b))
+  {
+      $test = $A * $x;
+      print &quot;x = \n$x&quot;;
+      print &quot;A * x = \n$test&quot;;
+  }</pre>
+<pre>
+  ($A_,$b_) = $A-&gt;normalize($b);</pre>
+<pre>
+  $LR = $A_-&gt;decompose_LR();
+  if (($dim,$x,$B) = $LR-&gt;solve_LR($b_))
+  {
+      $test = $A * $x;
+      print &quot;x = \n$x&quot;;
+      print &quot;A * x = \n$test&quot;;
+  }</pre>
+<p>This will print:</p>
+<pre>
+  x =
+  [  1.000000000000E+00 ]
+  [  1.000000000000E+00 ]
+  [ -1.000000000000E+00 ]
+  A * x =
+  [  4.440892098501E-16 ]
+  [  1.000000000000E+00 ]
+  [  2.900000000000E+01 ]
+  x =
+  [  1.000000000000E+00 ]
+  [  1.000000000000E+00 ]
+  [ -1.000000000000E+00 ]
+  A * x =
+  [  0.000000000000E+00 ]
+  [  1.000000000000E+00 ]
+  [  2.900000000000E+01 ]</pre>
+<p>You can see that in the second example (where ``normalize()'' has been used),
+the result is ``better'', i.e., more accurate!</p>
+</li>
+<li>
+<p><code>$LR_matrix = $matrix-&gt;decompose_LR();</code></p>
+<p>This method is needed to solve linear equation systems.</p>
+<p>Suppose you have a matrix ``A'' and a vector ``b'' and you want to find
+out a vector ``x'' so that <code>A * x = b</code>, i.e., the vector ``x'' which
+solves the equation system represented by the matrix ``A'' and the
+vector ``b''.</p>
+<p>You might also have a matrix ``A'' and a whole bunch of different
+vectors ``b1''..``bk'' for which you need to find vectors ``x1''..``xk''
+so that <code>A * xi = bi</code>, for <code>i=1..k</code>.</p>
+<p>Using Gaussian transformations (multiplying a row or column with
+a factor, swapping two rows or two columns and adding a multiple
+of one row or column to another), it is possible to decompose any
+matrix ``A'' into two triangular matrices, called ``L'' and ``R'' (for
+``Left'' and ``Right'').</p>
+<p>``L'' has one's on the main diagonal (the elements (1,1), (2,2), (3,3)
+and so so), non-zero values to the left and below of the main diagonal
+and all zero's in the upper right half of the matrix.</p>
+<p>``R'' has non-zero values on the main diagonal as well as to the right
+and above of the main diagonal and all zero's in the lower left half
+of the matrix, as follows:</p>
+<pre>
+          [ 1 0 0 0 0 ]      [ x x x x x ]
+          [ x 1 0 0 0 ]      [ 0 x x x x ]
+      L = [ x x 1 0 0 ]  R = [ 0 0 x x x ]
+          [ x x x 1 0 ]      [ 0 0 0 x x ]
+          [ x x x x 1 ]      [ 0 0 0 0 x ]</pre>
+<p>Note that ``<code>L * R</code>'' is equivalent to matrix ``A'' in the sense that
+<code>L * R * x = b  &lt;==&gt;  A * x = b</code> for all vectors ``x'', leaving
+out of account permutations of the rows and columns (these are taken
+care of ``magically'' by this module!) and numerical errors.</p>
+<p>Trick:</p>
+<p>Because we know that ``L'' has one's on its main diagonal, we can
+store both matrices together in the same array without information
+loss! I.e.,</p>
+<pre>
+                 [ R R R R R ]
+                 [ L R R R R ]
+            LR = [ L L R R R ]
+                 [ L L L R R ]
+                 [ L L L L R ]</pre>
+<p>Beware, though, that ``LR'' and ``<code>L * R</code>'' are not the same!!!</p>
+<p>Note also that for the same reason, you cannot apply the method ``normalize()''
+to an ``LR'' decomposition matrix. Trying to do so will yield meaningless
+rubbish!</p>
+<p>(You need to apply ``normalize()'' to each pair (Ai,bi) <strong>BEFORE</strong> decomposing
+the matrix ``Ai'''!)</p>
+<p>Now what does all this help us in solving linear equation systems?</p>
+<p>It helps us because a triangular matrix is the next best thing
+that can happen to us besides a diagonal matrix (a matrix that
+has non-zero values only on its main diagonal - in which case
+the solution is trivial, simply divide ``<code>b[i]</code>'' by ``<code>A[i,i]</code>''
+to get ``<code>x[i]</code>''!).</p>
+<p>To find the solution to our problem ``<code>A * x = b</code>'', we divide this
+problem in parts: instead of solving <code>A * x = b</code> directly, we first
+decompose ``A'' into ``L'' and ``R'' and then solve ``<code>L * y = b</code>'' and
+finally ``<code>R * x = y</code>'' (motto: divide and rule!).</p>
+<p>From the illustration above it is clear that solving ``<code>L * y = b</code>''
+and ``<code>R * x = y</code>'' is straightforward: we immediately know that
+<code>y[1] = b[1]</code>. We then deduce swiftly that</p>
+<pre>
+  y[2] = b[2] - L[2,1] * y[1]</pre>
+<p>(and we know ``<code>y[1]</code>'' by now!), that</p>
+<pre>
+  y[3] = b[3] - L[3,1] * y[1] - L[3,2] * y[2]</pre>
+<p>and so on.</p>
+<p>Having effortlessly calculated the vector ``y'', we now proceed to
+calculate the vector ``x'' in a similar fashion: we see immediately
+that <code>x[n] = y[n] / R[n,n]</code>. It follows that</p>
+<pre>
+  x[n-1] = ( y[n-1] - R[n-1,n] * x[n] ) / R[n-1,n-1]</pre>
+<p>and</p>
+<pre>
+  x[n-2] = ( y[n-2] - R[n-2,n-1] * x[n-1] - R[n-2,n] * x[n] )
+           / R[n-2,n-2]</pre>
+<p>and so on.</p>
+<p>You can see that - especially when you have many vectors ``b1''..``bk''
+for which you are searching solutions to <code>A * xi = bi</code> - this scheme
+is much more efficient than a straightforward, ``brute force'' approach.</p>
+<p>This method requires a quadratic matrix as its input matrix.</p>
+<p>If you don't have that many equations, fill up with zero's (i.e., do
+nothing to fill the superfluous rows if it's a ``fresh'' matrix, i.e.,
+a matrix that has been created with ``new()'' or ``shadow()'').</p>
+<p>The method returns an object reference to a new matrix containing the
+matrices ``L'' and ``R''.</p>
+<p>The input matrix is not changed by this method in any way.</p>
+<p>Note that you can ``copy()'' or ``clone()'' the result of this method without
+losing its ``magical'' properties (for instance concerning the hidden
+permutations of its rows and columns).</p>
+<p>However, as soon as you are applying any method that alters the contents
+of the matrix, its ``magical'' properties are stripped off, and the matrix
+immediately reverts to an ``ordinary'' matrix (with the values it just happens
+to contain at that moment, be they meaningful as an ordinary matrix or not!).</p>
+</li>
+<li>
+<p><code>($dimension,$x_vector,$base_matrix) = $LR_matrix</code><code>-&gt;</code><code>solve_LR($b_vector);</code></p>
+<p>Use this method to actually solve an equation system.</p>
+<p>Matrix ``<code>$LR_matrix</code>'' must be a (quadratic) matrix returned by the
+method ``decompose_LR()'', the LR decomposition matrix of the matrix
+``A'' of your equation system <code>A * x = b</code>.</p>
+<p>The input vector ``<code>$b_vector</code>'' is the vector ``b'' in your equation system
+<code>A * x = b</code>, which must be a column vector and have the same number of
+rows as the input matrix ``<code>$LR_matrix</code>''.</p>
+<p>The method returns a list of three items if a solution exists or an
+empty list otherwise (!).</p>
+<p>Therefore, you should always use this method like this:</p>
+<pre>
+  if ( ($dim,$x_vec,$base) = $LR-&gt;solve_LR($b_vec) )
+  {
+      # do something with the solution...
+  }
+  else
+  {
+      # do something with the fact that there is no solution...
+  }</pre>
+<p>The three items returned are: the dimension ``<code>$dimension</code>'' of the solution
+space (which is zero if only one solution exists, one if the solution is
+a straight line, two if the solution is a plane, and so on), the solution
+vector ``<code>$x_vector</code>'' (which is the vector ``x'' of your equation system
+<code>A * x = b</code>) and a matrix ``<code>$base_matrix</code>'' representing a base of the
+solution space (a set of vectors which put up the solution space like
+the spokes of an umbrella).</p>
+<p>Only the first ``<code>$dimension</code>'' columns of this base matrix actually
+contain entries, the remaining columns are all zero.</p>
+<p>Now what is all this stuff with that ``base'' good for?</p>
+<p>The output vector ``x'' is <strong>ALWAYS</strong> a solution of your equation system
+<code>A * x = b</code>.</p>
+<p>But also any vector ``<code>$vector</code>''</p>
+<pre>
+  $vector = $x_vector-&gt;clone();</pre>
+<pre>
+  $machine_infinity = 1E+99; # or something like that</pre>
+<pre>
+  for ( $i = 1; $i &lt;= $dimension; $i++ )
+  {
+      $vector += rand($machine_infinity) * $base_matrix-&gt;column($i);
+  }</pre>
+<p>is a solution to your problem <code>A * x = b</code>, i.e., if ``<code>$A_matrix</code>'' contains
+your matrix ``A'', then</p>
+<pre>
+  print abs( $A_matrix * $vector - $b_vector ), &quot;\n&quot;;</pre>
+<p>should print a number around 1E-16 or so!</p>
+<p>By the way, note that you can actually calculate those vectors ``<code>$vector</code>''
+a little more efficient as follows:</p>
+<pre>
+  $rand_vector = $x_vector-&gt;shadow();</pre>
+<pre>
+  $machine_infinity = 1E+99; # or something like that</pre>
+<pre>
+  for ( $i = 1; $i &lt;= $dimension; $i++ )
+  {
+      $rand_vector-&gt;assign($i,1, rand($machine_infinity) );
+  }</pre>
+<pre>
+  $vector = $x_vector + ( $base_matrix * $rand_vector );</pre>
+<p>Note that the input matrix and vector are not changed by this method
+in any way.</p>
+</li>
+<li>
+<p><code>$inverse_matrix = $LR_matrix-&gt;invert_LR();</code></p>
+<p>Use this method to calculate the inverse of a given matrix ``<code>$LR_matrix</code>'',
+which must be a (quadratic) matrix returned by the method ``decompose_LR()''.</p>
+<p>The method returns an object reference to a new matrix of the same size as
+the input matrix containing the inverse of the matrix that you initially
+fed into ``decompose_LR()'' <strong>IF THE INVERSE EXISTS</strong>, or an empty list
+otherwise.</p>
+<p>Therefore, you should always use this method in the following way:</p>
+<pre>
+  if ( $inverse_matrix = $LR-&gt;invert_LR() )
+  {
+      # do something with the inverse matrix...
+  }
+  else
+  {
+      # do something with the fact that there is no inverse matrix...
+  }</pre>
+<p>Note that by definition (disregarding numerical errors), the product
+of the initial matrix and its inverse (or vice-versa) is always a matrix
+containing one's on the main diagonal (elements (1,1), (2,2), (3,3) and
+so on) and zero's elsewhere.</p>
+<p>The input matrix is not changed by this method in any way.</p>
+</li>
+<li>
+<p><code>$condition = $matrix-&gt;condition($inverse_matrix);</code></p>
+<p>In fact this method is just a shortcut for</p>
+<pre>
+  abs($matrix) * abs($inverse_matrix)</pre>
+<p>Both input matrices must be quadratic and have the same size, and the result
+is meaningful only if one of them is the inverse of the other (for instance,
+as returned by the method ``invert_LR()'').</p>
+<p>The number returned is a measure of the ``condition'' of the given matrix
+``<code>$matrix</code>'', i.e., a measure of the numerical stability of the matrix.</p>
+<p>This number is always positive, and the smaller its value, the better the
+condition of the matrix (the better the stability of all subsequent
+computations carried out using this matrix).</p>
+<p>Numerical stability means for example that if</p>
+<pre>
+  abs( $vec_correct - $vec_with_error ) &lt; $epsilon</pre>
+<p>holds, there must be a ``<code>$delta</code>'' which doesn't depend on the vector
+``<code>$vec_correct</code>'' (nor ``<code>$vec_with_error</code>'', by the way) so that</p>
+<pre>
+  abs( $matrix * $vec_correct - $matrix * $vec_with_error ) &lt; $delta</pre>
+<p>also holds.</p>
+</li>
+<li>
+<p><code>$determinant = $LR_matrix-&gt;det_LR();</code></p>
+<p>Calculates the determinant of a matrix, whose LR decomposition matrix
+``<code>$LR_matrix</code>'' must be given (which must be a (quadratic) matrix
+returned by the method ``decompose_LR()'').</p>
+<p>In fact the determinant is a by-product of the LR decomposition: It is
+(in principle, that is, except for the sign) simply the product of the
+elements on the main diagonal (elements (1,1), (2,2), (3,3) and so on)
+of the LR decomposition matrix.</p>
+<p>(The sign is taken care of ``magically'' by this module)</p>
+</li>
+<li>
+<p><code>$order = $LR_matrix-&gt;order_LR();</code></p>
+<p>Calculates the order (called ``Rang'' in German) of a matrix, whose
+LR decomposition matrix ``<code>$LR_matrix</code>'' must be given (which must
+be a (quadratic) matrix returned by the method ``decompose_LR()'').</p>
+<p>This number is a measure of the number of linear independent row
+and column vectors (= number of linear independent equations in
+the case of a matrix representing an equation system) of the
+matrix that was initially fed into ``decompose_LR()''.</p>
+<p>If ``n'' is the number of rows and columns of the (quadratic!) matrix,
+then ``n - order'' is the dimension of the solution space of the
+associated equation system.</p>
+</li>
+<li>
+<p><code>$rank = $LR_matrix-&gt;rank_LR();</code></p>
+<p>This is an alias for the <code>order_LR()</code> function. The ``order''
+is usually called the ``rank'' in the United States.</p>
+</li>
+<li>
+<p><code>$scalar_product = $vector1-&gt;scalar_product($vector2);</code></p>
+<p>Returns the scalar product of vector ``<code>$vector1</code>'' and vector ``<code>$vector2</code>''.</p>
+<p>Both vectors must be column vectors (i.e., a matrix having
+several rows but only one column).</p>
+<p>This is a (more efficient!) shortcut for</p>
+<pre>
+  $temp           = ~$vector1 * $vector2;
+  $scalar_product =  $temp-&gt;element(1,1);</pre>
+<p>or the sum <code>i=1..n</code> of the products <code>vector1[i] * vector2[i]</code>.</p>
+<p>Provided none of the two input vectors is the null vector, then
+the two vectors are orthogonal, i.e., have an angle of 90 degrees
+between them, exactly when their scalar product is zero, and
+vice-versa.</p>
+</li>
+<li>
+<p><code>$vector_product = $vector1-&gt;vector_product($vector2);</code></p>
+<p>Returns the vector product of vector ``<code>$vector1</code>'' and vector ``<code>$vector2</code>''.</p>
+<p>Both vectors must be column vectors (i.e., a matrix having several rows
+but only one column).</p>
+<p>Currently, the vector product is only defined for 3 dimensions (i.e.,
+vectors with 3 rows); all other vectors trigger an error message.</p>
+<p>In 3 dimensions, the vector product of two vectors ``x'' and ``y''
+is defined as</p>
+<pre>
+              |  x[1]  y[1]  e[1]  |
+  determinant |  x[2]  y[2]  e[2]  |
+              |  x[3]  y[3]  e[3]  |</pre>
+<p>where the ``<code>x[i]</code>'' and ``<code>y[i]</code>'' are the components of the two vectors
+``x'' and ``y'', respectively, and the ``<code>e[i]</code>'' are unity vectors (i.e.,
+vectors with a length equal to one) with a one in row ``i'' and zero's
+elsewhere (this means that you have numbers and vectors as elements
+in this matrix!).</p>
+<p>This determinant evaluates to the rather simple formula</p>
+<pre>
+  z[1] = x[2] * y[3] - x[3] * y[2]
+  z[2] = x[3] * y[1] - x[1] * y[3]
+  z[3] = x[1] * y[2] - x[2] * y[1]</pre>
+<p>A characteristic property of the vector product is that the resulting
+vector is orthogonal to both of the input vectors (if neither of both
+is the null vector, otherwise this is trivial), i.e., the scalar product
+of each of the input vectors with the resulting vector is always zero.</p>
+</li>
+<li>
+<p><code>$length = $vector-&gt;length();</code></p>
+<p>This is actually a shortcut for</p>
+<pre>
+  $length = sqrt( $vector-&gt;scalar_product($vector) );</pre>
+<p>and returns the length of a given (column!) vector ``<code>$vector</code>''.</p>
+<p>Note that the ``length'' calculated by this method is in fact the
+``two''-norm of a vector ``<code>$vector</code>''!</p>
+<p>The general definition for norms of vectors is the following:</p>
+<pre>
+  sub vector_norm
+  {
+      croak &quot;Usage: \$norm = \$vector-&gt;vector_norm(\$n);&quot;
+        if (@_ != 2);</pre>
+<pre>
+      my($vector,$n) = @_;
+      my($rows,$cols) = ($vector-&gt;[1],$vector-&gt;[2]);
+      my($k,$comp,$sum);</pre>
+<pre>
+      croak &quot;Math::MatrixReal::vector_norm(): vector is not a column vector&quot;
+        unless ($cols == 1);</pre>
+<pre>
+      croak &quot;Math::MatrixReal::vector_norm(): norm index must be &gt; 0&quot;
+        unless ($n &gt; 0);</pre>
+<pre>
+      croak &quot;Math::MatrixReal::vector_norm(): norm index must be integer&quot;
+        unless ($n == int($n));</pre>
+<pre>
+      $sum = 0;
+      for ( $k = 0; $k &lt; $rows; $k++ )
+      {
+          $comp = abs( $vector-&gt;[0][$k][0] );
+          $sum += $comp ** $n;
+      }
+      return( $sum ** (1 / $n) );
+  }</pre>
+<p>Note that the case ``n = 1'' is the ``one''-norm for matrices applied to a
+vector, the case ``n = 2'' is the euclidian norm or length of a vector,
+and if ``n'' goes to infinity, you have the ``infinity''- or ``maximum''-norm
+for matrices applied to a vector!</p>
+</li>
+<li>
+<p><code>$xn_vector = $matrix-&gt;</code><code>solve_GSM($x0_vector,$b_vector,$epsilon);</code></p>
+</li>
+<li>
+<p><code>$xn_vector = $matrix-&gt;</code><code>solve_SSM($x0_vector,$b_vector,$epsilon);</code></p>
+</li>
+<li>
+<p><code>$xn_vector = $matrix-&gt;</code><code>solve_RM($x0_vector,$b_vector,$weight,$epsilon);</code></p>
+<p>In some cases it might not be practical or desirable to solve an
+equation system ``<code>A * x = b</code>'' using an analytical algorithm like
+the ``decompose_LR()'' and ``solve_LR()'' method pair.</p>
+<p>In fact in some cases, due to the numerical properties (the ``condition'')
+of the matrix ``A'', the numerical error of the obtained result can be
+greater than by using an approximative (iterative) algorithm like one
+of the three implemented here.</p>
+<p>All three methods, GSM (``Global Step Method'' or ``Gesamtschrittverfahren''),
+SSM (``Single Step Method'' or ``Einzelschrittverfahren'') and RM (``Relaxation
+Method'' or ``Relaxationsverfahren''), are fix-point iterations, that is, can
+be described by an iteration function ``<code>x(t+1) = Phi( x(t) )</code>'' which has
+the property:</p>
+<pre>
+  Phi(x)  =  x    &lt;==&gt;    A * x  =  b</pre>
+<p>We can define ``<code>Phi(x)</code>'' as follows:</p>
+<pre>
+  Phi(x)  :=  ( En - A ) * x  +  b</pre>
+<p>where ``En'' is a matrix of the same size as ``A'' (``n'' rows and columns)
+with one's on its main diagonal and zero's elsewhere.</p>
+<p>This function has the required property.</p>
+<p>Proof:</p>
+<pre>
+           A * x        =   b</pre>
+<pre>
+  &lt;==&gt;  -( A * x )      =  -b</pre>
+<pre>
+  &lt;==&gt;  -( A * x ) + x  =  -b + x</pre>
+<pre>
+  &lt;==&gt;  -( A * x ) + x + b  =  x</pre>
+<pre>
+  &lt;==&gt;  x - ( A * x ) + b  =  x</pre>
+<pre>
+  &lt;==&gt;  ( En - A ) * x + b  =  x</pre>
+<p>This last step is true because</p>
+<pre>
+  x[i] - ( a[i,1] x[1] + ... + a[i,i] x[i] + ... + a[i,n] x[n] ) + b[i]</pre>
+<p>is the same as</p>
+<pre>
+  ( -a[i,1] x[1] + ... + (1 - a[i,i]) x[i] + ... + -a[i,n] x[n] ) + b[i]</pre>
+<p>qed</p>
+<p>Note that actually solving the equation system ``<code>A * x = b</code>'' means
+to calculate</p>
+<pre>
+        a[i,1] x[1] + ... + a[i,i] x[i] + ... + a[i,n] x[n]  =  b[i]</pre>
+<pre>
+  &lt;==&gt;  a[i,i] x[i]  =
+        b[i]
+        - ( a[i,1] x[1] + ... + a[i,i] x[i] + ... + a[i,n] x[n] )
+        + a[i,i] x[i]</pre>
+<pre>
+  &lt;==&gt;  x[i]  =
+        ( b[i]
+            - ( a[i,1] x[1] + ... + a[i,i] x[i] + ... + a[i,n] x[n] )
+            + a[i,i] x[i]
+        ) / a[i,i]</pre>
+<pre>
+  &lt;==&gt;  x[i]  =
+        ( b[i] -
+            ( a[i,1] x[1] + ... + a[i,i-1] x[i-1] +
+              a[i,i+1] x[i+1] + ... + a[i,n] x[n] )
+        ) / a[i,i]</pre>
+<p>There is one major restriction, though: a fix-point iteration is
+guaranteed to converge only if the first derivative of the iteration
+function has an absolute value less than one in an area around the
+point ``<code>x(*)</code>'' for which ``<code>Phi( x(*) ) = x(*)</code>'' is to be true, and
+if the start vector ``<code>x(0)</code>'' lies within that area!</p>
+<p>This is best verified grafically, which unfortunately is impossible
+to do in this textual documentation!</p>
+<p>See literature on Numerical Analysis for details!</p>
+<p>In our case, this restriction translates to the following three conditions:</p>
+<p>There must exist a norm so that the norm of the matrix of the iteration
+function, <code>( En - A )</code>, has a value less than one, the matrix ``A'' may
+not have any zero value on its main diagonal and the initial vector
+``<code>x(0)</code>'' must be ``good enough'', i.e., ``close enough'' to the solution
+``<code>x(*)</code>''.</p>
+<p>(Remember school math: the first derivative of a straight line given by
+``<code>y = a * x + b</code>'' is ``a''!)</p>
+<p>The three methods expect a (quadratic!) matrix ``<code>$matrix</code>'' as their
+first argument, a start vector ``<code>$x0_vector</code>'', a vector ``<code>$b_vector</code>''
+(which is the vector ``b'' in your equation system ``<code>A * x = b</code>''), in the
+case of the ``Relaxation Method'' (``RM''), a real number ``<code>$weight</code>'' best
+between zero and two, and finally an error limit (real number) ``<code>$epsilon</code>''.</p>
+<p>(Note that the weight ``<code>$weight</code>'' used by the ``Relaxation Method'' (``RM'')
+is <strong>NOT</strong> checked to lie within any reasonable range!)</p>
+<p>The three methods first test the first two conditions of the three
+conditions listed above and return an empty list if these conditions
+are not fulfilled.</p>
+<p>Therefore, you should always test their return value using some
+code like:</p>
+<pre>
+  if ( $xn_vector = $A_matrix-&gt;solve_GSM($x0_vector,$b_vector,1E-12) )
+  {
+      # do something with the solution...
+  }
+  else
+  {
+      # do something with the fact that there is no solution...
+  }</pre>
+<p>Otherwise, they iterate until <a href="#item_abs"><code>abs( Phi(x) - x ) &lt; epsilon</code></a>.</p>
+<p>(Beware that theoretically, infinite loops might result if the starting
+vector is too far ``off'' the solution! In practice, this shouldn't be
+a problem. Anyway, you can always press &lt;ctrl-C&gt; if you think that the
+iteration takes too long!)</p>
+<p>The difference between the three methods is the following:</p>
+<p>In the ``Global Step Method'' (``GSM''), the new vector ``<code>x(t+1)</code>''
+(called ``y'' here) is calculated from the vector ``<code>x(t)</code>''
+(called ``x'' here) according to the formula:</p>
+<pre>
+  y[i] =
+  ( b[i]
+      - ( a[i,1] x[1] + ... + a[i,i-1] x[i-1] +
+          a[i,i+1] x[i+1] + ... + a[i,n] x[n] )
+  ) / a[i,i]</pre>
+<p>In the ``Single Step Method'' (``SSM''), the components of the vector
+``<code>x(t+1)</code>'' which have already been calculated are used to calculate
+the remaining components, i.e.</p>
+<pre>
+  y[i] =
+  ( b[i]
+      - ( a[i,1] y[1] + ... + a[i,i-1] y[i-1] +  # note the &quot;y[]&quot;!
+          a[i,i+1] x[i+1] + ... + a[i,n] x[n] )  # note the &quot;x[]&quot;!
+  ) / a[i,i]</pre>
+<p>In the ``Relaxation method'' (``RM''), the components of the vector
+``<code>x(t+1)</code>'' are calculated by ``mixing'' old and new value (like
+cold and hot water), and the weight ``<code>$weight</code>'' determines the
+``aperture'' of both the ``hot water tap'' as well as of the ``cold
+water tap'', according to the formula:</p>
+<pre>
+  y[i] =
+  ( b[i]
+      - ( a[i,1] y[1] + ... + a[i,i-1] y[i-1] +  # note the &quot;y[]&quot;!
+          a[i,i+1] x[i+1] + ... + a[i,n] x[n] )  # note the &quot;x[]&quot;!
+  ) / a[i,i]
+  y[i] = weight * y[i] + (1 - weight) * x[i]</pre>
+<p>Note that the weight ``<code>$weight</code>'' should be greater than zero and
+less than two (!).</p>
+<p>The three methods are supposed to be of different efficiency.
+Experiment!</p>
+<p>Remember that in most cases, it is probably advantageous to first
+``normalize()'' your equation system prior to solving it!</p>
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="overloaded_operators">OVERLOADED OPERATORS</a></h1>
+<p>
+</p>
+<h2><a name="synopsis">SYNOPSIS</a></h2>
+<ul>
+<li>
+<p>Unary operators:</p>
+<p>``<code>-</code>'', ``<code>~</code>'', ``<a href="#item_abs"><code>abs</code></a>'', <a href="#item_test"><code>test</code></a>, ``<code>!</code>'', '<code>&quot;&quot;</code>'</p>
+</li>
+<li>
+<p>Binary (arithmetic) operators:</p>
+<p>``<code>+</code>'', ``<code>-</code>'', ``<code>*</code>'', ``<code>**</code>'',
+``<code>+=</code>'', ``<code>-=</code>'', ``<code>*=</code>'', ``<code>/=</code>'',``<code>**=</code>''</p>
+</li>
+<li>
+<p>Binary (relational) operators:</p>
+<p>``<code>==</code>'', ``<code>!=</code>'', ``<code>&lt;</code>'', ``<code>&lt;=</code>'', ``<code>&gt;</code>'', ``<code>&gt;=</code>''</p>
+<p>``<code>eq</code>'', ``<code>ne</code>'', ``<code>lt</code>'', ``<code>le</code>'', ``<code>gt</code>'', ``<code>ge</code>''</p>
+<p>Note that the latter (``<code>eq</code>'', ``<code>ne</code>'', ... ) are just synonyms
+of the former (``<code>==</code>'', ``<code>!=</code>'', ... ), defined for convenience
+only.</p>
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="description">DESCRIPTION</a></h2>
+<dl>
+<dt><strong><a name="item__27_2d_27">'-'</a></strong>
+
+<dd>
+<p>Unary minus</p>
+</dd>
+<dd>
+<p>Returns the negative of the given matrix, i.e., the matrix with
+all elements multiplied with the factor ``-1''.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    $matrix = -$matrix;</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_7e_27">'~'</a></strong>
+
+<dd>
+<p>Transposition</p>
+</dd>
+<dd>
+<p>Returns the transposed of the given matrix.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $temp = ~$vector * $vector;
+    $length = sqrt( $temp-&gt;element(1,1) );</pre>
+</dd>
+<dd>
+<pre>
+    if (~$matrix == $matrix) { # matrix is symmetric ... }</pre>
+</dd>
+</li>
+<dt><strong><a name="item_abs">abs</a></strong>
+
+<dd>
+<p>Norm</p>
+</dd>
+<dd>
+<p>Returns the ``one''-Norm of the given matrix.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    $error = abs( $A * $x - $b );</pre>
+</dd>
+</li>
+<dt><strong><a name="item_test">test</a></strong>
+
+<dd>
+<p>Boolean test</p>
+</dd>
+<dd>
+<p>Tests wether there is at least one non-zero element in the matrix.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    if ($xn_vector) { # result of iteration is not zero ... }</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_21_27">'!'</a></strong>
+
+<dd>
+<p>Negated boolean test</p>
+</dd>
+<dd>
+<p>Tests wether the matrix contains only zero's.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    if (! $b_vector) { # heterogenous equation system ... }
+    else             { # homogenous equation system ... }</pre>
+</dd>
+<dd>
+<pre>
+    unless ($x_vector) { # not the null-vector! }</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_22_22_22_22_27">'``''``'''</a></strong>
+
+<dd>
+<p>``Stringify'' operator</p>
+</dd>
+<dd>
+<p>Converts the given matrix into a string.</p>
+</dd>
+<dd>
+<p>Uses scientific representation to keep precision loss to a minimum in case
+you want to read this string back in again later with ``new_from_string()''.</p>
+</dd>
+<dd>
+<p>Uses a 13-digit mantissa and a 20-character field for each element so that
+lines will wrap nicely on an 80-column screen.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $matrix = Math::MatrixReal-&gt;new_from_string(&lt;&lt;&quot;MATRIX&quot;);
+    [ 1  0 ]
+    [ 0 -1 ]
+    MATRIX
+    print &quot;$matrix&quot;;</pre>
+</dd>
+<dd>
+<pre>
+    [  1.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00 -1.000000000000E+00 ]</pre>
+</dd>
+<dd>
+<pre>
+    $string = &quot;$matrix&quot;;
+    $test = Math::MatrixReal-&gt;new_from_string($string);
+    if ($test == $matrix) { print &quot;:-)\n&quot;; } else { print &quot;:-(\n&quot;; }</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_2b_27">'+'</a></strong>
+
+<dd>
+<p>Addition</p>
+</dd>
+<dd>
+<p>Returns the sum of the two given matrices.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $matrix_S = $matrix_A + $matrix_B;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_A += $matrix_B;</pre>
+</dd>
+</li>
+<dt><strong>'-'</strong>
+
+<dd>
+<p>Subtraction</p>
+</dd>
+<dd>
+<p>Returns the difference of the two given matrices.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $matrix_D = $matrix_A - $matrix_B;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_A -= $matrix_B;</pre>
+</dd>
+<dd>
+<p>Note that this is the same as:</p>
+</dd>
+<dd>
+<pre>
+    $matrix_S = $matrix_A + -$matrix_B;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_A += -$matrix_B;</pre>
+</dd>
+<dd>
+<p>(The latter are less efficient, though)</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_2a_27">'*'</a></strong>
+
+<dd>
+<p>Multiplication</p>
+</dd>
+<dd>
+<p>Returns the matrix product of the two given matrices or
+the product of the given matrix and scalar factor.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $matrix_P = $matrix_A * $matrix_B;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_A *= $matrix_B;</pre>
+</dd>
+<dd>
+<pre>
+    $vector_b = $matrix_A * $vector_x;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_B = -1 * $matrix_A;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_B = $matrix_A * -1;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix_A *= -1;</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_2f_27">'/'</a></strong>
+
+<dd>
+<p>Division</p>
+</dd>
+<dd>
+<p>Currently a shortcut for doing $a * $b ** -1 is $a / $b, which works for square matrices. One 
+can also use 1/$a .</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_2a_2a_27">'**'</a></strong>
+
+<dd>
+<p>Exponentiation</p>
+</dd>
+<dd>
+<p>Returns the matrix raised to an integer power. If 0 is passed,
+the identity matrix is returned. If a negative integer is passed,
+it computes the inverse (if it exists) and then raised the inverse
+to the absolute value of the integer. The matrix must be quadratic.</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    $matrix2 = $matrix ** 2;</pre>
+</dd>
+<dd>
+<pre>
+    $matrix **= 2;</pre>
+</dd>
+<dd>
+<pre>
+    $inv2 = $matrix ** -2;</pre>
+</dd>
+<dd>
+<pre>
+    $ident = $matrix ** 0;</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_3d_3d_27">'=='</a></strong>
+
+<dd>
+<p>Equality</p>
+</dd>
+<dd>
+<p>Tests two matrices for equality.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    if ( $A * $x == $b ) { print &quot;EUREKA!\n&quot;; }</pre>
+</dd>
+<dd>
+<p>Note that in most cases, due to numerical errors (due to the finite
+precision of computer arithmetics), it is a bad idea to compare two
+matrices or vectors this way.</p>
+</dd>
+<dd>
+<p>Better use the norm of the difference of the two matrices you want
+to compare and compare that norm with a small number, like this:</p>
+</dd>
+<dd>
+<pre>
+    if ( abs( $A * $x - $b ) &lt; 1E-12 ) { print &quot;BINGO!\n&quot;; }</pre>
+</dd>
+</li>
+<dt><strong><a name="item__27_21_3d_27">'!='</a></strong>
+
+<dd>
+<p>Inequality</p>
+</dd>
+<dd>
+<p>Tests two matrices for inequality.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    while ($x0_vector != $xn_vector) { # proceed with iteration ... }</pre>
+</dd>
+<dd>
+<p>(Stops when the iteration becomes stationary)</p>
+</dd>
+<dd>
+<p>Note that (just like with the '==' operator), it is usually a bad idea
+to compare matrices or vectors this way. Compare the norm of the difference
+of the two matrices with a small number instead.</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_3c_27">'&lt;'</a></strong>
+
+<dd>
+<p>Less than</p>
+</dd>
+<dd>
+<p>Examples:</p>
+</dd>
+<dd>
+<pre>
+    if ( $matrix1 &lt; $matrix2 ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( $vector &lt; $epsilon ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( 1E-12 &lt; $vector ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( $A * $x - $b &lt; 1E-12 ) { # ... }</pre>
+</dd>
+<dd>
+<p>These are just shortcuts for saying:</p>
+</dd>
+<dd>
+<pre>
+    if ( abs($matrix1) &lt; abs($matrix2) ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( abs($vector) &lt; abs($epsilon) ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( abs(1E-12) &lt; abs($vector) ) { # ... }</pre>
+</dd>
+<dd>
+<pre>
+    if ( abs( $A * $x - $b ) &lt; abs(1E-12) ) { # ... }</pre>
+</dd>
+<dd>
+<p>Uses the ``one''-norm for matrices and Perl's built-in ``abs()'' for scalars.</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_3c_3d_27">'&lt;='</a></strong>
+
+<dd>
+<p>Less than or equal</p>
+</dd>
+<dd>
+<p>As with the '&lt;' operator, this is just a shortcut for the same expression
+with ``abs()'' around all arguments.</p>
+</dd>
+<dd>
+<p>Example:</p>
+</dd>
+<dd>
+<pre>
+    if ( $A * $x - $b &lt;= 1E-12 ) { # ... }</pre>
+</dd>
+<dd>
+<p>which in fact is the same as:</p>
+</dd>
+<dd>
+<pre>
+    if ( abs( $A * $x - $b ) &lt;= abs(1E-12) ) { # ... }</pre>
+</dd>
+<dd>
+<p>Uses the ``one''-norm for matrices and Perl's built-in ``abs()'' for scalars.</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_3e_27">'&gt;'</a></strong>
+
+<dd>
+<p>Greater than</p>
+</dd>
+<dd>
+<p>As with the '&lt;' and '&lt;=' operator, this</p>
+</dd>
+<dd>
+<pre>
+    if ( $xn - $x0 &gt; 1E-12 ) { # ... }</pre>
+</dd>
+<dd>
+<p>is just a shortcut for:</p>
+</dd>
+<dd>
+<pre>
+    if ( abs( $xn - $x0 ) &gt; abs(1E-12) ) { # ... }</pre>
+</dd>
+<dd>
+<p>Uses the ``one''-norm for matrices and Perl's built-in ``abs()'' for scalars.</p>
+</dd>
+</li>
+<dt><strong><a name="item__27_3e_3d_27">'&gt;='</a></strong>
+
+<dd>
+<p>Greater than or equal</p>
+</dd>
+<dd>
+<p>As with the '&lt;', '&lt;=' and '&gt;' operator, the following</p>
+</dd>
+<dd>
+<pre>
+    if ( $LR &gt;= $A ) { # ... }</pre>
+</dd>
+<dd>
+<p>is simply a shortcut for:</p>
+</dd>
+<dd>
+<pre>
+    if ( abs($LR) &gt;= abs($A) ) { # ... }</pre>
+</dd>
+<dd>
+<p>Uses the ``one''-norm for matrices and Perl's built-in ``abs()'' for scalars.</p>
+</dd>
+</li>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>Math::VectorReal, Math::PARI, Math::MatrixBool,
+DFA::Kleene, Math::Kleene,
+Set::IntegerRange, Set::IntegerFast .</p>
+<p>
+</p>
+<hr />
+<h1><a name="version">VERSION</a></h1>
+<p>This man page documents Math::MatrixReal version 2.01.</p>
+<p>The latest version can always be found at
+<a href="http://leto.net/code/Math-MatrixReal/">http://leto.net/code/Math-MatrixReal/</a></p>
+<p>
+</p>
+<hr />
+<h1><a name="authors">AUTHORS</a></h1>
+<p>Steffen Beyer &lt;<a href="mailto:sb@engelschall.com">sb@engelschall.com</a>&gt;, Rodolphe Ortalo &lt;<a href="mailto:ortalo@laas.fr">ortalo@laas.fr</a>&gt;,
+Jonathan Leto &lt;<a href="mailto:jonathan@leto.net">jonathan@leto.net</a>&gt;.
+
+</p>
+<p>Currently maintained by Jonathan Leto, send all bugs/patches to me.
+
+</p>
+<p>
+</p>
+<hr />
+<h1><a name="credits">CREDITS</a></h1>
+<p>Many thanks to Prof. Pahlings for stoking the fire of my enthusiasm for
+Algebra and Linear Algebra at the university (RWTH Aachen, Germany), and
+to Prof. Esser and his assistant, Mr. Jarausch, for their fascinating
+lectures in Numerical Analysis!
+
+</p>
+<p>
+</p>
+<hr />
+<h1><a name="copyright">COPYRIGHT</a></h1>
+<p>Copyright (c) 1996-2002 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
+All rights reserved.
+
+</p>
+<p>
+</p>
+<hr />
+<h1><a name="license_agreement">LICENSE AGREEMENT</a></h1>
+<p>This package is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+</p>
+
+</body>
+
+</html>
