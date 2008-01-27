@@ -1,10 +1,13 @@
-Changes in v2.03 - leto
-Sun Jan 27 00:58:05 EST 2008 
+Changes in v2.03 - leto 
+Sun Jan 27 13:19:55 EST 2008 
 ---------------------------
-    * now using Module::Build 
-    * new concatenation operator ".", i.e $c = $a . $b concatenates two matrices side-by-side
+    * now using Module::Build, so Math::MatrixReal should in theory be able to
+      compile on systems without make, please test and let me know!
+    * new concatenation operator ".", i.e $c = $a . $b concatenates two
+      matrices side-by-side
+    * t/concat.t created
     * new function assign_row
-    * beginning of a test suite overhaul (converting to Test::More/Simple)
+    * beginning of a test suite overhaul (converting to Test::More )
 
 Changes in v2.02 - leto
 Sat Jun 09 12:29:08 EDT 2007 
