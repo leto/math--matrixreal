@@ -9,11 +9,13 @@ my $full = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 4 3 5 ]
 [ 1 2 3 ]
 MATRIX
+
 my $fulleye = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 3 4 1 1 0 0 ]
 [ 4 3 5 0 1 0 ]
 [ 1 2 3 0 0 1 ]
 MATRIX
+
 my $eyefull = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 1 0 0 3 4 1 ]
 [ 0 1 0 4 3 5 ]
@@ -53,7 +55,7 @@ if ($@){
 } else {
 	ok(0, 'Concatenation with scalar fails');
 }
-eval { $c = (1,2,3) . $a };
+eval { $c = (1,2,3) . $a; };
 if ($@){
 	ok(1, 'Concatenation with array fails');
 } else {

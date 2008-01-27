@@ -56,8 +56,7 @@ use overload
 
 sub new
 {
-    croak "Usage: \$new_matrix = Math::MatrixReal->new(\$rows,\$columns);"
-      if (@_ != 3);
+    croak "Usage: \$new_matrix = Math::MatrixReal->new(\$rows,\$columns);" if (@_ != 3);
 
     my ($proto,$rows,$cols) =  @_;
     my $class = ref($proto) || $proto || 'Math::MatrixReal';
@@ -138,7 +137,6 @@ sub new_from_string
     }
     if ($string !~ m/^\s*$/)
     {
-        #croak
         print "Math::MatrixReal::new_from_string(): syntax error in input string";
         print "String is\n$string\n---\n";
         croak;
@@ -496,58 +494,6 @@ sub _normalize_row {
     return $new_row;
 
 }
-#### doesn't work
-=crap
-sub row_echelon {
-    my ($matrix) = @_;
-    my ($rows,$cols) = $matrix->dim();
-    my $big;
-    my $tmprow;
-
-    for(my $i = 0;$i < $rows; $i++ ){
-        $big = abs($matrix->[0][$i][0]);
-        for(my $j=0;$j < $cols; $j++ ){
-            $big = $big < abs($matrix->[0][$i][$j]) 
-                ? abs($matrix->[0][$i][$j]) : $big;
-        }
-        next unless $big;
-        # now $big is biggest element in row
-                for(my $j = 0;$j < $cols; $j++ ){
-                        $matrix->[0][$i][$j]  /= $big;
-                }
-        # now all elements are between [-1,1] and 
-        # dependence can be easily checked
-    }
-
-    for(my $i = 0;$i < $rows; $i++ ){
-        for(my $k = 0; $k < $rows; $k++ ){
-            next if ($i == $k);
-            print "i,k = $i,$k\n";
-            $tmprow = $matrix->row($i+1) + $matrix->row($k+1);
-            print "tmprow= $tmprow\n";
-            print "tmprow has " . $tmprow->_count_zeroes_row . " zeroes.\n";
-            print "i+1 has " . $matrix->row($i+1)->_count_zeroes_row . " zeroes\n";
-            print "k+1 has " . $matrix->row($k+1)->_count_zeroes_row . " zeroes\n";
-
-            $tmprow = $tmprow->_normalize_row;
-            if( $tmprow->norm_sum == 0 ){
-                for(my $j=0;$j<$cols;$j++){
-                    $matrix->[0][$k][$j] = 0;
-                }
-            } elsif ( $tmprow->_count_zeroes_row > $matrix->row($i+1)->_count_zeroes_row ){
-                print "tmprow has more zeroes, replacing row " . ($i+1) . "\n";
-                ## assign row
-                $matrix->assign_row($i+1,$tmprow);
-            } elsif ( $tmprow->_count_zeroes_row > $matrix->row($k+1)->_count_zeroes_row ){
-                print "tmprow has more zeroes, replacing row " . ($k+1) . "\n";
-                $matrix->assign_row($k+1,$tmprow);
-            }
-                    
-        }
-    }
-    return $matrix;
-}
-=cut
 
 sub cofactor {
     my ($matrix) = @_;
@@ -3691,6 +3637,14 @@ This method takes two one-based row numbers and swaps the values of each element
 C<$matrix-E<gt>swap_row(2,3)> would replace row 2 in $matrix with row 3, and replace row
 3 with row 2. 
 
+=item * 
+
+C<$matrix-E<gt>assign_row( $row_number , $new_row_vector );>
+
+This method takes a one-based row number and assigns row $row_number of $matrix 
+with $new_row_vector and returns the resulting matrix.
+C<$matrix-E<gt>assign_row(5, $x)> would replace row 2 in $matrix with the row vector $x.
+
 
 =head2 Matrix Operations
 
@@ -5459,7 +5413,7 @@ Uses the "one"-norm for matrices and Perl's built-in "abs()" for scalars.
 =head1 SEE ALSO
 
 Math::VectorReal, Math::PARI, Math::MatrixBool,
-DFA::Kleene, Math::Kleene,
+Math::Vec, DFA::Kleene, Math::Kleene,
 Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
@@ -5485,7 +5439,7 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2002 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
+Copyright (c) 1996-2008 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
 All rights reserved.
 
 =head1 LICENSE AGREEMENT
