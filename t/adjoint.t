@@ -1,6 +1,8 @@
 BEGIN { $| = 1; print "1..3\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Math::MatrixReal;
+use File::Spec;
+use lib File::Spec->catfile("..","lib");
 $loaded = 1;
 print "ok 1\n";
 my $DEBUG = 0;

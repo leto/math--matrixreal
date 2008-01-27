@@ -1,5 +1,7 @@
 BEGIN { $| = 1; print "1..19\n"; }
 END {print "not ok 1\n" unless $loaded;}
+use File::Spec;
+use lib File::Spec->catfile("..","lib");
 use strict;
 use Math::MatrixReal;
 our $loaded = 1;

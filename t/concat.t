@@ -1,4 +1,6 @@
-use Test::Simple tests =>6;
+use Test::Simple tests =>9;
+use File::Spec;
+use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
 my $eye = Math::MatrixReal->new_diag([ 1,1,1] );
@@ -7,31 +9,30 @@ my $full = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 4 3 5 ]
 [ 1 2 3 ]
 MATRIX
-my $eyefull = Math::MatrixReal->new_from_string(<<MATRIX);
+my $fulleye = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 3 4 1 1 0 0 ]
 [ 4 3 5 0 1 0 ]
 [ 1 2 3 0 0 1 ]
 MATRIX
-my $fulleye = Math::MatrixReal->new_from_string(<<MATRIX);
+my $eyefull = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 1 0 0 3 4 1 ]
 [ 0 1 0 4 3 5 ]
 [ 0 0 1 1 2 3 ]
 MATRIX
 
 
-my $eps = 10^(-6);
+my $eps = 1/1000;
 my $concat = $eye . $full;
 my $concat2= $full. $eye;
 
-# what's the deal with this?
-#ok( ref $concat eq "Math::MatrixReal" , 'Concatenation returns the correct object');
+ok( ref $concat eq "Math::MatrixReal" , 'Concatenation returns the correct object');
 
-my ($r,$c) = ($concat->[1],$concat->[2]);
+my ($r,$c) = $concat->dim(); 
 ok( $r == 3, 'Concatenation preserves number of rows');
 ok( $c == 6, 'Concatenation does the right thing for cols');
 
-my $res = $concat - $eyefull;
-my $res2= $concat2- $fulleye;
+my $res = $eyefull - $concat;
+my $res2= $fulleye - $concat2;
 
 ok(abs($res) < $eps ,'Left Concatenation of matrices with the same number of rows works' );
 ok(abs($res2) < $eps,'Right Concatenation of matrices with the same number of rows works' );
@@ -41,9 +42,9 @@ my $b = Math::MatrixReal->new_diag([1, 2, 3]);
 
 eval { $a . $b };
 if ($@){
-	ok(1, 'Concatenation of square matrices only');
+	ok(1, 'Concatenation of matrices with same number of rows only');
 } else {
-	ok(0, 'Concatenation of square matrices only');
+	ok(0, 'Concatenation of matrices with same number of rows only');
 }
 eval { $a . 1 };
 if ($@){
@@ -51,4 +52,27 @@ if ($@){
 } else {
 	ok(0, 'Concatenation with scalar fails');
 }
+eval { (1,2,3) . $a };
+if ($@){
+	ok(1, 'Concatenation with array fails');
+} else {
+	ok(0, 'Concatenation with array fails');
+}
 
+my $c = Math::MatrixReal->new_from_string(<<MATRIX);
+[ 3 4 1 9 ]
+[ 4 3 5 9 ]
+[ 1 2 3 0 ]
+MATRIX
+my $d = Math::MatrixReal->new_from_string(<<MATRIX);
+[ 77 ]
+[ 69 ]
+[ 42 ]
+MATRIX
+my $dc = Math::MatrixReal->new_from_string(<<MATRIX);
+[ 77 3 4 1 9 ]
+[ 69 4 3 5 9 ]
+[ 42 1 2 3 0 ]
+MATRIX
+$eps = 0.001;
+ok( abs( $dc - ($d.$c) ) < $eps, 'Concatenation of matrices with different number of columns works');
