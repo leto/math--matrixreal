@@ -3,7 +3,7 @@ CREDITS
 GOALS
 Kleene.pod
 MANIFEST
-Makefile.PL
+Build.PL
 MatrixReal.pm
 README
 TODO
@@ -19,6 +19,7 @@ t/binary.t
 t/bool.t
 t/cofactor.t
 t/condition.t
+t/concat.t
 t/det.t
 t/diag.t
 t/div.t
