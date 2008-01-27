@@ -4,13 +4,13 @@ GOALS
 Kleene.pod
 MANIFEST
 Build.PL
-MatrixReal.pm
+lib/Math/MatrixReal.pm
 README
 TODO
 funcs.pl
 t/adjoint.t
 t/arith.t
-t/assign
+t/assign.t
 t/basic.t
 t/bench
 t/bench_eigen.t
@@ -53,3 +53,5 @@ t/transpose.t
 t/triang.t
 t/vecnorm.t
 t/yacas.t
+META.yml
+Makefile.PL
