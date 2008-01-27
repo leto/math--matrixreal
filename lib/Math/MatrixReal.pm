@@ -453,18 +453,17 @@ sub swap_row {
     }
 }
 # TODO: docs
-# no worky
 sub assign_row {
     croak "Usage: \$matrix->assign_row(\$row,\$row_vec);"  unless (@_ == 3);
     my ($matrix,$row,$row_vec) = @_;
     my ($rows1,$cols1) = $matrix->dim();
     my ($rows2,$cols2) = $row_vec->dim();
-    
-    croak "Math::MatrixReal::assign_row(): row mismatch" if ($rows1 != $rows2);
-    croak "Math::MatrixReal::assign_row(): not a row vector" unless( $cols2 == 1);
+   
+    croak "Math::MatrixReal::assign_row(): number of columns mismatch" if ($cols1 != $cols2);
+    croak "Math::MatrixReal::assign_row(): not a row vector" unless( $rows2 == 1);
 
     @{$matrix->[0][--$row]} = @{$row_vec->[0][0]};
-
+    return $matrix;
 }
 # returns the number of zeroes in a row
 sub _count_zeroes_row {

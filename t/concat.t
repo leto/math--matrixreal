@@ -27,9 +27,9 @@ my $concat2= $full. $eye;
 
 ok( ref $concat eq "Math::MatrixReal" , 'Concatenation returns the correct object');
 
-my ($r,$c) = $concat->dim(); 
-ok( $r == 3, 'Concatenation preserves number of rows');
-ok( $c == 6, 'Concatenation does the right thing for cols');
+my ($rows,$cols) = $concat->dim(); 
+ok( $rows == 3, 'Concatenation preserves number of rows');
+ok( $cols == 6, 'Concatenation does the right thing for cols');
 
 my $res = $eyefull - $concat;
 my $res2= $fulleye - $concat2;
@@ -39,27 +39,28 @@ ok(abs($res2) < $eps,'Right Concatenation of matrices with the same number of ro
 
 my $a = Math::MatrixReal->new_diag([1, 2]);
 my $b = Math::MatrixReal->new_diag([1, 2, 3]);
+my $c;
 
-eval { $a . $b };
+eval { $c = $a . $b };
 if ($@){
 	ok(1, 'Concatenation of matrices with same number of rows only');
 } else {
 	ok(0, 'Concatenation of matrices with same number of rows only');
 }
-eval { $a . 1 };
+eval { $c = $a . 1 };
 if ($@){
 	ok(1, 'Concatenation with scalar fails');
 } else {
 	ok(0, 'Concatenation with scalar fails');
 }
-eval { (1,2,3) . $a };
+eval { $c = (1,2,3) . $a };
 if ($@){
 	ok(1, 'Concatenation with array fails');
 } else {
 	ok(0, 'Concatenation with array fails');
 }
 
-my $c = Math::MatrixReal->new_from_string(<<MATRIX);
+$c = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 3 4 1 9 ]
 [ 4 3 5 9 ]
 [ 1 2 3 0 ]
@@ -74,5 +75,5 @@ my $dc = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 69 4 3 5 9 ]
 [ 42 1 2 3 0 ]
 MATRIX
-$eps = 0.001;
+$eps = 1e-8;
 ok( abs( $dc - ($d.$c) ) < $eps, 'Concatenation of matrices with different number of columns works');

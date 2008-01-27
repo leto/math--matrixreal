@@ -1,8 +1,10 @@
 Changes in v2.03 - leto
 Sun Jan 27 00:58:05 EST 2008 
 ---------------------------
-    * using Module::Build 
-    * new concatenation operator ".", i.e $c = $a . $b
+    * now using Module::Build 
+    * new concatenation operator ".", i.e $c = $a . $b concatenates two matrices side-by-side
+    * new function assign_row
+    * beginning of a test suite overhaul (converting to Test::More/Simple)
 
 Changes in v2.02 - leto
 Sat Jun 09 12:29:08 EDT 2007 
