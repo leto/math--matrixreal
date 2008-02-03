@@ -1,9 +1,8 @@
-Math::MatrixReal v2.01
+Math::MatrixReal v2.04
 http://leto.net/code/Math-MatrixReal/
 
 Contents of this file:
 ----------------------
-
     -   Legal stuff
     -   Requirements
     -   What does it do
@@ -13,13 +12,11 @@ Contents of this file:
     -   Credits
     -   Final note
 
-
 Legal stuff:
 ------------
-
 Copyright (c) 1996, 1997 by Steffen Beyer.
               1999 by Rodolphe Ortalo.
-	      2001-2002 by Jonathan Leto.
+	      2001-2008 by Jonathan Leto.
 All rights reserved.
 This package is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
@@ -27,7 +24,6 @@ modify it under the same terms as Perl itself.
 
 Requirements:
 -------------
-
 Perl version 5.000 or higher capable of "overloading" (overload.pm).
 
 
@@ -40,9 +36,13 @@ Implements the data type "matrix of reals" (and consequently also
 "vector of reals") which can be used almost like any other basic
 Perl type thanks to OPERATOR OVERLOADING, i.e.,
 
-    $product = $matrix1 * $matrix2;
-
-does what you would like it to do (a matrix multiplication).
+    $A = $matrix1 * $matrix2;
+    $B = $A ** 2;
+    $C = $A + 2*B;
+    $D = $C - $B/2;
+    $inverse = $C ** -1;
+    
+does what you would like it to do.
 
 Also features many important operations and methods: matrix norm,
 matrix transposition, matrix inverse, determinant of a matrix, order
@@ -60,6 +60,32 @@ the costs associated with each edge).
 
 Allows to solve the eigensystem of a real symmetric matrix, using
 Householder transformation and QL decomposition.
+
+New Module::Build Installation Instructions
+------------------------------------------------
+
+Since Math::MatrixReal 2.03, Module::Build is used for the build process, but
+a Makefile.PL is still generated for older installations. If you do not have Module::Build, please
+read the "Old Installation Instructions".
+
+The build and install Math::MatrixReal run the commands
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
+Or, if you're on a platform (like DOS or Windows) that doesn't require
+the "./" notation, you can do this:
+
+        perl Build.PL
+        Build
+        Build test
+        Build install
+
+
+Old Installation Instructions (should still work):
+-------------------------------------------------
 
 Preliminary steps for use with Perl prior to version 5.002:
 -----------------------------------------------------------
