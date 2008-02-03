@@ -1,3 +1,10 @@
+Changes in v2.04 - leto 
+Sat Feb 02 21:02:43 EST 2008 
+---------------------------
+    * new function new_random($n,$m, { bounded_by => [-10,10], type => 'integer' } ) added
+    * t/rand.t created
+
+
 Changes in v2.03 - leto 
 Sun Jan 27 13:19:55 EST 2008 
 ---------------------------

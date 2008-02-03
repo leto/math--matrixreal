@@ -15,7 +15,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.03';
+$VERSION = '2.04';
 
 use overload
      '.'   => '_concat',
@@ -23,7 +23,6 @@ use overload
        '~' => '_transpose',
     'bool' => '_boolean',
        '!' => '_not_boolean',
-#      '""' => '_stringify',
      'abs' => '_norm',
        '+' => '_add',
        '-' => '_subtract',
@@ -51,7 +50,6 @@ use overload
      'sin' => '_sin',
      'cos' => '_cos',
       '""' => '_stringify',
-
 'fallback' =>   undef;
 
 sub new
@@ -104,6 +102,23 @@ sub new_diag {
     return $matrix;
 }
 
+sub new_random { 
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { bounded_by => [-5,5], type => 'integer' } );" if (@_ < 2);
+    my ($self, $rows, $cols, $options ) = @_;
+    my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : qw( 0 10);
+    my $type = $options->{type} || 'none';
+    $self = ref($self) || $self || 'Math::MatrixReal';
+   
+    $cols ||= $rows; 
+    croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" unless ($rows > 0 and  $rows == int($rows) );
+    croak "Math::MatrixReal::new_random(): number of columns must be integer > 0" unless ($cols > 0 and $cols == int($cols) );
+    croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" unless (defined $min && defined $max && $min < $max );
+
+    my $random_code = sub { $type eq 'integer' ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
+    my $matrix = Math::MatrixReal->new($rows,$cols);
+    return $matrix->each($random_code);
+}
+	
 sub new_from_string
 {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_from_string(\$string);"
@@ -450,7 +465,7 @@ sub swap_row {
         $matrix->[0][$row2][$j] =  $temp[$j];
     }
 }
-# TODO: docs
+
 sub assign_row {
     croak "Usage: \$matrix->assign_row(\$row,\$row_vec);"  unless (@_ == 3);
     my ($matrix,$row,$row_vec) = @_;
