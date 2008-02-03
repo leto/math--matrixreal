@@ -103,20 +103,23 @@ sub new_diag {
 }
 
 sub new_random { 
-    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { bounded_by => [-5,5], type => 'integer' } );" if (@_ < 2);
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], type => 'integer' } );" if (@_ < 2);
     my ($self, $rows, $cols, $options ) = @_;
+    (($options = $cols) and ($cols = $rows)) if ref $cols eq 'HASH';
     my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : qw( 0 10);
-    my $type = $options->{type} || 'none';
+    my $integer = $options->{integer}; 
     $self = ref($self) || $self || 'Math::MatrixReal';
    
     $cols ||= $rows; 
+    croak "Math::MatrixReal::new_random(): number of rows must = number of cols for symmetric option" if ($rows != $cols and $options->{symmetric} );
     croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" unless ($rows > 0 and  $rows == int($rows) );
     croak "Math::MatrixReal::new_random(): number of columns must be integer > 0" unless ($cols > 0 and $cols == int($cols) );
     croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" unless (defined $min && defined $max && $min < $max );
 
-    my $random_code = sub { $type eq 'integer' ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
+    my $random_code = sub { $integer ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
     my $matrix = Math::MatrixReal->new($rows,$cols);
-    return $matrix->each($random_code);
+    $matrix = $matrix->each($random_code); 
+    $options->{symmetric} ? ($matrix + ~$matrix) : $matrix;
 }
 	
 sub new_from_string
@@ -584,7 +587,7 @@ sub _undo_LR
     undef $this->[4];
     undef $this->[5];
 }
-
+# brrr
 sub zero
 {
     croak "Usage: \$matrix->zero();"
@@ -606,6 +609,7 @@ sub zero
     {
         @{$this->[0][$i]} = @{$this->[0][0]};
     }
+   return $this;
 }
 
 sub one
@@ -617,55 +621,44 @@ sub one
     my($rows,$cols) = ($this->[1],$this->[2]);
     my($i,$j);
 
-# No need for this: done by the 'zero()'
-#    $this->_undo_LR();
     $this->zero(); # We rely on zero() efficiency
     for (my $i = 0; $i < $rows; $i++ )
     {
         $this->[0][$i][$i] = 1.0;
     }
+    return $this;
 }
 
 sub assign
 {
-    croak "Usage: \$matrix->assign(\$row,\$column,\$value);"
-      if (@_ != 4);
+    croak "Usage: \$matrix->assign(\$row,\$column,\$value);" if (@_ != 4);
 
     my($this,$row,$col,$value) = @_;
     my($rows,$cols) = ($this->[1],$this->[2]);
 
-    croak "Math::MatrixReal::assign(): row index out of range"
-      if (($row < 1) || ($row > $rows));
-
-    croak "Math::MatrixReal::assign(): column index out of range"
-      if (($col < 1) || ($col > $cols));
+    croak "Math::MatrixReal::assign(): row index out of range" if (($row < 1) || ($row > $rows));
+    croak "Math::MatrixReal::assign(): column index out of range" if (($col < 1) || ($col > $cols));
 
     $this->_undo_LR();
-
     $this->[0][--$row][--$col] = $value;
 }
 
 sub element
 {
-    croak "Usage: \$value = \$matrix->element(\$row,\$column);"
-      if (@_ != 3);
+    croak "Usage: \$value = \$matrix->element(\$row,\$column);" if (@_ != 3);
 
     my($this,$row,$col) = @_;
     my($rows,$cols) = ($this->[1],$this->[2]);
 
-    croak "Math::MatrixReal::element(): row index out of range"
-      if (($row < 1) || ($row > $rows));
-
-    croak "Math::MatrixReal::element(): column index out of range"
-      if (($col < 1) || ($col > $cols));
+    croak "Math::MatrixReal::element(): row index out of range" if (($row < 1) || ($row > $rows));
+    croak "Math::MatrixReal::element(): column index out of range" if (($col < 1) || ($col > $cols));
 
     return( $this->[0][--$row][--$col] );
 }
 
 sub dim  #  returns dimensions of a matrix
 {
-    croak "Usage: (\$rows,\$columns) = \$matrix->dim();"
-      if (@_ != 1);
+    croak "Usage: (\$rows,\$columns) = \$matrix->dim();" if (@_ != 1);
 
     my($matrix) = @_;
 
@@ -694,8 +687,7 @@ sub norm_one  #  maximum of sums of each column
 }
 ## sum of absolute value of every element
 sub norm_sum {
-    croak "Usage: \$norm_sum = \$matrix->norm_sum();"
-        unless (@_ == 1);
+    croak "Usage: \$norm_sum = \$matrix->norm_sum();" unless (@_ == 1);
     my ($matrix) = @_;
     my $norm = 0;
     $matrix->each( sub { $norm+=abs(shift); } );
@@ -714,10 +706,8 @@ sub norm_frobenius {
 sub norm_p {
     my ($v,$p) = @_;
     # sanity check on $p
-    croak "Math::MatrixReal:norm_p: argument must be a row or column vector"
-        unless ( $v->is_row_vector || $v->is_col_vector );
-    croak "Math::MatrixReal::norm_p: $p must be >= 1" 
-        unless ($p =~ m/Inf(inity)?/i || $p >= 1);
+    croak "Math::MatrixReal:norm_p: argument must be a row or column vector" unless ( $v->is_row_vector || $v->is_col_vector );
+    croak "Math::MatrixReal::norm_p: $p must be >= 1" unless ($p =~ m/Inf(inity)?/i || $p >= 1);
 
     if( $p =~ m/^(Inf|Infinity)$/i ){
         my $max = $v->element(1,1);
@@ -2697,7 +2687,6 @@ sub _concat
     my($name)			= "concat";
 
     croak "Math::MatrixReal: Matrices must have same number of rows in concatenation" unless ($orows == $arows);
-
    
     my $result = $object->new($orows,$ocols+$acols);
 

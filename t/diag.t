@@ -1,10 +1,7 @@
-BEGIN { $| = 1; print "1..9\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 8;
 use Math::MatrixReal;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
-$loaded = 1;
-print "ok 1\n";
 
 do 'funcs.pl';
 
@@ -19,7 +16,7 @@ my $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  0  0  0  0  0  1  0  ]
 [  0  0  0  0  0  0 -5  ]
 MATRIX
-ok(2, $matrix->is_diagonal() );
+ok( $matrix->is_diagonal(), 'is_diagonal works' );
 ###############################
 ## make sure it recognizes a matrix that is not diagonal
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -27,7 +24,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
       [  0  3  0  ]
       [  0  0  3  ]
 MATRIX
-ok(3, ! $matrix->is_diagonal() );
+ok(! $matrix->is_diagonal() );
 ###############################
 ## see if knows that if it ain't square, it ain't diagonal
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -35,13 +32,13 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0  0 ]
 [ 0  1 ]
 MATRIX
-ok(4, ! $matrix->is_diagonal() );
+ok( ! $matrix->is_diagonal(), 'nonsquare matrix is not diagonal' );
 ##############################
 ## 1x1 matrix is diagonal by definition
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 ]
 MATRIX
-ok(5, $matrix->is_diagonal() );
+ok( $matrix->is_diagonal() ,'1x1 matrix is diagonal by definition');
 ##############################
 ### see if is_tridiagonal works
 $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
@@ -53,7 +50,7 @@ $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  0  0  0  0  7  1  4  ]
 [  0  0  0  0  0  4 -5  ]
 MATRIX
-ok(6,$matrix->is_tridiagonal() );
+ok($matrix->is_tridiagonal() );
 ##############################
 ### this isn't tridiag
 $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
@@ -65,15 +62,13 @@ $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  0  0  0  0  7  1  4  ]
 [  0  0  0  0  0  4  2  ]
 MATRIX
-#print "6: " . $matrix->is_tridiagonal() . "\n";
-ok(7, ! $matrix->is_tridiagonal() );
+ok( ! $matrix->is_tridiagonal() );
 ##############################
-### 2x2 is always tridiag
 $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [ 1 1 ]
 [ 1 1 ]
 MATRIX
-ok(8, $matrix->is_tridiagonal() );
+ok( $matrix->is_tridiagonal(), '2x2 is always tridiag' );
 ###############################
 ### not quadratic => not tridiag
 $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
@@ -85,6 +80,6 @@ $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  0  0  0  0  7  1 ]
 [  0  0  0  0  0  4 ]
 MATRIX
-ok(9, ! $matrix->is_tridiagonal() );
+ok(! $matrix->is_tridiagonal() );
 
 

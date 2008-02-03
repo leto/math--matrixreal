@@ -1,12 +1,7 @@
-BEGIN { $| = 1; print "1..8\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 7;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
 
 $matrix1 = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -27,12 +22,12 @@ $rowvec = $matrix1->row(1);
 $colvec = $matrix2->column(2);
 $s = $rowvec->column(1);
 
-ok(2, ! $matrix1->is_row_vector );
-ok(3, ! $matrix1->is_col_vector );
-ok(4, ! $matrix2->is_row_vector );
-ok(5, ! $matrix2->is_col_vector );
-ok(6,  $rowvec->is_row_vector );
-ok(7,  $colvec->is_col_vector );
-ok(8, $s->is_row_vector && $s->is_col_vector );
+ok( ! $matrix1->is_row_vector );
+ok( ! $matrix1->is_col_vector );
+ok( ! $matrix2->is_row_vector );
+ok( ! $matrix2->is_col_vector );
+ok(  $rowvec->is_row_vector );
+ok(  $colvec->is_col_vector );
+ok( $s->is_row_vector && $s->is_col_vector );
 
 

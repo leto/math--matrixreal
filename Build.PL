@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     dist_abstract	=> 'Manipulate NxN matrices of real numbers',
     build_requires => {
         'Test::More' => 0,
+	'File::Spec' => 0,
     },
     add_to_cleanup      => [ 'Math::MatrixReal-*' ],
     create_makefile_pl => 'traditional',

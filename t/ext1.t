@@ -1,15 +1,10 @@
-BEGIN { $| = 1; print "1..21\n"; }
-END {print "not ok 1\n" unless $loaded;}
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
 
-
+print "1..21\n";
+print "ok 1\n";
 my $verbose = grep @ARGV, '--verbose';
 
 # below we are basically checking the
@@ -168,10 +163,10 @@ $matrix1 = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 7 8 9 ]
 MATRIX
 $matrix2 = Math::MatrixReal->new_from_rows( [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8 ,9 ] ] );
-ok_matrix(20, $matrix1,$matrix2);
+ similar($matrix1,$matrix2) ? print "ok 20\n" : print "not ok 20\n";
 ##################################
 $matrix3 =  Math::MatrixReal->new_from_cols( [ [ 1, 4, 7], [ 2, 5, 8], [3, 6, 9] ] );
-ok_matrix(21, $matrix1,$matrix3);
+similar($matrix1,$matrix3)  ? print "ok 21\n" : print "not ok 21\n";
 
 
 # ok, the matrix we're making in every case is like

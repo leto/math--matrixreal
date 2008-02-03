@@ -1,10 +1,8 @@
-BEGIN { $| = 1; print "1..4\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
+
 do 'funcs.pl';
 
 ### First, some preparation
@@ -12,27 +10,25 @@ do 'funcs.pl';
 my $DEBUG2 = 0;
 # Set this one if you want the REAL benchmarking to be done!
 my $REALBENCH = 0;
-my $bigsize = 100; # Size of big matrix for estimation
+my $bigsize = 150; # Size of big matrix for estimation
                    # and REAL tests (be careful: n^3!)
 use Benchmark;
 
 ### We should use the black magic now...
 
-#
 # Does estimation times for diagonalization
-#
 print "Diagonalization estimation...\n" if $DEBUG;
 my ($bigdiago_time, $oneday_diago);
 { # Estimates the completion time...
     my $N1 = 10;
     my $N2 = 50;
-    my $M1 = random_matrix($N1);
+    my $M1 = Math::MatrixReal->new_random($N1);
     $M1 = $M1 + ~$M1;
     my $bench1 = timeit(1, sub { $M1->sym_diagonalize(); });
     # HACK: We go into the Benchmark objects !!!
     my $t1 = $bench1->[1];
     print "bench1 (".$N1."x".$N1.") = ".timestr($bench1)."\n" if $DEBUG;
-    my $M2 = random_matrix($N2);
+    my $M2 = Math::MatrixReal->new_random($N2);
     $M2 = $M2 + ~$M2;
     my $bench2 = timeit(1, sub { $M2->sym_diagonalize(); });
     # HACK: We go into the Benchmark objects !!!
@@ -63,13 +59,13 @@ my ($bigeigen_time, $oneday_eigen);
 { # Estimates the completion time...
     my $N1 = 15;
     my $N2 = 65;
-    my $M1 = random_matrix($N1);
+    my $M1 = Math::MatrixReal->new_random($N1);
     $M1 = $M1 + ~$M1;
     my $bench1 = timeit(1, sub { $M1->sym_eigenvalues(); });
     # HACK: We go into the Benchmark objects !!!
     my $t1 = $bench1->[1];
     print "bench1 (".$N1."x".$N1.") = ".timestr($bench1)."\n" if $DEBUG;
-    my $M2 = random_matrix($N2);
+    my $M2 = Math::MatrixReal->new_random($N2);
     $M2 = $M2 + ~$M2;
     my $bench2 = timeit(1, sub { $M2->sym_eigenvalues(); });
     # HACK: We go into the Benchmark objects !!!
@@ -95,7 +91,7 @@ printf STDERR "   Estimated biggest matrix manageable within 1 day cpu: ".$oneda
 # Tired eh?
 print STDERR " Btw, do you want to crunch such one now?  (no, just kidding...;-)\n";
 
-ok(2, 1 == 1);
+ok(1 == 1, 'benchmark estimates');
 
 #########################################
 # REAL computation test for big matrix. #
@@ -104,7 +100,7 @@ ok(2, 1 == 1);
 if ($REALBENCH)
 {
     # Creates a random matrix
-    my $big = random_matrix($bigsize);
+    my $big = Math::MatrixReal->new_random($bigsize);
     # test on random big matrix
     print "Matrix ".$bigsize."x$bigsize for eigenvalues & eigenvectors computation:\n" if $DEBUG;
     #
@@ -119,7 +115,7 @@ if ($REALBENCH)
     print "eigenvalues L:\n$Lbig_2 eigenvectors:\n$Vbig_2" if $DEBUG2;
 
     # We check the results anyway (just in case...)
-    ok_eigenvectors(3, $big, $Lbig_2, $Vbig_2);
+    ok_eigenvectors($big, $Lbig_2, $Vbig_2, 'eigenvalues of large matrix are correct');
 
     #
     # Now test the eigenvalues only computations...
@@ -130,14 +126,14 @@ if ($REALBENCH)
     print "Timing of ".$bigsize."x".$bigsize." direct eigenvalues computation:\n  ".timestr($tt)."\n";
     
     # We check the results anyway (just in case...)
-    ok_matrix(4, $altLbig_2, $Lbig_2);
+    ok_matrix($altLbig_2, $Lbig_2, 'eigenvalues of large matrix are correct');
 }
 else
 {
     # Tests are not really done, but we don't bother...
     # There are other test programs for checking accuracy... not time.
-    ok(3, 1 == 1);
-    ok(4, 1 == 1);
+    ok(1 == 1,'benchmarch fake test' );
+    ok(1 == 1,'benchmarch fake test' );
 }
 
 

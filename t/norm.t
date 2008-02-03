@@ -1,14 +1,10 @@
-BEGIN { $| = 1; print "1..4\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
 
 do 'funcs.pl';
-my $eps = 1e-6;
+my $eps ||= 1e-8;
 
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
@@ -17,9 +13,9 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 0 ]
 [ 1 0 0 0 5 ]
 MATRIX
-ok(2, abs($matrix->norm_one - $matrix->norm_max) < $eps );
+ok( similar($matrix->norm_one ,$matrix->norm_max), 'norm_one works' );
 
-ok(3, abs($matrix->norm_sum - 17) < $eps );
+ok( similar($matrix->norm_sum,17), 'norm_sum works' );
 
 $matrix = $matrix->new_from_rows([[1,2],[3,4]]);
-ok(4, abs($matrix->norm_frobenius - sqrt(30)) < $eps ) ;
+ok( similar($matrix->norm_frobenius , sqrt(30)), 'norm_frobenius works' ) ;

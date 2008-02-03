@@ -1,12 +1,20 @@
-BEGIN { $| = 1; print "1..3\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
 do 'funcs.pl';
 
 my ($a,$b);
-ok(1, $a = Math::MatrixReal->new_from_cols([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) );
-ok(2, $b = Math::MatrixReal->new_from_rows([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) );
-ok(3, ($a -~$b)< 1e-8 );
+eval { $a = Math::MatrixReal->new_from_cols([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) };
+if ($@){
+	ok(0, 'new_from_cols scientific notation fails');
+} else {
+	ok(1, 'new_from_cols scientific notation works');
+}
+eval { $b = Math::MatrixReal->new_from_rows([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) };
+if ($@){
+	ok(0, 'new_from_rows scientific notation fails');
+} else {
+	ok(1, 'new_from_rows scientific notation works');
+}
+ok(similar( $a, ~$b) );

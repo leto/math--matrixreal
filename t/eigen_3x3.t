@@ -1,10 +1,7 @@
-BEGIN { $| = 1; print "1..14\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 13;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
 
 do 'funcs.pl';
 
@@ -22,8 +19,8 @@ print "$matrix33" if $DEBUG;
 # First the tridiagonal reduction (Householder) on the 3x3
 #
 my $symm = $matrix33 + ~$matrix33;
-ok(2, not($matrix33->is_symmetric()));
-ok(3, $symm->is_symmetric());
+ok( not($matrix33->is_symmetric()));
+ok( $symm->is_symmetric(), 'A + ~A is symmetric');
 print "Matrix 3x3 for eigenvalues & eigenvectors computation:\n$symm"
   if $DEBUG;
 
@@ -32,12 +29,12 @@ my ($T, $Q) = $symm->householder();
 print "T=\n$T Q=\n$Q" if $DEBUG2;
 print "Is Q orthogonal?\n" if $DEBUG;
 print ($Q * ~$Q) if $DEBUG2;
-ok_matrix_orthogonal(4, $Q);
-ok_matrix(5, $symm, $Q * $T * ~$Q);
+ok_matrix_orthogonal($Q);
+ok_matrix( $symm, $Q * $T * ~$Q, 'symmetric householder reduction works');
 print "Diagonalization of tridiagonal...\n" if $DEBUG;
 my ($L1, $V1) = $T->tri_diagonalize($Q);
 print "eigenvalues L:\n$L1 eigenvectors:\n$V1" if $DEBUG2;
-ok_eigenvectors(6,$symm, $L1, $V1);
+ok_eigenvectors($symm, $L1, $V1);
 	
 # Get first eigenvector
 my $aev1 = $V1->column(1);
@@ -46,27 +43,27 @@ my $ap1_1 = $symm * $aev1; # A * x
 my $ap1_2 = $al1 * $aev1;    # lambda *x
 print "Original computation of A*ev1:\n$ap1_1 Scaled eigenvector:\n$ap1_2"
     if $DEBUG2;
-ok_matrix(7, $ap1_1, $ap1_2);
+ok_matrix( $ap1_1, $ap1_2, 'eigenvectors match');
 
 print "Direct diagonalization...\n" if $DEBUG;
 my ($L12, $V12) = $symm->sym_diagonalize();
 print "eigenvalues L:\n$L12 eigenvectors:\n$V12" if $DEBUG2;
-ok_eigenvectors(8,$symm, $L12, $V12);
-ok_matrix_orthogonal(9, $V12);
+ok_eigenvectors($symm, $L12, $V12);
+ok_matrix_orthogonal($V12);
 # Double check the equality
-ok_matrix(10, $L12, $L1);
-ok_matrix(11, $V12, $V1);
+ok_matrix( $L12, $L1);
+ok_matrix( $V12, $V1);
 
 #
 # Now test the eigenvalues only computations...
 #
 print "Recomputing: Eigenvalues only.\n 3x3\n" if $DEBUG;
 my $altT = $symm->householder_tridiagonal();
-ok_matrix(12, $altT, $T);
+ok_matrix( $altT, $T,'householder_tridiagonal works');
 my $altL1 = $altT->tri_eigenvalues();
-ok_matrix(13, $altL1, $L1);
+ok_matrix( $altL1, $L1,'tri_eigenvalues works');
 my $altL12 = $symm->sym_eigenvalues();
-ok_matrix(14, $altL12, $L12);
+ok_matrix( $altL12, $L12, 'sym_eigenvalues works');
 
 __END__
 

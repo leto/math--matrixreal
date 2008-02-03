@@ -1,12 +1,7 @@
-BEGIN { $| = 1; print "1..3\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 2;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
 
 ###############################
@@ -18,7 +13,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 0 5 ]
 MATRIX
 my $matrix_squared = $matrix->each_diag( sub { (shift)**2 } );;
-ok_matrix(2, $matrix * $matrix, $matrix_squared );
+ok_matrix( $matrix * $matrix, $matrix_squared, 'each_diag works' );
 ################################
 $all_ones = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 1 1 1 1 ]
@@ -30,7 +25,7 @@ MATRIX
 
 $matrix->zero();
 $matrix = $matrix->each ( sub { (shift) + 1 } );
-ok_matrix(3, $matrix, $all_ones );
+ok_matrix($matrix, $all_ones, 'each works' );
 
 
 

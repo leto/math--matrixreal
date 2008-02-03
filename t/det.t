@@ -1,13 +1,9 @@
-BEGIN { $| = 1; print "1..7\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 13;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
+my $eps ||= 1e-8;
 
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
@@ -16,7 +12,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 0 ]
 [ 0 0 0 0 1 ]
 MATRIX
-ok(2, abs( $matrix->det() - 24) < 10e-6 );
+ok( similar( $matrix->det(), 24), 'det works' );
 ########################
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 0 ]
@@ -25,7 +21,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 1 0 ]
 [ 1 1 1 1 1 ]
 MATRIX
-ok(3, abs( $matrix->det() - 12) < 10e-6 );
+ok( similar( $matrix->det(), 12)  );
 ###############################
 
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -35,7 +31,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 5 0 ]
 [ 0 0 0 0 1 ]
 MATRIX
-ok(4, abs( $matrix->det - 20) < 10e-6 );
+ok( similar( $matrix->det, 20)  );
 
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 0 0 ]
@@ -44,28 +40,40 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 5 0 ]
 [ 0 0 0 0 1 ]
 MATRIX
-ok(5, $matrix->det() == 0);
+ok($matrix->det() == 0, 'diagonal matrix with 0 on diagonal has det=0');
 ##################
-## det(A) = det(~A)
-$matrix = random_matrix(20);
-ok( 6, ((~$matrix)->det - $matrix->det)  < 1e-6 );
+$eps=1e-6;
+
+$matrix = Math::MatrixReal->new_random(5, {bounded_by=>[1,10],
+			integer => 1, symmetric => 1} ) ;
+	my $det1 = (~$matrix)->det;
+	my $det2 = $matrix->det;
+	ok( abs($det1-$det2) < $eps, sprintf("%.12f =? %.12f",$det1,$det2) );
+
 
 ############
-## det(A^-1) = 1/det(A)
-$matrix = random_matrix(20) while ( $matrix->det == 0 );
+my($r,$c) = $matrix->dim;
+ok( $r == 5 && $c == 5, 'new_random returns square matrix');
 $inverse = $matrix->inverse();
 $det = $matrix->det();
-ok( 7, (1/$det - $inverse->det()) < 1e-6 );
+$det1=1/$det;
+$det2=$inverse->det();
+ok( abs($det1-$det2) < $eps , sprintf("%.12f =? %.12f",$det1,$det2) );
 
 
 ############
 ## det(A) = product of eigenvalues
-$matrix = random_matrix(20);
-$matrix += ~$matrix;
-$det1 = $matrix->det();
-my $ev = $matrix->sym_eigenvalues;
-my $det2=1;
-$ev->each( sub { $det2*=(shift); } );
-print "det1: $det1\n";
-print "det2: $det2\n";
+my $opts = { bounded_by => [-1,1], integer    => 1, symmetric => 1 };
+my $b = Math::MatrixReal->new_random(5, $opts);
+ok( $matrix->is_symmetric, 'new_random returns symmetric matrix');
+
+for ( 1 .. 5 ){
+	$b->new_random(5, $opts);
+	$det1 = $b->det();
+	my $ev = $b->sym_eigenvalues;
+	$det2=1;
+	$ev->each( sub { $det2*=(shift); } );
+	ok( similar( $det1, $det2,$eps), 'product of eigenvalues equals the determinant');
+}
+
 

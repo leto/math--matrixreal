@@ -42,7 +42,6 @@ $res = (1/$b - $oneoverb);
 ok( abs($res)  < $eps , '1/A returns A ** -1');
 
 my $z =  $full / $a;
-print $z;
 $res = $matdiv - $z;
 ok(abs($res) < $eps, 'Matrix Division works');
 ok( abs( $eye - $full /$full) < $eps, 'A/A returns identity');

@@ -1,11 +1,7 @@
-BEGIN { $| = 1; print "1..13\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 12;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
 
 do 'funcs.pl';
 
@@ -16,9 +12,9 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 0 ]
 [ 0 0 0 0 1 ]
 MATRIX
-ok(2, !$matrix->is_positive );
-ok(3, !$matrix->is_negative );
-ok(4, $matrix );
+ok(!$matrix->is_positive, 'matrices containing zeros are not considered positive' );
+ok(!$matrix->is_negative, 'matrices containing zeros are not considered negative' );
+ok($matrix, 'matrix returns true' );
 
 ########################
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -29,16 +25,16 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 1 1 1 1 ]
 MATRIX
 $matrix = $matrix->each( sub { (shift)+1; } );
-ok(5, $matrix->is_positive );
-ok(6, !$matrix->is_negative );
-ok(7, $matrix );
+ok($matrix->is_positive, 'matrix is positive' );
+ok(!$matrix->is_negative, 'matrix is not negative' );
+ok($matrix, 'matrix returns true' );
 $matrix = $matrix->each( sub { (shift)-11; } );
-ok(8, !$matrix->is_positive );
-ok(9, $matrix->is_negative );
-ok(10, $matrix );
+ok(!$matrix->is_positive );
+ok($matrix->is_negative );
+ok($matrix, 'matrix returns true' );
 $matrix->zero;
-ok(11, !$matrix->is_positive );
-ok(12, !$matrix->is_negative );
-ok(13, !$matrix );
+ok(!$matrix->is_positive );
+ok(!$matrix->is_negative );
+ok(!$matrix );
 
 

@@ -1,11 +1,7 @@
-BEGIN { $| = 1; print "1..5\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 5;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
 
 do 'funcs.pl';
 
@@ -16,7 +12,7 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 0 ]
 [ 0 0 0 0 1 ]
 MATRIX
-ok(2, $matrix->decompose_LR->rank_LR == 5 );
+ok( $matrix->decompose_LR->rank_LR == 5, 'matrix has rank 5' );
 ########################
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 0 ]
@@ -25,10 +21,18 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 1 0 ]
 [ 1 1 1 1 0 ]
 MATRIX
-ok(3, $matrix->decompose_LR->rank_LR == 4 );
+ok( $matrix->decompose_LR->rank_LR == 4, 'matrix has rank 4' );
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 ]
 MATRIX
-ok(4, $matrix->decompose_LR->rank_LR == 1 );
+ok($matrix->decompose_LR->rank_LR == 1, 'matrix has rank 1' );
 $matrix->zero;
-ok(5, $matrix->decompose_LR->rank_LR == 0 );
+ok($matrix->decompose_LR->rank_LR == 0, 'zero matrix has rank 0' );
+$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+[ 1 0 0 0 0e-3  ]
+[ 0 0 0 0 0.0   ]
+[ 0 0 0 0 0.0   ]
+[ 0 0 0 0 0.0   ]
+[ 0 0 0 0 0.0   ]
+MATRIX
+ok($matrix->decompose_LR->rank_LR == 1, 'matrix has rank 1' );

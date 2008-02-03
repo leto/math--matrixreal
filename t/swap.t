@@ -1,11 +1,7 @@
-BEGIN { $| = 1; print "1..3\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 2;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
 
 do 'funcs.pl';
 
@@ -31,7 +27,7 @@ $matrix14_col = Math::MatrixReal->new_from_string(<<"MATRIX");
 MATRIX
 
 $matrix->swap_row(1,4);
-ok_matrix(2,$matrix,$matrix14);
+ok_matrix($matrix,$matrix14, 'swap_row works');
 # back to orig
 $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 ]
@@ -40,4 +36,4 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 ]
 MATRIX
 $matrix->swap_col(1,4);
-ok_matrix(3,$matrix,$matrix14_col);
+ok_matrix($matrix,$matrix14_col, 'swap col works');

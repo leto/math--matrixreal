@@ -1,10 +1,7 @@
-BEGIN { $| = 1; print "1..8\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 5;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
 
 do 'funcs.pl';
 
@@ -13,13 +10,14 @@ my $DEBUG2 = 0;
 my $DEBUG = 0;
 my $bsize = 100; # For somebenches
 
-#
-# Trying some matrixes creation extracted from the pod...
-#
 my $string = "[ 1 2 3 ]\n[ 2 2 -1 ]\n[ 1 1 1 ]\n";
 my $matrix33 = Math::MatrixReal->new_from_string($string);
 print "$matrix33" if $DEBUG;
-ok(2, (1 == 1));
+unless ($@){
+	ok(1, 'new_from_string doesn\'t die');
+} else {
+	ok(0, 'new_from_string dies');
+}
 
 my $matrix77_b = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  1  7  -12  6  -9  0  1  ]
@@ -31,7 +29,11 @@ my $matrix77_b = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  1  0  0  0  0  0 -5  ]
 MATRIX
 print "$matrix77_b" if $DEBUG2;
-ok(3, (1 == 1));
+unless ($@){
+	ok(1, 'new_from_string doesn\'t die');
+} else {
+	ok(0, 'new_from_string dies');
+}
 
 my $c1 =   2  /  3;
 my $c2 =  -2  /  5;
@@ -45,24 +47,17 @@ my $matrix33_v = Math::MatrixReal->new_from_string(<<"MATRIX");
 
 MATRIX
 print "$matrix33_v" if $DEBUG2;
-ok(4, (1 == 1));
-
-#
-# Now some computations
-# TODO: We should indeed check the results...
-#
-my $product33 = $matrix33->multiply($matrix33_v);
-print "product 3x3:\n$product33" if $DEBUG2;
-ok(5, (1 == 1));
-
-my $LR_m33 = $product33->decompose_LR();
-print "LR 3x3:\n$LR_m33" if $DEBUG2;
-ok(6, (1 == 1));
-
+unless ($@){
+	ok(1, 'new_from_string doesn\'t die');
+} else {
+	ok(0, 'new_from_string dies');
+}
 
 #
 # test the LR decomposition
 #
+my $product33 = $matrix33->multiply($matrix33_v);
+my $LR_m33 = $product33->decompose_LR();
 
 my $b = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 ]
@@ -78,7 +73,7 @@ if (($dim, $x, $B) = $LR_m33->solve_LR($b))
       print "product33 * x =\n$test";
     }
   }
-ok_matrix(7, $test, $b);
+ok_matrix($test, $b, 'LR decomposition seems to work');
 
 my $matrix1 = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 1 0 0 ]
@@ -86,7 +81,7 @@ my $matrix1 = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 0 0 3 ]
 MATRIX
 my $matrix2 = Math::MatrixReal->new_diag( [ 1, 2, 3 ] );
-ok_matrix(8, $matrix1,$matrix2);
+ok_matrix($matrix1,$matrix2,'new_from_string agrees with new_diag');
 
 
 
@@ -97,9 +92,9 @@ if ($BENCH)
     my $tnew = timeit(20, sub { my $M = Math::MatrixReal->new($bsize,$bsize); });
     print "Time to create 20 times an empty ".$bsize."x".$bsize." matrix:\n".timestr($tnew)."\n";
 
-    # Some matrixes for use...
-    my $random = random_matrix($bsize);
-    my $spare = Math::MatrixReal->new($bsize,$bsize);
+    # Some matrices for use...
+    my $random = Math::MatrixReal->new_random($bsize);
+    my $spare  = Math::MatrixReal->new($bsize,$bsize);
 
     my $Mcopy = $random;
     my $Mcopy2 = $Mcopy->shadow();
@@ -135,5 +130,5 @@ if ($BENCH)
     my $Mmul1 = $random->clone();
     my $Mmul2 = $random->clone();
     my $tmul = timeit(1, sub { $Mmul1->multiply($Mmul2); });
-    print "Time to multiply 1 times two ".$bsize."x".$bsize." matrixes:\n".timestr($tmul)."\n";
+    print "Time to multiply 1 times two ".$bsize."x".$bsize." matrices:\n".timestr($tmul)."\n";
 }

@@ -79,3 +79,5 @@ my $dc = Math::MatrixReal->new_from_string(<<MATRIX);
 MATRIX
 $eps = 1e-8;
 ok( abs( $dc - ($d.$c) ) < $eps, 'Concatenation of matrices with different number of columns works');
+
+

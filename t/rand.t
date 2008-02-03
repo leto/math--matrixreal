@@ -1,12 +1,11 @@
-use Test::More tests => 9;
+use Test::More tests => 11;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-my $DEBUG = 0;
 my ($e,$res) = (0,0);
 my $eps = 1e-8;
 
-$matrix = Math::MatrixReal->new_random( 10,10, { type => 'integer' } );
+$matrix = Math::MatrixReal->new_random( 10,10, { integer => 1 } );
 ok ( ref $matrix eq 'Math::MatrixReal' , 'new_random returns the correct object' );
 my ($rows,$cols) = $matrix->dim;
 ok( $rows == 10 && $cols == 10, 'new_random returns the correct size' );
@@ -61,4 +60,17 @@ if ($@){
 	ok(1, 'new_random fails with invalid bounded_by range');
 } else {
 	ok(0, 'new_random fails with invalid bounded_by range');
+}
+
+eval { $matrix = Math::MatrixReal->new_random(10,20, { symmetric => 1 } ) };
+if ($@){
+	ok(1, 'new_random fails with rectangular + symmetric');
+} else {
+	ok(0, 'new_random fails with rectangular + symmetric');
+}
+eval { $matrix = Math::MatrixReal->new_random(10, { symmetric => 1 } ) };
+if ($matrix->is_symmetric ){
+	ok(1, 'new_random can do symmetric');
+} else {
+	ok(0, 'new_random fails with symmetric');
 }

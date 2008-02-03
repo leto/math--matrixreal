@@ -1,11 +1,7 @@
-BEGIN { $| = 1; print "1..3\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 8;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
 
 do 'funcs.pl';
 
@@ -19,7 +15,22 @@ $inverse = Math::MatrixReal->new_from_string(<<"MATRIX");
 [  5.0 -7.0 ]
 [ -2.0  3.0 ]
 MATRIX
+my $b = Math::MatrixReal->new_random(20);
+my $c = Math::MatrixReal->new_random(20);
+my $randint = int(rand(50));
 
-# will == 8 work everywhere?
-ok(2, abs( $matrix->trace() - 8) < 10e-6 );
-ok(3, abs($inverse->trace() - 8) < 10e-6 );
+ok( similar( $matrix->trace() , 8), 'trace is correct' );
+ok( similar($inverse->trace() , 8), 'trace is correct' );
+
+$matrix->one();
+ok( similar( $matrix->trace, 2), 'trace is correct' );
+
+$matrix->zero();
+ok( similar( $matrix->trace, 0), 'trace of zero matrix is 0' );
+
+ok( similar( $b->trace, (~$b)->trace) , 'trace is conserved with respect to transpose' );
+ok( similar( $randint*$b->trace, ($randint*$b)->trace) , 'trace is conserved with respect to scalar multiplication' );
+ok( similar( ($c*$b)->trace, ($b*$c)->trace) , 'trace is conserved with respect to matrix multiplication' );
+ok( similar( $c->trace + $b->trace, ($c + $b)->trace) , 'trace is conserved with respect to addition' );
+
+

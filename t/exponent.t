@@ -1,12 +1,7 @@
-BEGIN { $| = 1; print "1..6\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 5;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
 
 ###############################
@@ -19,19 +14,18 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 0 5 ]
 MATRIX
 my $matrix_squared = $matrix ** 2;
-ok_matrix(2, $matrix * $matrix, $matrix_squared );
+ok_matrix( $matrix * $matrix, $matrix_squared );
 #################################
 $matrix_squared = $matrix->exponent(2);
-ok_matrix(3, $matrix * $matrix, $matrix_squared );
+ok_matrix( $matrix * $matrix, $matrix_squared );
 #################################
 ### A^-2 = (A^-1)^2
-ok_matrix(4, ($matrix ** -1) ** 2, $matrix ** -2 );
+ok_matrix( ($matrix ** -1) ** 2, $matrix ** -2 );
 #################################
 my $one = $matrix->clone();
 $one->one();
-ok_matrix(5, $one , $matrix ** 0);
+ok_matrix( $one , $matrix ** 0);
 #################################
-### identity to any power is still identity
-ok_matrix(6, $one ** 100 , $one );
+ok_matrix( $one ** 100 , $one, ' identity to any power is still identity');
 
 

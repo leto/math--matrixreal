@@ -1,12 +1,7 @@
-BEGIN { $| = 1; print "1..3\n"; }
-END {print "not ok 1\n" unless $loaded;}
+use Test::More tests => 2;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-$loaded = 1;
-print "ok 1\n";
-my $DEBUG = 0;
-
 do 'funcs.pl';
 
 $vec1 = Math::MatrixReal->new_from_string(<<MAT);
@@ -23,7 +18,7 @@ MAT
 
 #orthogonal to both
 $vec = $vec1->vector_product($vec2);
-ok(2, $vec->scalar_product($vec1) < 1e-6 );
-ok(3, $vec->scalar_product($vec2) < 1e-6 );
+ok( $vec->scalar_product($vec1) < $eps, 'vector product is orthogonal' );
+ok( $vec->scalar_product($vec2) < $eps ,'vector product is orthogonal');
 
 
