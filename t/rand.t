@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 14;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -73,4 +73,22 @@ if ($matrix->is_symmetric ){
 	ok(1, 'new_random can do symmetric');
 } else {
 	ok(0, 'new_random fails with symmetric');
+}
+eval { $a = Math::MatrixReal->new_random(5, { tridiag => 1, integer => 1 } ) };
+if ($a->is_tridiagonal ){
+	ok(1, 'new_random with tridiag works');
+} else {
+	ok(0, 'new_random with tridiag  fails');
+}
+eval { $a = Math::MatrixReal->new_random(5, { tridiag => 1, symmetric => 1 } ) };
+if ($a->is_tridiagonal && $a->is_symmetric ){
+	ok(1, 'new_random with tridiag+symmetric works');
+} else {
+	ok(0, 'new_random with tridiag+symmetric  fails');
+}
+eval { $matrix = Math::MatrixReal->new_random(10,20, { tridiag => 1 } ) };
+if ($@){
+	ok(1, 'new_random fails with nonsquare tridiag');
+} else {
+	ok(0, 'new_random fails with nonsquare tridiag');
 }

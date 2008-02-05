@@ -87,18 +87,40 @@ sub new
     return($this);
 }
 sub new_diag {
-    croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );"
-        unless (@_ == 2 );
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );" unless (@_ == 2 );
     my ($proto,$diag) = @_;
     my $class = ref($proto) || $proto || 'Math::MatrixReal';
     my $matrix;
     my $n = scalar(@$diag);
 
-    croak "Math::MatrixReal::new_diag(): Third argument must be an arrayref" 
-        unless (ref($diag) eq "ARRAY");
+    croak "Math::MatrixReal::new_diag(): Third argument must be an arrayref" unless (ref($diag) eq "ARRAY");
 
     $matrix = Math::MatrixReal->new($n,$n);
-    $matrix = $matrix->each_diag(  sub { shift @$diag } );
+    $matrix = $matrix->each_diag( sub { shift @$diag } );
+    return $matrix;
+}
+sub new_tridiag {
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_tridiag( [ 1, 2, 3], [ 4, 5, 6, 7], [-1,-2,-3] );" unless (@_ == 4 );
+    my ($proto,$lower,$diag,$upper) = @_;
+    my $class = ref($proto) || $proto || 'Math::MatrixReal';
+    my $matrix;
+    my ($l,$n,$m) =   (scalar(@$lower),scalar(@$diag),scalar(@$upper)); 
+    my ($k,$p)=(-1,-1);
+
+    croak "Math::MatrixReal::new_tridiag(): Arguments must be arrayrefs" unless 
+	ref $diag eq 'ARRAY' && ref $lower eq 'ARRAY' && ref $upper eq 'ARRAY';
+    croak "Math::MatrixReal::new_tridiag(): new_tridiag(\$lower,\$diag,\$upper) diagonal dimensions incompatible" unless 
+	($l == $m && $n == ($l+1));
+
+    $matrix = Math::MatrixReal->new_diag($diag);
+    $matrix = $matrix->each( 
+		sub { 
+		    my ($e,$i,$j) = @_;
+		    if    (($i-$j) == -1) { $k++; return $upper->[$k];} 
+		    elsif (    $i  == $j) {       return $e;          }
+		    elsif (($i-$j) ==  1) { $p++; return $lower->[$p];}
+		} 
+		);
     return $matrix;
 }
 
@@ -106,19 +128,22 @@ sub new_random {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], type => 'integer' } );" if (@_ < 2);
     my ($self, $rows, $cols, $options ) = @_;
     (($options = $cols) and ($cols = $rows)) if ref $cols eq 'HASH';
-    my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : qw( 0 10);
+    my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : ( 0, 10);
     my $integer = $options->{integer}; 
     $self = ref($self) || $self || 'Math::MatrixReal';
    
     $cols ||= $rows; 
     croak "Math::MatrixReal::new_random(): number of rows must = number of cols for symmetric option" if ($rows != $cols and $options->{symmetric} );
-    croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" unless ($rows > 0 and  $rows == int($rows) );
-    croak "Math::MatrixReal::new_random(): number of columns must be integer > 0" unless ($cols > 0 and $cols == int($cols) );
+    croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" 
+	unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
     croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" unless (defined $min && defined $max && $min < $max );
+    croak "Math::MatrixReal::new_random(): tridiag option only for square matrices" if ( ($options->{tridiag} || $options->{tridiagonal}) && $rows != $cols);
 
     my $random_code = sub { $integer ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
     my $matrix = Math::MatrixReal->new($rows,$cols);
     $matrix = $matrix->each($random_code); 
+    $matrix = $matrix->each( sub {my($e,$i,$j)=@_; ( abs($i-$j)>1 ) ?  0 : $e } ) 
+	if ($options->{tridiag} || $options->{tridiagonal} );
     $options->{symmetric} ? ($matrix + ~$matrix) : $matrix;
 }
 	
@@ -136,52 +161,21 @@ sub new_from_string
 
     $warn = $rows = $cols = 0;
 
-    $values = [ ];
-    while ($string =~ m!^\s*
-  \[ \s+ ( (?: [+-]? \d+ (?: \. \d* )? (?: E [+-]? \d+ )? \s+ )+ ) \] \s*? \n
-    !ix)
-    {
-        $line = $1;
-        $string = $';
-        $values->[$rows] = [ ];
-        @{$values->[$rows]} = split(' ', $line);
-        $col = @{$values->[$rows]};
-        if ($col != $cols)
-        {
-            unless ($cols == 0) { $warn = 1; }
-            if ($col > $cols) { $cols = $col; }
-        }
-        $rows++;
-    }
-    if ($string !~ m/^\s*$/)
-    {
-        print "Math::MatrixReal::new_from_string(): syntax error in input string";
-        print "String is\n$string\n---\n";
-        croak;
-    }
-    if ($rows == 0)
-    {
-        croak "Math::MatrixReal::new_from_string(): empty input string";
-    }
-    if ($warn)
-    {
-        warn "Math::MatrixReal::new_from_string(): missing elements will be set to zero!\n";
-    }
-    $this = Math::MatrixReal::new($class,$rows,$cols);
-    for ( $row = 0; $row < $rows; $row++ )
-    {
-        for ( $col = 0; $col < @{$values->[$row]}; $col++ )
-        {
-            $this->[0][$row][$col] = $values->[$row][$col];
-        }
-    }
-    return($this);
-}
+    $values = [ ]; while ($string =~ m!^\s* \[ \s+ ( (?: [+-]? \d+ (?: \. \d*
+)? (?: E [+-]? \d+ )? \s+ )+ ) \] \s*? \n !ix) { $line = $1; $string = $';
+$values->[$rows] = [ ]; @{$values->[$rows]} = split(' ', $line); $col =
+@{$values->[$rows]}; if ($col != $cols) { unless ($cols == 0) { $warn = 1; } if
+($col > $cols) { $cols = $col; } } $rows++; } if ($string !~ m/^\s*$/) { print
+"Math::MatrixReal::new_from_string(): syntax error in input string"; print
+"String is\n$string\n---\n"; croak; } if ($rows == 0) { croak
+"Math::MatrixReal::new_from_string(): empty input string"; } if ($warn) { warn
+"Math::MatrixReal::new_from_string(): missing elements will be set to zero!\n";
+} $this = Math::MatrixReal::new($class,$rows,$cols); for ( $row = 0; $row <
+$rows; $row++ ) { for ( $col = 0; $col < @{$values->[$row]}; $col++ ) {
+$this->[0][$row][$col] = $values->[$row][$col]; } } return($this); }
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
-sub new_from_cols {
-    my $this = shift;
-    my $extra_args = ( @_ > 1 && ref($_[-1]) eq 'HASH' ) ? pop : {};
-    $extra_args->{_type} = 'column';
+sub new_from_cols { my $this = shift; my $extra_args = ( @_ > 1 && ref($_[-1])
+eq 'HASH' ) ? pop : {}; $extra_args->{_type} = 'column';
 
     $this->_new_from_rows_or_cols(@_, $extra_args );
 }
