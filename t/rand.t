@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 16;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -91,4 +91,16 @@ if ($@){
 	ok(1, 'new_random fails with nonsquare tridiag');
 } else {
 	ok(0, 'new_random fails with nonsquare tridiag');
+}
+eval { $matrix = Math::MatrixReal->new_random(10,20, { diag => 1 } ) };
+if ($@){
+	ok(1, 'new_random fails with nonsquare diag');
+} else {
+	ok(0, 'new_random fails with nonsquare diag');
+}
+eval { $a = Math::MatrixReal->new_random(5, { diag => 1, integer => 1 } ) };
+if ($a->is_diagonal ){
+	ok(1, 'new_random with diag works');
+} else {
+	ok(0, 'new_random with diag  fails');
 }

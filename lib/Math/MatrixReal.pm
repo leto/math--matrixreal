@@ -125,7 +125,7 @@ sub new_tridiag {
 }
 
 sub new_random { 
-    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], type => 'integer' } );" if (@_ < 2);
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], integer => 1 } );" if (@_ < 2);
     my ($self, $rows, $cols, $options ) = @_;
     (($options = $cols) and ($cols = $rows)) if ref $cols eq 'HASH';
     my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : ( 0, 10);
@@ -137,13 +137,14 @@ sub new_random {
     croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" 
 	unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
     croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" unless (defined $min && defined $max && $min < $max );
-    croak "Math::MatrixReal::new_random(): tridiag option only for square matrices" if ( ($options->{tridiag} || $options->{tridiagonal}) && $rows != $cols);
+    croak "Math::MatrixReal::new_random(): tridiag option only for square matrices"   if (($options->{tridiag} || $options->{tridiagonal}) && $rows != $cols);
+    croak "Math::MatrixReal::new_random(): diagonal option only for square matrices " if (($options->{diag} || $options->{diagonal}) && ($rows != $cols));
 
-    my $random_code = sub { $integer ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
     my $matrix = Math::MatrixReal->new($rows,$cols);
-    $matrix = $matrix->each($random_code); 
-    $matrix = $matrix->each( sub {my($e,$i,$j)=@_; ( abs($i-$j)>1 ) ?  0 : $e } ) 
-	if ($options->{tridiag} || $options->{tridiagonal} );
+    my $random_code = sub { $integer ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
+
+    $matrix = $options->{diag} || $options->{diagonal} ? $matrix->each_diag($random_code) :  $matrix->each($random_code); 
+    $matrix = $matrix->each( sub {my($e,$i,$j)=@_; ( abs($i-$j)>1 ) ?  0 : $e } ) if ($options->{tridiag} || $options->{tridiagonal} );
     $options->{symmetric} ? ($matrix + ~$matrix) : $matrix;
 }
 	
@@ -3366,6 +3367,27 @@ will print
 
         [  1.000000000000E+00  2.000000000000E+00 ]
         [  3.000000000000E+00  4.000000000000E+00 ]
+
+
+=item *
+
+C<$new_matrix = Math::MatrixReal-E<gt>new_random($rows, $cols, %options );>
+
+This method allows you to create a random matrix with various properties controlled
+by the %options matrix, which is optional. The default values of the %options matrix
+are { integer => 0, symmetric => 0, tridiagonal => 0, diagonal => 0, bounded_by => [0,10] } .
+
+ Example: 
+
+    $matrix = Math::MatrixReal->new_random(4, 4, { diagonal => 1, integer => 1 }  );
+    print $matrix;
+
+will print a random diagonal matrix with integer entries between zero and ten, something like
+
+    [  5.000000000000E+00  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  2.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  0.000000000000E+00  1.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00  8.000000000000E+00 ]
 
 
 =item *
