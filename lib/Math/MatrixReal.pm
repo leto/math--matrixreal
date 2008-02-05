@@ -3564,6 +3564,7 @@ C<$a = $b>, when C<$a> and C<$b> are matrices.
 
 Matrix "C<$some_matrix>" is not changed by this in any way.
 
+=back
 
 =head2 Matrix Row, Column and Element operations
 

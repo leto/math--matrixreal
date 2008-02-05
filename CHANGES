@@ -1,7 +1,7 @@
 Changes in v2.04 - leto 
 Sat Feb 02 21:02:43 EST 2008 
 ---------------------------
-    * new funcion new_tridiag
+    * new funcion new_tridiag (needs docs)
     * new function new_random added which looks like (with default options shown )
 	new_random($n,$m, { symmetric => 0, tridiag => 0, bounded_by => [0,10], integer => 0 ) added
     * t/rand.t created
