@@ -375,17 +375,15 @@ sub trace {
     my $matrix = shift;
     my($rows,$cols) = ($matrix->[1],$matrix->[2]);
     my $trace = 0;
-    my($j);
 
-    croak "Math::MatrixReal::trace(): matrix is not quadratic"
-      unless ($rows == $cols);
+    croak "Math::MatrixReal::trace(): matrix is not quadratic" unless ($rows == $cols);
 
 
-    for ( $j = 0; $j < $cols; $j++ )
+    for ( my $j = 0; $j < $cols; $j++ )
     {
         $trace += $matrix->[0][$j][$j];
     }
-    return($trace);
+    return $trace;
 }
 
 ## return the minor corresponding to $r and $c
@@ -2678,27 +2676,23 @@ sub _concat
 {
     my($object,$argument,$flag) = @_;
     my($orows,$ocols) 		= ($object->[1],$object->[2]);
-    my($arows,$acols) 		= ($argument->[1],$argument->[2]);
     my($name)			= "concat";
 
-    croak "Math::MatrixReal: Matrices must have same number of rows in concatenation" unless ($orows == $arows);
-   
-    my $result = $object->new($orows,$ocols+$acols);
 
-    if ((defined $argument) && ref($argument) &&
-        (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/))
-    {
-        for ( my $i = 0; $i < $arows; $i++ )
-        {
-            for ( my $j = 0; $j < $ocols + $acols; $j++ )
-            {
+    if ((defined $argument) && ref($argument) && (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/)) {
+    	my($arows,$acols) 		= ($argument->[1],$argument->[2]);
+        croak "Math::MatrixReal: Matrices must have same number of rows in concatenation" unless ($orows == $arows);
+     	my $result = $object->new($orows,$ocols+$acols);
+        for ( my $i = 0; $i < $arows; $i++ ) {
+            for ( my $j = 0; $j < $ocols + $acols; $j++ ) {
 		$result->[0][$i][$j] = ( $j <  $ocols ) ? $object->[0][$i][$j] : $argument->[0][$i][$j - $ocols] ;
             }
         }
-        return($result);
-    }
-    else
-    {
+        return $result;
+    } elsif (defined $argument) {
+	return "$object" . $argument;
+
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3236,7 +3230,7 @@ sub _clone
     return($temp);
 }
 
-sub _trace
+sub _debug_info
 {
     my($text,$object,$argument,$flag) = @_;
 
@@ -5439,7 +5433,7 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.02.
+This man page documents Math::MatrixReal version 2.04.
 
 The latest version can always be found at
 http://leto.net/code/Math-MatrixReal/

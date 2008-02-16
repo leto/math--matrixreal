@@ -1,4 +1,4 @@
-use Test::Simple tests =>9;
+use Test::Simple tests =>7;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -48,18 +48,6 @@ if ($@){
 	ok(1, 'Concatenation of matrices with same number of rows only');
 } else {
 	ok(0, 'Concatenation of matrices with same number of rows only');
-}
-eval { $c = $a . 1 };
-if ($@){
-	ok(1, 'Concatenation with scalar fails');
-} else {
-	ok(0, 'Concatenation with scalar fails');
-}
-eval { $c = (1,2,3) . $a; };
-if ($@){
-	ok(1, 'Concatenation with array fails');
-} else {
-	ok(0, 'Concatenation with array fails');
 }
 
 $c = Math::MatrixReal->new_from_string(<<MATRIX);
