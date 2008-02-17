@@ -44,7 +44,7 @@ ok( abs($res)  < $eps , '1/A returns A ** -1');
 my $z =  $full / $a;
 $res = $matdiv - $z;
 ok(abs($res) < $eps, 'Matrix Division works');
-ok( abs( $eye - $full /$full) < $eps, 'A/A returns identity');
+ok( abs( $eye - $full/$full) < $eps, 'A/A returns identity');
 ok( abs($eye) - 1 == 0, 'Identity is of unit norm');
 
 my $stuff = Math::MatrixReal->new_from_string(<<MATRIX);

@@ -21,11 +21,9 @@ All rights reserved.
 This package is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
-
 Requirements:
 -------------
-Perl version 5.000 or higher capable of "overloading" (overload.pm).
-
+Perl version 5.003 or higher capable of "overloading" (overload.pm).
 
 What does it do:
 ----------------
@@ -41,6 +39,7 @@ Perl type thanks to OPERATOR OVERLOADING, i.e.,
     $C = $A + 2*B;
     $D = $C - $B/2;
     $inverse = $C ** -1;
+    $inverse = 1/$C;
     
 does what you would like it to do.
 
@@ -96,7 +95,7 @@ Edit the "Makefile.PL" file in this package and change the line
 
 to
 
-    'VERSION'		=> '1.5',
+    'VERSION'		=> '2.04',
 
 
 How to install it:
