@@ -1,6 +1,6 @@
 ---
 name: Math-MatrixReal
-version: 2.03
+version: 2.04
 author:
   - 'Jonathan Leto <jonathan@leto.net>'
 abstract: Manipulate NxN matrices of real numbers
@@ -8,11 +8,12 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  File::Spec: 0
   Test::More: 0
 provides:
   Math::MatrixReal:
     file: lib/Math/MatrixReal.pm
-    version: 2.03
+    version: 2.04
 generated_by: Module::Build version 0.280801
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
