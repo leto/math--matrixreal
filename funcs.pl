@@ -49,4 +49,16 @@ sub similar($$;$) {
     my $eps = shift || $eps;
     abs($x - $y) <= $eps ? return 1 : return 0;
 }
+sub _debug_info
+{
+    my($text,$object,$argument,$flag) = @_;
+
+    unless (defined $object)   { $object   = 'undef'; };
+    unless (defined $argument) { $argument = 'undef'; };
+    unless (defined $flag)     { $flag     = 'undef'; };
+    if (ref($object))   { $object   = ref($object);   }
+    if (ref($argument)) { $argument = ref($argument); }
+    print "$text: \$obj='$object' \$arg='$argument' \$flag='$flag'\n";
+}
+
 1;

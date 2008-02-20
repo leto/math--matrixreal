@@ -47,8 +47,6 @@ use overload
       'ge' => '_greater_than_or_equal',
        '=' => '_clone',
      'exp' => '_exp',
-     'sin' => '_sin',
-     'cos' => '_cos',
       '""' => '_stringify',
 'fallback' =>   undef;
 
@@ -86,6 +84,30 @@ sub new
     bless($this, $class);
     return($this);
 }
+sub new_row {
+    croak "Usage: \$row = Math::MatrixReal->new_row( [ 1, 2, 3] );" unless @_ == 2 ;
+    my ($obj,$row) = @_;
+    my $class = ref($obj) || $obj || 'Math::MatrixReal';
+    my $n = $#{@$row};
+
+    croak "Math::MatrixReal::new_row(): Third argument must be an arrayref" unless ref $row eq "ARRAY";
+
+    my $matrix = Math::MatrixReal->new(1,$n);
+    return $matrix->each( sub { shift @$row } );
+}
+
+sub new_col {
+    croak "Usage: \$col = Math::MatrixReal->new_col( [ 1, 2, 3] );" unless @_ == 2;
+    my ($obj,$col) = @_;
+    my $class = ref($obj) || $obj || 'Math::MatrixReal';
+    my $n = $#{@$col};
+
+    croak "Math::MatrixReal::new_col(): Third argument must be an arrayref" unless ref $col eq "ARRAY";
+
+    my $matrix = Math::MatrixReal->new($n,1);
+    return $matrix->each( sub { shift @$col } );
+}
+
 sub new_diag {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );" unless (@_ == 2 );
     my ($proto,$diag) = @_;
@@ -162,18 +184,31 @@ sub new_from_string
 
     $warn = $rows = $cols = 0;
 
-    $values = [ ]; while ($string =~ m!^\s* \[ \s+ ( (?: [+-]? \d+ (?: \. \d*
-)? (?: E [+-]? \d+ )? \s+ )+ ) \] \s*? \n !ix) { $line = $1; $string = $';
-$values->[$rows] = [ ]; @{$values->[$rows]} = split(' ', $line); $col =
-@{$values->[$rows]}; if ($col != $cols) { unless ($cols == 0) { $warn = 1; } if
-($col > $cols) { $cols = $col; } } $rows++; } if ($string !~ m/^\s*$/) { print
-"Math::MatrixReal::new_from_string(): syntax error in input string"; print
-"String is\n$string\n---\n"; croak; } if ($rows == 0) { croak
-"Math::MatrixReal::new_from_string(): empty input string"; } if ($warn) { warn
-"Math::MatrixReal::new_from_string(): missing elements will be set to zero!\n";
-} $this = Math::MatrixReal::new($class,$rows,$cols); for ( $row = 0; $row <
-$rows; $row++ ) { for ( $col = 0; $col < @{$values->[$row]}; $col++ ) {
-$this->[0][$row][$col] = $values->[$row][$col]; } } return($this); }
+    $values = [ ]; 
+	while ($string =~ m!^\s* \[ \s+ ( (?: [+-]? \d+ (?: \. \d*)? (?: E [+-]? \d+ )? \s+ )+ ) \] \s*? \n !ix) { 
+			$line = $1; $string = $';
+			$values->[$rows] = [ ]; @{$values->[$rows]} = split(' ', $line);
+			$col = @{$values->[$rows]};
+	 		if ($col != $cols) { 
+				unless ($cols == 0) { $warn = 1; } 
+				if ($col > $cols) { $cols = $col; } 
+			} 
+			$rows++; 
+	} 
+	if ($string !~ m/^\s*$/) {
+		print "Math::MatrixReal::new_from_string(): syntax error in input string";
+		print "String is\n$string\n---\n"; croak; } 
+		if ($rows == 0) { croak "Math::MatrixReal::new_from_string(): empty input string"; } 
+		if ($warn) { warn "Math::MatrixReal::new_from_string(): missing elements will be set to zero!\n"; } 
+		$this = Math::MatrixReal::new($class,$rows,$cols); 
+		for ( $row = 0; $row < $rows; $row++ ) { 
+			for ( $col = 0; $col < @{$values->[$row]}; $col++ ) {
+			$this->[0][$row][$col] = $values->[$row][$col]; 
+			}
+		} 
+		return $this; 
+}
+
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub new_from_cols { my $this = shift; my $extra_args = ( @_ > 1 && ref($_[-1])
 eq 'HASH' ) ? pop : {}; $extra_args->{_type} = 'column';
@@ -3170,9 +3205,7 @@ sub _greater_than_or_equal
         {
             return( $object->norm_one() >= abs($argument) );
         }
-    }
-    else
-    {
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3190,33 +3223,6 @@ sub _exp {
     return $new_matrix;
 
 }
-sub _cos {
-    my ($matrix,$arg,$flag) = @_;
-    my $new_matrix = $matrix->clone();
-    my ($rows,$cols) = $matrix->dim();
-
-    $new_matrix->_undo_LR();
-
-    croak "Math::MatrixReal::cos(): Matrix is not quadratic" unless ($rows == $cols);
-    croak "Math::MatrixReal::cos(): Only diagonal matrices supported" unless ( $matrix->is_diagonal() );
-
-    $new_matrix = $matrix->each_diag( sub { cos(shift) } );
-    return $new_matrix;
-}
-sub _sin {
-    my ($matrix,$arg,$flag) = @_;
-    my $new_matrix = $matrix->clone();
-    my ($rows,$cols) = $matrix->dim();
-
-    $new_matrix->_undo_LR();
-
-    croak "Math::MatrixReal::sin(): Matrix is not quadratic" unless ($rows == $cols);
-    croak "Math::MatrixReal::sin(): Only diagonal matrices supported" unless ( $matrix->is_diagonal() );
-
-    $new_matrix = $matrix->each_diag( sub { sin(shift) } );
-    return $new_matrix;
-
-}
 
 sub _clone
 {
@@ -3228,18 +3234,6 @@ sub _clone
     $temp->copy($object);
     $temp->_undo_LR();
     return($temp);
-}
-
-sub _debug_info
-{
-    my($text,$object,$argument,$flag) = @_;
-
-    unless (defined $object)   { $object   = 'undef'; };
-    unless (defined $argument) { $argument = 'undef'; };
-    unless (defined $flag)     { $flag     = 'undef'; };
-    if (ref($object))   { $object   = ref($object);   }
-    if (ref($argument)) { $argument = ref($argument); }
-    print "$text: \$obj='$object' \$arg='$argument' \$flag='$flag'\n";
 }
 
 1;
