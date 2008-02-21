@@ -132,7 +132,7 @@ EXAMPLES:
 
 C<S1 = ({0,1}, |, &, 0, 1)>
 
-C<G(V,E)> be a graph with set of vortices V and set of edges E:
+C<G(V,E)> be a graph with set of vertices V and set of edges E:
 
 C<m(v[i],v[j])  :=  ( (v[i],v[j]) in E ) ? 1 : 0>
 
@@ -150,7 +150,7 @@ C<C^k[i,j]  =  C^k-1[i,j]  |  C^k-1[i,k]  &  C^k-1[k,j]>
 
 C<S2 = (pos. reals with 0 and +infty, min, +, +infty, 0)>
 
-C<G(V,E)> be a graph with set of vortices V and set of edges E, with
+C<G(V,E)> be a graph with set of vertices V and set of edges E, with
 costs C<m(v[i],v[j])> associated with each edge C<(v[i],v[j])> in E:
 
 C<m(v[i],v[j])  :=  costs of (v[i],v[j])>

@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 6;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -27,5 +27,8 @@ $one->one();
 ok_matrix( $one , $matrix ** 0);
 #################################
 ok_matrix( $one ** 100 , $one, ' identity to any power is still identity');
+
+$matrix **= 2;
+ok( $matrix == $matrix_squared, '**= works' );
 
 

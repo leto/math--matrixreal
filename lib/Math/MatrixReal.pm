@@ -56,24 +56,23 @@ sub new
 
     my ($proto,$rows,$cols) =  @_;
     my $class = ref($proto) || $proto || 'Math::MatrixReal';
-    my($i,$j,$this);
 
     croak "Math::MatrixReal::new(): number of rows must be integer > 0"
-      unless ($rows > 0 and  $rows == int($rows) );
+      unless ($rows > 0 and $rows == int($rows) );
 
     croak "Math::MatrixReal::new(): number of columns must be integer > 0"
       unless ($cols > 0 and $cols == int($cols) );
 
-    $this = [ [ ], $rows, $cols ];
+    my $this = [ [ ], $rows, $cols ];
 
     # Creates first empty row
     my $empty = [ ];
-    $#$empty = $cols - 1; # Lengthens the array
-    for (my $j = 0; $j < $cols; $j++)
-    {
-        $empty->[$j] = 0.0;
-    }
+    $#$empty = $cols - 1;               # pre-lengthens the array
+   
+    map { $empty->[$_] = 0.0 } ( 0 .. $cols-1 );
+
     $this->[0][0] = $empty;
+
     # Creates other rows (by copying)
     for (my $i = 1; $i < $rows; $i++)
     {
@@ -81,8 +80,7 @@ sub new
         @$arow = @$empty;
         $this->[0][$i] = $arow;
     }
-    bless($this, $class);
-    return($this);
+    bless $this, $class;
 }
 sub new_row {
     croak "Usage: \$row = Math::MatrixReal->new_row( [ 1, 2, 3] );" unless @_ == 2 ;
@@ -177,10 +175,10 @@ sub new_from_string
 
     my ($proto,$string)  = @_;
     my $class  = ref($proto) || $proto || 'Math::MatrixReal';
-    my($line,$values);
-    my($rows,$cols);
-    my($row,$col);
-    my($warn,$this);
+    my ($line,$values);
+    my ($rows,$cols);
+    my ($row,$col);
+    my ($warn,$this);
 
     $warn = $rows = $cols = 0;
 
@@ -210,9 +208,10 @@ sub new_from_string
 }
 
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
-sub new_from_cols { my $this = shift; my $extra_args = ( @_ > 1 && ref($_[-1])
-eq 'HASH' ) ? pop : {}; $extra_args->{_type} = 'column';
-
+sub new_from_cols { 
+    my $this = shift;
+    my $extra_args = ( @_ > 1 && ref($_[-1]) eq 'HASH' ) ? pop : {};
+    $extra_args->{_type} = 'column';
     $this->_new_from_rows_or_cols(@_, $extra_args );
 }
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
@@ -254,11 +253,8 @@ sub _new_from_rows_or_cols {
     # we can add an arg to skip this check
     croak "$caller_subname: need a reference to an array of ${vector_type}s" unless ref($ref_to_vectors) eq 'ARRAY';
     my @vectors = @{$ref_to_vectors};
-
     my $matrix;
-
     my $other_type = {row=>'column', column=>'row'}->{$vector_type};
-
     my %matrix_dim = (
         $vector_type => scalar( @vectors ), 
         $other_type  => 0,  # we will correct this in a bit
@@ -278,25 +274,21 @@ sub _new_from_rows_or_cols {
             # but if not we just let the Math::MatrixReal die() do it's
             # thing
             $current_vector = $class->new_from_string( $current_vector );
-        }
-        elsif ( $ref eq 'ARRAY' ) {
+        } elsif ( $ref eq 'ARRAY' ) {
             my @array = @$current_vector;
-            croak "$caller_subname: one $vector_type you gave me was a ref to an array with no elements" unless @array ;
+            croak "$caller_subname: one $vector_type you gave me was a ref to an array with no elements" unless @array;
             # we need to create the right kind of string based on whether
             # they said they were sending us rows or columns:
             if ($vector_type eq 'row') {
                 $current_vector = $class->new_from_string( '[ '. join( " ", @array) ." ]\n" );
-            }
-            else {
+            } else {
                 $current_vector = $class->new_from_string( '[ '. join( " ]\n[ ", @array) ." ]\n" );
             }
-        }
-        elsif ( $ref ne 'HASH' and $current_vector->isa('Math::MatrixReal') ) {
+        } elsif ( $ref ne 'HASH' and $current_vector->isa('Math::MatrixReal') ) {
             # it's already a Math::MatrixReal something.
             # we don't need to do anything, it will all
             # work out
-        }
-        else {
+        } else {
             # we have no idea, error time!
             croak "$caller_subname: I only know how to deal with array refs, strings, and things that inherit from Math::MatrixReal\n";
         }
@@ -336,8 +328,7 @@ sub _new_from_rows_or_cols {
             if ($vector_type eq 'row') {
                 $row_index           = $current_vector_count;
                 $v_c = $column_index = $element_index;
-            }
-            else {
+            } else {
                 $v_r = $row_index    = $element_index;
                 $column_index        = $current_vector_count;
             }
@@ -351,14 +342,11 @@ sub _new_from_rows_or_cols {
 
 sub shadow
 {
-    croak "Usage: \$new_matrix = \$some_matrix->shadow();"
-      if (@_ != 1);
+    croak "Usage: \$new_matrix = \$some_matrix->shadow();" if (@_ != 1);
 
-    my($matrix) = @_;
-    my($temp);
+    my ($matrix) = @_;
 
-    $temp = $matrix->new($matrix->[1],$matrix->[2]);
-    return($temp);
+    return $matrix->new($matrix->[1],$matrix->[2]);
 }
 
 
@@ -367,19 +355,18 @@ sub copy
     croak "Usage: \$matrix1->copy(\$matrix2);"
       if (@_ != 2);
 
-    my($matrix1,$matrix2) = @_;
-    my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
-    my($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
-    my($i,$j);
+    my ($matrix1,$matrix2) = @_;
+    my ($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
+    my ($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
+    my ($i,$j);
 
-    croak "Math::MatrixReal::copy(): matrix size mismatch"
-      unless (($rows1 == $rows2) && ($cols1 == $cols2));
+    croak "Math::MatrixReal::copy(): matrix size mismatch" unless $rows1 == $rows2 && $cols1 == $cols2;
 
     for ( $i = 0; $i < $rows1; $i++ )
     {
-        my $r1 = []; # New array ref
-        my $r2 = $matrix2->[0][$i];
-        @$r1 = @$r2; # Copy whole array directly
+        my $r1            = []; 
+        my $r2            = $matrix2->[0][$i];
+        @$r1              = @$r2;              # Copy whole array directly
         $matrix1->[0][$i] = $r1;
     }
     if (defined $matrix2->[3]) # is an LR decomposition matrix!
@@ -400,7 +387,7 @@ sub clone
 
     $temp = $matrix->new($matrix->[1],$matrix->[2]);
     $temp->copy($matrix);
-    return($temp);
+    return $temp;
 }
 
 ## trace() : return the sum of the diagonal elements
@@ -568,20 +555,18 @@ sub row
     my($matrix,$row) = @_;
     my($rows,$cols) = ($matrix->[1],$matrix->[2]);
     my($temp);
-    my($j);
 
-    croak "Math::MatrixReal::row(): row index out of range"
-      if (($row < 1) || ($row > $rows));
+    croak "Math::MatrixReal::row(): row index out of range" if ($row < 1 || $row > $rows);
 
     $row--;
     $temp = $matrix->new(1,$cols);
-    for ( $j = 0; $j < $cols; $j++ )
+    for ( my $j = 0; $j < $cols; $j++ )
     {
         $temp->[0][0][$j] = $matrix->[0][$row][$j];
     }
     return($temp);
 }
-
+sub col{ return (shift)->column(shift) }
 sub column
 {
     croak "Usage: \$column_vector = \$matrix->column(\$column);"
@@ -592,8 +577,7 @@ sub column
     my($temp);
     my($i);
 
-    croak "Math::MatrixReal::column(): column index out of range"
-      if (($col < 1) || ($col > $cols));
+    croak "Math::MatrixReal::column(): column index out of range" if ($col < 1 || $col > $cols);
 
     $col--;
     $temp = $matrix->new($rows,1);
@@ -618,12 +602,10 @@ sub _undo_LR
 # brrr
 sub zero
 {
-    croak "Usage: \$matrix->zero();"
-      if (@_ != 1);
+    croak "Usage: \$matrix->zero();" if (@_ != 1);
 
     my($this) = @_;
     my($rows,$cols) = ($this->[1],$this->[2]);
-    my($i,$j);
 
     $this->_undo_LR();
 
@@ -695,8 +677,7 @@ sub dim  #  returns dimensions of a matrix
 
 sub norm_one  #  maximum of sums of each column
 {
-    croak "Usage: \$norm_one = \$matrix->norm_one();"
-      if (@_ != 1);
+    croak "Usage: \$norm_one = \$matrix->norm_one();" if (@_ != 1);
 
     my($this) = @_;
     my($rows,$cols) = ($this->[1],$this->[2]);
@@ -2561,16 +2542,17 @@ sub is_LR($) {
     croak "Usage: \$matrix->is_LR()" unless (@_ == 1);
     return (shift)->[3] ? 1 : 0;
 }
-###
+
 sub is_normal{
-    my ($matrix) = @_;
+    my ($matrix,$eps) = @_;
     my ($rows,$cols) = $matrix->dim;
-    return 0 unless ($rows == $cols);
-    
-    return 1 if ( ~$matrix * $matrix - $matrix * ~$matrix < 1e-8 );
-    return 0;
+   
+    $eps ||= 1e-8; 
+
+    (~$matrix * $matrix - $matrix * ~$matrix < $eps ) ? 1 : 0;
 
 }
+
 sub is_skew_symmetric{
     my ($m) = @_;
     my ($rows, $cols) = $m->dim;
@@ -3075,6 +3057,8 @@ sub _not_equal
     if ((defined $argument) && ref($argument) &&
         (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/))
     {
+	my ($r,$c) = $argument->dim;
+	return 1 unless ($r == $rows && $c == $cols );
         $result = 0;
         NOTEQUAL:
         for ( $i = 0; $i < $rows; $i++ )
