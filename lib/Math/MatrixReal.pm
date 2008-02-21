@@ -2383,28 +2383,48 @@ sub sym_eigenvalues ($)
 sub is_positive_definite {
     my ($matrix) = @_;
     my ($r,$c) = $matrix->dim;
+
+    croak "Math::MatrixReal::is_positive_definite(): Matrix is not square" unless ($r == $c);
+    # must have positive (i.e REAL) eigenvalues to be positive definite
+    return 0 unless $matrix->is_symmetric;
+
     my $ev = $matrix->eigenvalues;
     my $pos = 1;
     $ev->each(sub { my $x = shift; if ($x <= 0){ $pos=0;return; } } );
     return $pos;
 }
+#TODO: docs+test
+sub is_positive_semidefinite {
+    my ($matrix) = @_;
+    my ($r,$c) = $matrix->dim;
+
+    croak "Math::MatrixReal::is_positive_semidefinite(): Matrix is not square" unless ($r == $c);
+    # must have nonnegative (i.e REAL) eigenvalues to be positive semidefinite
+    return 0 unless $matrix->is_symmetric;
+
+    my $ev = $matrix->eigenvalues;
+    my $pos = 1;
+    $ev->each(sub { my $x = shift; if ($x < 0){ $pos=0;return; } } );
+    return $pos;
+}
+sub is_row { return (shift)->is_row_vector }
+sub is_col { return (shift)->is_col_vector }
 
 sub is_row_vector {
     my ($m) = @_;
-    my ($r,$c) = $m->dim;
-    return 1 if ($r == 1);
+    my $r = $m->[1];
+    $r == 1 ? 1 : 0;
 }
 sub is_col_vector {
     my ($m) = @_;
-    my ($r,$c) = $m->dim;
-    return 1 if ($c == 1);
+    my $c = $m->[2];
+    $c == 1 ? 1 : 0;
 }
 
 sub is_orthogonal($) {
     my ($matrix) = @_;
-    ##croak "Math::MatrixReal::is_orthogonal(): Matrix is not quadratic"
 
-    return 0 unless( $matrix->is_quadratic() );
+    return 0 unless $matrix->is_quadratic;
 
     my $one = $matrix->shadow();
     $one->one;

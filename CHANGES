@@ -1,15 +1,20 @@
 Changes in v2.04 - leto 
-Wed Feb 06 21:44:50 EST 2008 
+Wed Feb 20 18:24:19 EST 2008 
 ---------------------------
     * converted all tests except ext1.t to Test::More and added some overall Kwalitee 
+    * improved code coverage (as per Devel::Cover) from 63% to XXX%
     * fixed error with doing $string = $matrix . "\nStuff\n";
     * new funcion new_tridiag (needs docs)
     * new function new_random added which looks like (with default options shown )
 	new_random($n,$m, { symmetric => 0, tridiag => 0, bounded_by => [0,10], integer => 0 ) 
 	new_random($n, %options ) returns a square matrix
+      This have proven to be pretty useful in the unit tests of Math::MatrixReal so I figured 
+      others may want an easy way to generate a random matrix of your own flavor
     * t/rand.t created
     * t/tridiag.t created
     * t/stringify.t created
+    * t/minimax.t created
+    * t/positive.t created
 
 
 Changes in v2.03 - leto 
