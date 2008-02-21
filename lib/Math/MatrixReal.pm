@@ -503,9 +503,7 @@ sub _count_zeroes_row {
     my $count = 0;
     croak "_count_zeroes_row(): only 1 row, buddy" unless ($rows == 1);
 
-    for(my $i=0;$i < $cols;$i++){
-        $count++ unless $matrix->[0][0][$i];
-    }
+    map { $count++ unless $matrix->[0][0][$_] } (0 .. $cols-1);
     return $count;
 }
 ## divide a row by it's largest abs() element
@@ -731,8 +729,7 @@ sub norm_p {
 }
 sub norm_max  #  maximum of sums of each row
 {
-    croak "Usage: \$norm_max = \$matrix->norm_max();"
-      if (@_ != 1);
+    croak "Usage: \$norm_max = \$matrix->norm_max();" if (@_ != 1);
 
     my($this) = @_;
     my($rows,$cols) = ($this->[1],$this->[2]);
@@ -824,8 +821,7 @@ sub inverse {
 
 sub transpose {
 
-    croak "Usage: \$matrix1->transpose(\$matrix2);"
-      if (@_ != 2);
+    croak "Usage: \$matrix1->transpose(\$matrix2);" if (@_ != 2);
 
     my($matrix1,$matrix2) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
@@ -850,9 +846,7 @@ sub transpose {
             }
             $matrix1->[0][$i][$i] = $matrix2->[0][$i][$i];
         }
-    }
-    else # ($rows1 != $cols1)
-    {
+    } else {                                # ($rows1 != $cols1) 
         for (my $i = 0; $i < $rows1; $i++)
         {
             for (my $j = 0; $j < $cols1; $j++)
@@ -865,14 +859,12 @@ sub transpose {
 
 sub add
 {
-    croak "Usage: \$matrix1->add(\$matrix2,\$matrix3);"
-      if (@_ != 3);
+    croak "Usage: \$matrix1->add(\$matrix2,\$matrix3);" if (@_ != 3);
 
     my($matrix1,$matrix2,$matrix3) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
     my($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
     my($rows3,$cols3) = ($matrix3->[1],$matrix3->[2]);
-    my($i,$j);
 
     croak "Math::MatrixReal::add(): matrix size mismatch"
       unless (($rows1 == $rows2) && ($rows1 == $rows3) &&
@@ -880,26 +872,23 @@ sub add
 
     $matrix1->_undo_LR();
 
-    for ( $i = 0; $i < $rows1; $i++ )
+    for ( my $i = 0; $i < $rows1; $i++ )
     {
-        for ( $j = 0; $j < $cols1; $j++ )
+        for ( my $j = 0; $j < $cols1; $j++ )
         {
-            $matrix1->[0][$i][$j] =
-            $matrix2->[0][$i][$j] + $matrix3->[0][$i][$j];
+            $matrix1->[0][$i][$j] = $matrix2->[0][$i][$j] + $matrix3->[0][$i][$j];
         }
     }
 }
 
 sub subtract
 {
-    croak "Usage: \$matrix1->subtract(\$matrix2,\$matrix3);"
-      if (@_ != 3);
+    croak "Usage: \$matrix1->subtract(\$matrix2,\$matrix3);" if (@_ != 3);
 
     my($matrix1,$matrix2,$matrix3) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
     my($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
     my($rows3,$cols3) = ($matrix3->[1],$matrix3->[2]);
-    my($i,$j);
 
     croak "Math::MatrixReal::subtract(): matrix size mismatch"
       unless (($rows1 == $rows2) && ($rows1 == $rows3) &&
@@ -907,12 +896,11 @@ sub subtract
 
     $matrix1->_undo_LR();
 
-    for ( $i = 0; $i < $rows1; $i++ )
+    for ( my $i = 0; $i < $rows1; $i++ )
     {
-        for ( $j = 0; $j < $cols1; $j++ )
+        for ( my $j = 0; $j < $cols1; $j++ )
         {
-            $matrix1->[0][$i][$j] =
-            $matrix2->[0][$i][$j] - $matrix3->[0][$i][$j];
+            $matrix1->[0][$i][$j] = $matrix2->[0][$i][$j] - $matrix3->[0][$i][$j];
         }
     }
 }
@@ -925,19 +913,15 @@ sub multiply_scalar
     my($matrix1,$matrix2,$scalar) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
     my($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
-    my($i,$j);
 
     croak "Math::MatrixReal::multiply_scalar(): matrix size mismatch"
       unless (($rows1 == $rows2) && ($cols1 == $cols2));
 
     $matrix1->_undo_LR();
 
-    for ( $i = 0; $i < $rows1; $i++ )
+    for ( my $i = 0; $i < $rows1; $i++ )
     {
-        for ( $j = 0; $j < $cols1; $j++ )
-        {
-            $matrix1->[0][$i][$j] = $matrix2->[0][$i][$j] * $scalar;
-        }
+        map { $matrix1->[0][$i][$_] = $matrix2->[0][$i][$_] * $scalar } (0 .. $cols1-1);
     }
 }
 
@@ -949,12 +933,10 @@ sub multiply
     my($matrix1,$matrix2) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
     my($rows2,$cols2) = ($matrix2->[1],$matrix2->[2]);
-    my($temp);
 
-    croak "Math::MatrixReal::multiply(): matrix size mismatch"
-      unless ($cols1 == $rows2);
+    croak "Math::MatrixReal::multiply(): matrix size mismatch" unless ($cols1 == $rows2);
 
-    $temp = $matrix1->new($rows1,$cols2);
+    my $temp = $matrix1->new($rows1,$cols2);
     for (my $i = 0; $i < $rows1; $i++ )
     {
         for (my $j = 0; $j < $cols2; $j++ )
@@ -1000,9 +982,9 @@ sub exponent {
                     }
                 return($temp);
             } else {   
-            # TODO: is this the right behaviour?
-                    carp "Cannot compute negative exponent, inverse does not exist";
-            return undef;
+               # TODO: is this the right behaviour?
+               carp "Cannot compute negative exponent, inverse does not exist";
+               return undef;
         }
     # matrix to zero power is identity matrix
     } elsif( $argument == 0 ){
@@ -1025,46 +1007,40 @@ sub exponent {
 
 sub min
 {
-    croak "Usage: \$minimum = Math::MatrixReal::min(\$number1,\$number2);"
-      if (@_ != 2);
+    croak "Usage: \$minimum = Math::MatrixReal::min(\$number1,\$number2);" if (@_ != 2);
 
-    return( $_[0] < $_[1] ? $_[0] : $_[1] );
+   $_[0] < $_[1] ? $_[0] : $_[1];
 }
 
 sub max
 {
-    croak "Usage: \$maximum = Math::MatrixReal::max(\$number1,\$number2);"
-      if (@_ != 2);
+    croak "Usage: \$maximum = Math::MatrixReal::max(\$number1,\$number2);" if (@_ != 2);
 
-    return( $_[0] > $_[1] ? $_[0] : $_[1] );
+    $_[0] > $_[1] ? $_[0] : $_[1];
 }
 
 sub kleene
 {
-    croak "Usage: \$minimal_cost_matrix = \$cost_matrix->kleene();"
-      if (@_ != 1);
+    croak "Usage: \$minimal_cost_matrix = \$cost_matrix->kleene();" if (@_ != 1);
 
     my($matrix) = @_;
     my($rows,$cols) = ($matrix->[1],$matrix->[2]);
-    my($i,$j,$k,$n);
-    my($temp);
 
-    croak "Math::MatrixReal::kleene(): matrix is not quadratic"
-      unless ($rows == $cols);
+    croak "Math::MatrixReal::kleene(): matrix is not quadratic" unless ($rows == $cols);
 
-    $temp = $matrix->new($rows,$cols);
+    my $temp = $matrix->new($rows,$cols);
     $temp->copy($matrix);
     $temp->_undo_LR();
-    $n = $rows;
-    for ( $i = 0; $i < $n; $i++ )
+    my $n = $rows;
+    for ( my $i = 0; $i < $n; $i++ )
     {
         $temp->[0][$i][$i] = min( $temp->[0][$i][$i] , 0 );
     }
-    for ( $k = 0; $k < $n; $k++ )
+    for ( my $k = 0; $k < $n; $k++ )
     {
-        for ( $i = 0; $i < $n; $i++ )
+        for ( my $i = 0; $i < $n; $i++ )
         {
-            for ( $j = 0; $j < $n; $j++ )
+            for ( my $j = 0; $j < $n; $j++ )
             {
                 $temp->[0][$i][$j] = min( $temp->[0][$i][$j] ,
                                         ( $temp->[0][$i][$k] +
@@ -1281,9 +1257,7 @@ sub solve_LR
                 $dimension++;
                 $x_vector->[0][($perm_col->[$i])][0] = 0;
             }
-        }
-        else
-        {
+        } else {
             $sum = $y_vector->[0][$i][0];
             for ( $j = ($i + 1); $j < $n; $j++ )
             {
@@ -1299,9 +1273,7 @@ sub solve_LR
         if ($dimension == $n)
         {
             $base_matrix->one();
-        }
-        else
-        {
+        } else {
             for ( $k = 0; $k < $dimension; $k++ )
             {
                 $base_matrix->[0][($perm_col->[($n-$k-1)])][$k] = 1;
@@ -1353,15 +1325,12 @@ sub invert_LR
                 {
                     $inv_matrix->[0][$i][$j] = $x_vector->[0][$i][0];
                 }
-            }
-            else
-            {
+            } else {
                 die "Math::MatrixReal::invert_LR(): unexpected error - please inform author!\n";
             }
         }
         return($inv_matrix);
-    }
-    else { return(); } # matrix is not invertible!
+    } else { return; } # matrix is not invertible!
 }
 
 sub condition
@@ -1371,8 +1340,7 @@ sub condition
 
     # make this work when given no args
 
-    croak "Usage: \$condition = \$matrix->condition(\$inverse_matrix);"
-      if (@_ != 2);
+    croak "Usage: \$condition = \$matrix->condition(\$inverse_matrix);" if (@_ != 2);
 
     my($matrix1,$matrix2) = @_;
     my($rows1,$cols1) = ($matrix1->[1],$matrix1->[2]);
@@ -1465,7 +1433,6 @@ sub scalar_product
     my($vector1,$vector2) = @_;
     my($rows1,$cols1) = ($vector1->[1],$vector1->[2]);
     my($rows2,$cols2) = ($vector2->[1],$vector2->[2]);
-    my($k,$sum);
 
     croak "Math::MatrixReal::scalar_product(): 1st vector is not a column vector"
       unless ($cols1 == 1);
@@ -1476,18 +1443,14 @@ sub scalar_product
     croak "Math::MatrixReal::scalar_product(): vector size mismatch"
       unless ($rows1 == $rows2);
 
-    $sum = 0;
-    for ( $k = 0; $k < $rows1; $k++ )
-    {
-        $sum += $vector1->[0][$k][0] * $vector2->[0][$k][0];
-    }
-    return($sum);
+    my $sum = 0;
+    map { $sum +=  $vector1->[0][$_][0] * $vector2->[0][$_][0] } ( 0 .. $rows1-1);
+    return $sum;
 }
 
 sub vector_product
 {
-    croak "Usage: \$vector_product = \$vector1->vector_product(\$vector2);"
-      if (@_ != 2);
+    croak "Usage: \$vector_product = \$vector1->vector_product(\$vector2);" if (@_ != 2);
 
     my($vector1,$vector2) = @_;
     my($rows1,$cols1) = ($vector1->[1],$vector1->[2]);
@@ -1537,7 +1500,7 @@ sub length
         $comp = $vector->[0][$k][0];
         $sum += $comp * $comp;
     }
-    return( sqrt( $sum ) );
+    return sqrt $sum;
 }
 
 sub _init_iteration
@@ -1894,9 +1857,7 @@ sub _pythag ($$)
         # NB: Not needed!: return 0.0 if ($aa == 0.0);
         my $t = $ab / $aa;
         return ($aa * sqrt(1.0 + $t*$t));
-    }
-    else
-    {
+    } else {
         return 0.0 if ($ab == 0.0);
         my $t = $aa / $ab;
         return ($ab * sqrt(1.0 + $t*$t));
@@ -2307,17 +2268,12 @@ sub tri_eigenvalues ($;$)
 sub eigenvalues ($){
     my ($matrix) = @_;
     my ($rows,$cols) = $matrix->dim();
-    my $i=0;
 
-    #return sym_eigenvalues($matrix) if $matrix->is_symmetric();
-    
     croak "Matrix is not quadratic" unless ($rows == $cols);
 
     if($matrix->is_upper_triangular() || $matrix->is_lower_triangular() ){
         my $l = Math::MatrixReal->new($rows,1);
-        for(;$i < $rows; $i++ ){
-            $l->[0][$i][0] = $matrix->[0][$i][$i];
-        }
+        map { $l->[0][$_][0] = $matrix->[0][$_][$_] } (0 .. $rows-1);
         return $l;
     }
 
@@ -2337,10 +2293,8 @@ sub sym_eigenvalues ($)
     my ($M) = @_;
     my ($rows, $cols) = ($M->[1], $M->[2]);
     
-    croak "Matrix is not quadratic"
-        unless ($rows == $cols); 
-    croak "Matrix is not symmetric"
-        unless ($M->is_symmetric());
+    croak "Matrix is not quadratic" unless ($rows == $cols); 
+    croak "Matrix is not symmetric" unless ($M->is_symmetric);
 
     # Copy matrix in temporary
     my $A = $M->clone();
@@ -2354,10 +2308,8 @@ sub sym_eigenvalues ($)
     # Allocate eigenvalues vector
     my $val = Math::MatrixReal->new($rows,1);
     # Fills it
-    for (my $i = 0; $i < $rows; $i++)
-    {
-        $val->[0][$i][0] = $diag->[$i];
-    }
+    map { $val->[0][$_][0] = $diag->[$_] } ( 0 .. $rows-1);
+
     return $val;
 }
 #TODO: docs+test
@@ -3052,18 +3004,17 @@ sub _not_equal
     my($object,$argument,$flag) = @_;
     my($name) = "'!='"; 
     my($rows,$cols) = ($object->[1],$object->[2]);
-    my($i,$j,$result);
 
     if ((defined $argument) && ref($argument) &&
         (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/))
     {
 	my ($r,$c) = $argument->dim;
 	return 1 unless ($r == $rows && $c == $cols );
-        $result = 0;
+    my $result = 0;
         NOTEQUAL:
-        for ( $i = 0; $i < $rows; $i++ )
+        for ( my $i = 0; $i < $rows; $i++ )
         {
-            for ( $j = 0; $j < $cols; $j++ )
+            for ( my $j = 0; $j < $cols; $j++ )
             {
                 if ($object->[0][$i][$j] != $argument->[0][$i][$j])
                 {
@@ -3072,10 +3023,8 @@ sub _not_equal
                 }
             }
         }
-        return($result);
-    }
-    else
-    {
+        return $result;
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3091,9 +3040,7 @@ sub _less_than
         if ((defined $flag) && $flag)
         {
             return( $argument->norm_one() < $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() < $argument->norm_one() );
         }
     }
@@ -3102,14 +3049,10 @@ sub _less_than
         if ((defined $flag) && $flag)
         {
             return( abs($argument) < $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() < abs($argument) );
         }
-    }
-    else
-    {
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3125,25 +3068,17 @@ sub _less_than_or_equal
         if ((defined $flag) && $flag)
         {
             return( $argument->norm_one() <= $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() <= $argument->norm_one() );
         }
-    }
-    elsif ((defined $argument) && !(ref($argument)))
-    {
+    } elsif ((defined $argument) && !(ref($argument))) {
         if ((defined $flag) && $flag)
         {
             return( abs($argument) <= $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() <= abs($argument) );
         }
-    }
-    else
-    {
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3159,25 +3094,17 @@ sub _greater_than
         if ((defined $flag) && $flag)
         {
             return( $argument->norm_one() > $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() > $argument->norm_one() );
         }
-    }
-    elsif ((defined $argument) && !(ref($argument)))
-    {
+    } elsif ((defined $argument) && !(ref($argument))) {
         if ((defined $flag) && $flag)
         {
             return( abs($argument) > $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() > abs($argument) );
         }
-    }
-    else
-    {
+    } else {
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
@@ -3193,20 +3120,14 @@ sub _greater_than_or_equal
         if ((defined $flag) && $flag)
         {
             return( $argument->norm_one() >= $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() >= $argument->norm_one() );
         }
-    }
-    elsif ((defined $argument) && !(ref($argument)))
-    {
+    } elsif ((defined $argument) && !(ref($argument))) {
         if ((defined $flag) && $flag)
         {
             return( abs($argument) >= $object->norm_one() );
-        }
-        else
-        {
+        } else {
             return( $object->norm_one() >= abs($argument) );
         }
     } else {
@@ -3230,18 +3151,15 @@ sub _exp {
 
 sub _clone
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'='"; 
-    my($temp);
+    my($object) = @_;
 
-    $temp = $object->new($object->[1],$object->[2]);
+    my $temp = $object->new($object->[1],$object->[2]);
     $temp->copy($object);
     $temp->_undo_LR();
-    return($temp);
+    return $temp;
 }
 
-1;
-
+42;
 __END__
 
 =head1 NAME
