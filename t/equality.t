@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 12;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -20,6 +20,7 @@ MATRIX
 ok( $matrix eq $matrix, 'eq overload works' );
 ok( $matrix == $matrix, '== overload works' );
 ok( $matrix != 2*$matrix, '!= overload works' );
+ok( $matrix ne 2*$matrix, 'ne overload works' );
 ok( ($matrix*1) == $matrix, '== overload works' );
 ok( $matrix == ($matrix*1), '== overload works' );
 ok( $matrix == ($matrix**1), '== overload works' );

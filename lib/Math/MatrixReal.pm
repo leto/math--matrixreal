@@ -46,7 +46,6 @@ use overload
       'gt' => '_greater_than',
       'ge' => '_greater_than_or_equal',
        '=' => '_clone',
-     'exp' => '_exp',
       '""' => '_stringify',
 'fallback' =>   undef;
 
@@ -82,36 +81,13 @@ sub new
     }
     bless $this, $class;
 }
-sub new_row {
-    croak "Usage: \$row = Math::MatrixReal->new_row( [ 1, 2, 3] );" unless @_ == 2 ;
-    my ($obj,$row) = @_;
-    my $class = ref($obj) || $obj || 'Math::MatrixReal';
-    my $n = $#{@$row};
-
-    croak "Math::MatrixReal::new_row(): Third argument must be an arrayref" unless ref $row eq "ARRAY";
-
-    my $matrix = Math::MatrixReal->new(1,$n);
-    return $matrix->each( sub { shift @$row } );
-}
-
-sub new_col {
-    croak "Usage: \$col = Math::MatrixReal->new_col( [ 1, 2, 3] );" unless @_ == 2;
-    my ($obj,$col) = @_;
-    my $class = ref($obj) || $obj || 'Math::MatrixReal';
-    my $n = $#{@$col};
-
-    croak "Math::MatrixReal::new_col(): Third argument must be an arrayref" unless ref $col eq "ARRAY";
-
-    my $matrix = Math::MatrixReal->new($n,1);
-    return $matrix->each( sub { shift @$col } );
-}
 
 sub new_diag {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );" unless (@_ == 2 );
     my ($proto,$diag) = @_;
     my $class = ref($proto) || $proto || 'Math::MatrixReal';
     my $matrix;
-    my $n = scalar(@$diag);
+    my $n = scalar @$diag;
 
     croak "Math::MatrixReal::new_diag(): Third argument must be an arrayref" unless (ref($diag) eq "ARRAY");
 
@@ -379,8 +355,7 @@ sub copy
 
 sub clone
 {
-    croak "Usage: \$twin_matrix = \$some_matrix->clone();"
-      if (@_ != 1);
+    croak "Usage: \$twin_matrix = \$some_matrix->clone();" if (@_ != 1);
 
     my($matrix) = @_;
     my($temp);
@@ -1484,8 +1459,7 @@ sub vector_product
 
 sub length
 {
-    croak "Usage: \$length = \$vector->length();"
-      if (@_ != 1);
+    croak "Usage: \$length = \$vector->length();" if (@_ != 1);
 
     my($vector) = @_;
     my($rows,$cols) = ($vector->[1],$vector->[2]);
@@ -2698,29 +2672,29 @@ sub _negate
 
 sub _transpose
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'~'"; 
-    my($temp);
-
-    $temp = $object->new($object->[2],$object->[1]);
+    my ($object) = @_;
+    my $temp = $object->new($object->[2],$object->[1]);
     $temp->transpose($object);
-    return($temp);
-
+    return $temp;
 }
 
 sub _boolean
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "bool"; 
+    my($object) = @_;
     my($rows,$cols) = ($object->[1],$object->[2]);
-    my($i,$j,$result);
 
-    #TODO: ugly...
-    $result = 0;
+    my $result = 0;
+#    $object->each( sub { 
+#        my ($x,$i,$j)=@_; 
+#        $result = 1 if (defined $object->[0][$i][$j] && $object->[0][$i][$j] != 0); 
+#    } );
+
+#    return $result;
+
     BOOL:
-    for ( $i = 0; $i < $rows; $i++ )
+    for ( my $i = 0; $i < $rows; $i++ )
     {
-        for ( $j = 0; $j < $cols; $j++ )
+        for ( my $j = 0; $j < $cols; $j++ )
         {
             if ($object->[0][$i][$j] != 0)
             {
@@ -3134,20 +3108,6 @@ sub _greater_than_or_equal
         croak "Math::MatrixReal $name: wrong argument type";
     }
 }
-sub _exp {
-    my ($matrix,$arg,$flag) = @_;
-    my $new_matrix = $matrix->clone();
-    my ($rows,$cols) = $matrix->dim();
-    
-    $new_matrix->_undo_LR();
-
-    croak "Math::MatrixReal::exp(): Matrix is not quadratic" unless ($rows == $cols);
-    croak "Math::MatrixReal::exp(): Only diagonal matrices supported" unless ( $matrix->is_diagonal() );
-
-    $new_matrix = $matrix->each_diag( sub { exp(shift) } );
-    return $new_matrix;
-
-}
 
 sub _clone
 {
@@ -3158,7 +3118,6 @@ sub _clone
     $temp->_undo_LR();
     return $temp;
 }
-
 42;
 __END__
 
@@ -4912,7 +4871,7 @@ function has an absolute value less than one in an area around the
 point "C<x(*)>" for which "C<Phi( x(*) ) = x(*)>" is to be true, and
 if the start vector "C<x(0)>" lies within that area!
 
-This is best verified grafically, which unfortunately is impossible
+This is best verified graphically, which unfortunately is impossible
 to do in this textual documentation!
 
 See literature on Numerical Analysis for details!
