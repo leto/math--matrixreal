@@ -17,9 +17,10 @@ $sol = Math::MatrixReal->new_from_cols([[1, 1, -1 ]] );
 
 SKIP : {
     skip  'solve_GSM ? ', 1;
+
 if ( $xn = $A->solve_GSM($x0,$b,$eps) ) {
     print $xn;  
-    ok( $xn - $sol < $eps, 'solve_GSM seems to work');
+    ok( ($xn - $sol) < $eps, 'solve_GSM seems to work');
 } else {
     ok( 0, 'solve_GSM' );
 }
