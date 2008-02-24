@@ -1,5 +1,5 @@
 $DEBUG = 0;
-$eps = 1e-8;
+our $eps = 1e-8;
 ######### help funcs
 sub ok_matrix ($$$)
 {
@@ -45,10 +45,11 @@ sub ok_eigenvectors ($$$;$)
     return;
 }
 sub similar($$;$) {
-    my ($x,$y) = @_;
-    my $eps = shift || $eps;
-    abs($x - $y) <= $eps ? return 1 : return 0;
+    my ($x,$y, $eps) = @_;
+    $eps ||= 1e-8;
+    abs($x-$y) < $eps ? 1 : 0;
 }
+
 sub _debug_info
 {
     my($text,$object,$argument,$flag) = @_;

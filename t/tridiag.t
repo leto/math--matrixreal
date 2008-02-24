@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 5;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -22,3 +22,15 @@ ok( ref $a eq 'Math::MatrixReal', 'new_tridiag returns correct object' );
 ok_matrix( $a, $b, 'new_tridiag seems to work' );
 my ($r,$c) = $a->dim;
 ok( $r == 4 && $c == 4, 'new_tridiag returns a matrix of the correct size' );
+
+my $matrix = Math::MatrixReal->new_tridiag( [ 6, 4, 2 ], [1,2,3,4], [1, 8, 9] );
+
+my $correct = <<'MAT';
+[  1.000000000000E+00  1.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+[  6.000000000000E+00  2.000000000000E+00  8.000000000000E+00  0.000000000000E+00 ]
+[  0.000000000000E+00  4.000000000000E+00  3.000000000000E+00  9.000000000000E+00 ]
+[  0.000000000000E+00  0.000000000000E+00  2.000000000000E+00  4.000000000000E+00 ]
+MAT
+
+ok( "$matrix" eq $correct, 'new_tridiag' );
+

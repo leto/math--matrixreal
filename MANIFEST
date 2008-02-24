@@ -11,7 +11,6 @@ README
 t/adjoint.t
 t/arith.t
 t/assign.t
-t/bak/funcs.pl
 t/basic.t
 t/bench
 t/bench_eigen.t
@@ -60,3 +59,4 @@ t/triang.t
 t/tridiag.t
 t/vecnorm.t
 TODO
+META.yml

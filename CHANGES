@@ -1,9 +1,12 @@
 Changes in v2.04 - leto 
-Sat Feb 23 17:41:24 EST 2008 
+Sat Feb 23 20:59:08 EST 2008 
 ---------------------------
+    * fixed pod errors
+    * $a->length does row+col vectors now
     * converted all tests except ext1.t to Test::More and added some overall Kwalitee 
     * fixed error with doing $string = $matrix . "\nStuff\n";
-    * new funcion new_tridiag (needs docs)
+    * new funcion new_tridiag 
+    * $matrix->min and $matrix->max now return the min/max element of a matrix
     * new function new_random added which looks like (with default options shown )
 
     # returns $n x $m matrix of real numbers between 0 and 10
@@ -20,6 +23,7 @@ Sat Feb 23 17:41:24 EST 2008
     * t/minimax.t created
     * t/positive.t created
     * t/gsm.t created
+    * t/similar.t created
 
 
 Changes in v2.03 - leto 

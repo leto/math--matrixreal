@@ -53,8 +53,8 @@ sub new
 {
     croak "Usage: \$new_matrix = Math::MatrixReal->new(\$rows,\$columns);" if (@_ != 3);
 
-    my ($proto,$rows,$cols) =  @_;
-    my $class = ref($proto) || $proto || 'Math::MatrixReal';
+    my ($self,$rows,$cols) =  @_;
+    my $class = ref($self) || $self || 'Math::MatrixReal';
 
     croak "Math::MatrixReal::new(): number of rows must be integer > 0"
       unless ($rows > 0 and $rows == int($rows) );
@@ -84,8 +84,7 @@ sub new
 
 sub new_diag {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );" unless (@_ == 2 );
-    my ($proto,$diag) = @_;
-    my $class = ref($proto) || $proto || 'Math::MatrixReal';
+    my ($self,$diag) = @_;
     my $matrix;
     my $n = scalar @$diag;
 
@@ -97,8 +96,7 @@ sub new_diag {
 }
 sub new_tridiag {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_tridiag( [ 1, 2, 3], [ 4, 5, 6, 7], [-1,-2,-3] );" unless (@_ == 4 );
-    my ($proto,$lower,$diag,$upper) = @_;
-    my $class = ref($proto) || $proto || 'Math::MatrixReal';
+    my ($self,$lower,$diag,$upper) = @_;
     my $matrix;
     my ($l,$n,$m) =   (scalar(@$lower),scalar(@$diag),scalar(@$upper)); 
     my ($k,$p)=(-1,-1);
@@ -121,7 +119,8 @@ sub new_tridiag {
 }
 
 sub new_random { 
-    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], integer => 1 } );" if (@_ < 2);
+    croak "Usage: \$new_matrix = Math::MatrixReal->new_random(\$n,\$m, { symmetric => 1, bounded_by => [-5,5], integer => 1 } );" 
+        if (@_ < 2);
     my ($self, $rows, $cols, $options ) = @_;
     (($options = $cols) and ($cols = $rows)) if ref $cols eq 'HASH';
     my ($min,$max) = defined $options->{bounded_by} ?  @{ $options->{bounded_by} } : ( 0, 10);
@@ -129,19 +128,27 @@ sub new_random {
     $self = ref($self) || $self || 'Math::MatrixReal';
    
     $cols ||= $rows; 
-    croak "Math::MatrixReal::new_random(): number of rows must = number of cols for symmetric option" if ($rows != $cols and $options->{symmetric} );
+    croak "Math::MatrixReal::new_random(): number of rows must = number of cols for symmetric option" 
+        if ($rows != $cols and $options->{symmetric} );
+
     croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" 
-	unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
-    croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" unless (defined $min && defined $max && $min < $max );
-    croak "Math::MatrixReal::new_random(): tridiag option only for square matrices"   if (($options->{tridiag} || $options->{tridiagonal}) && $rows != $cols);
-    croak "Math::MatrixReal::new_random(): diagonal option only for square matrices " if (($options->{diag} || $options->{diagonal}) && ($rows != $cols));
+    	unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
+
+    croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" 
+        unless (defined $min && defined $max && $min < $max );
+
+    croak "Math::MatrixReal::new_random(): tridiag option only for square matrices"   
+        if (($options->{tridiag} || $options->{tridiagonal}) && $rows != $cols);
+
+    croak "Math::MatrixReal::new_random(): diagonal option only for square matrices " 
+        if (($options->{diag} || $options->{diagonal}) && ($rows != $cols));
 
     my $matrix = Math::MatrixReal->new($rows,$cols);
     my $random_code = sub { $integer ? int($min + rand($max-$min)) : $min + rand($max-$min) } ;
 
     $matrix = $options->{diag} || $options->{diagonal} ? $matrix->each_diag($random_code) :  $matrix->each($random_code); 
     $matrix = $matrix->each( sub {my($e,$i,$j)=@_; ( abs($i-$j)>1 ) ?  0 : $e } ) if ($options->{tridiag} || $options->{tridiagonal} );
-    $options->{symmetric} ? ($matrix + ~$matrix) : $matrix;
+    $options->{symmetric} ? 0.5*($matrix + ~$matrix) : $matrix;
 }
 	
 sub new_from_string
@@ -149,8 +156,8 @@ sub new_from_string
     croak "Usage: \$new_matrix = Math::MatrixReal->new_from_string(\$string);"
       if (@_ != 2);
 
-    my ($proto,$string)  = @_;
-    my $class  = ref($proto) || $proto || 'Math::MatrixReal';
+    my ($self,$string)  = @_;
+    my $class  = ref($self) || $self || 'Math::MatrixReal';
     my ($line,$values);
     my ($rows,$cols);
     my ($row,$col);
@@ -185,23 +192,23 @@ sub new_from_string
 
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub new_from_cols { 
-    my $this = shift;
+    my $self = shift;
     my $extra_args = ( @_ > 1 && ref($_[-1]) eq 'HASH' ) ? pop : {};
     $extra_args->{_type} = 'column';
-    $this->_new_from_rows_or_cols(@_, $extra_args );
+    $self->_new_from_rows_or_cols(@_, $extra_args );
 }
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub new_from_columns {
-    my $this = shift;
-    $this->new_from_cols(@_);
+    my $self = shift;
+    $self->new_from_cols(@_);
 }
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub new_from_rows {
-    my $this = shift;
+    my $self = shift;
     my $extra_args = ( @_ > 1 && ref($_[-1]) eq 'HASH' ) ? pop : {};
     $extra_args->{_type} = 'row';
 
-    $this->_new_from_rows_or_cols(@_, $extra_args );
+    $self->_new_from_rows_or_cols(@_, $extra_args );
 }
 
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
@@ -210,24 +217,17 @@ sub _new_from_rows_or_cols {
     my $class = ref($proto) || $proto;
     my $ref_to_vectors = shift;
 
-    # these additional args are internal at the moment, 
-    # but in the future the user could pass e.g. {pad=>1} to
+    # these additional args are internal at the moment,  but in the future the user could pass e.g. {pad=>1} to
     # request padding
     my $args = pop;
     my $vector_type = $args->{_type};
     die "Internal ".__PACKAGE__." error" unless $vector_type =~ /^(row|column)$/;
 
-    # step back one frame because this private method is 
-    # not how the user called it
+    # step back one frame because this private method is  not how the user called it
     my $caller_subname = (caller(1))[3];
 
-    # note--this die() could be inconvenient if someone had something
-    # really fancy that knew how to be dereffed as an array 
-    # (can you do that with a tied scalar?), but I'm not putting
-    # the rest of the world through an eval--they can just
-    # deref and pass a reference themselves.  If that ever happens
-    # we can add an arg to skip this check
     croak "$caller_subname: need a reference to an array of ${vector_type}s" unless ref($ref_to_vectors) eq 'ARRAY';
+
     my @vectors = @{$ref_to_vectors};
     my $matrix;
     my $other_type = {row=>'column', column=>'row'}->{$vector_type};
@@ -273,8 +273,7 @@ sub _new_from_rows_or_cols {
         my @vector_dims = $current_vector->dim;
 
         #die unless the appropriate dimension is 1
-        croak "$caller_subname: I don't accept $other_type vectors"
-            unless ($vector_dims[ $vector_type eq 'row' ? 0 : 1 ] == 1) ;
+        croak "$caller_subname: I don't accept $other_type vectors" unless ($vector_dims[ $vector_type eq 'row' ? 0 : 1 ] == 1) ;
 
         # the other dimension is the length of our vector
         my $length =  $vector_dims[ $vector_type eq 'row' ? 1 : 0 ];
@@ -375,11 +374,8 @@ sub trace {
 
     croak "Math::MatrixReal::trace(): matrix is not quadratic" unless ($rows == $cols);
 
+    map { $trace += $matrix->[0][$_][$_] } (0 .. $cols-1);
 
-    for ( my $j = 0; $j < $cols; $j++ )
-    {
-        $trace += $matrix->[0][$j][$j];
-    }
     return $trace;
 }
 
@@ -566,77 +562,70 @@ sub _undo_LR
     croak "Usage: \$matrix->_undo_LR();"
       if (@_ != 1);
 
-    my($this) = @_;
+    my($self) = @_;
 
-    undef $this->[3];
-    undef $this->[4];
-    undef $this->[5];
+    undef $self->[3];
+    undef $self->[4];
+    undef $self->[5];
 }
 # brrr
 sub zero
 {
     croak "Usage: \$matrix->zero();" if (@_ != 1);
 
-    my($this) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
+    my ($self) = @_;
+    my ($rows,$cols) = ($self->[1],$self->[2]);
 
-    $this->_undo_LR();
+    $self->_undo_LR();
 
-    # Zero first row
-    for (my $j = 0; $j < $cols; $j++ )
-    {
-        $this->[0][0][$j] = 0.0;
-    }
-    # Then propagate to other rows
-    for (my $i = 0; $i < $rows; $i++)
-    {
-        @{$this->[0][$i]} = @{$this->[0][0]};
-    }
-   return $this;
+    # zero out first row 
+    map {  $self->[0][0][$_] = 0.0              } (0 .. $cols-1);
+    
+    # copy that to the other rows
+    map {  @{$self->[0][$_]} = @{$self->[0][0]} } (0 .. $rows-1);
+
+    return $self;
 }
 
 sub one
 {
-    croak "Usage: \$matrix->one();"
-      if (@_ != 1);
+    croak "Usage: \$matrix->one();" if (@_ != 1);
 
-    my($this) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
-    my($i,$j);
+    my ($self) = @_;
+    my ($rows,$cols) = ($self->[1],$self->[2]);
 
-    $this->zero(); # We rely on zero() efficiency
-    for (my $i = 0; $i < $rows; $i++ )
-    {
-        $this->[0][$i][$i] = 1.0;
-    }
-    return $this;
+    $self->zero(); # We rely on zero() efficiency
+
+    map { $self->[0][$_][$_] = 1.0 } (0 .. $rows-1);
+
+    return $self;
 }
 
 sub assign
 {
     croak "Usage: \$matrix->assign(\$row,\$column,\$value);" if (@_ != 4);
 
-    my($this,$row,$col,$value) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
+    my($self,$row,$col,$value) = @_;
+    my($rows,$cols) = ($self->[1],$self->[2]);
 
     croak "Math::MatrixReal::assign(): row index out of range" if (($row < 1) || ($row > $rows));
     croak "Math::MatrixReal::assign(): column index out of range" if (($col < 1) || ($col > $cols));
 
-    $this->_undo_LR();
-    $this->[0][--$row][--$col] = $value;
+    $self->_undo_LR();
+    $self->[0][--$row][--$col] = $value;
 }
 
 sub element
 {
     croak "Usage: \$value = \$matrix->element(\$row,\$column);" if (@_ != 3);
 
-    my($this,$row,$col) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
+    my($self,$row,$col) = @_;
+    my($rows,$cols) = ($self->[1],$self->[2]);
 
     croak "Math::MatrixReal::element(): row index out of range" if (($row < 1) || ($row > $rows));
     croak "Math::MatrixReal::element(): column index out of range" if (($col < 1) || ($col > $cols));
 
-    return( $this->[0][--$row][--$col] );
+    return( $self->[0][--$row][--$col] );
 }
 
 sub dim  #  returns dimensions of a matrix
@@ -652,8 +641,8 @@ sub norm_one  #  maximum of sums of each column
 {
     croak "Usage: \$norm_one = \$matrix->norm_one();" if (@_ != 1);
 
-    my($this) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
+    my($self) = @_;
+    my($rows,$cols) = ($self->[1],$self->[2]);
 
     my $max = 0.0;
     for (my $j = 0; $j < $cols; $j++)
@@ -661,7 +650,7 @@ sub norm_one  #  maximum of sums of each column
         my $sum = 0.0;
         for (my $i = 0; $i < $rows; $i++)
         {
-            $sum += abs( $this->[0][$i][$j] );
+            $sum += abs( $self->[0][$i][$j] );
         }
         $max = $sum if ($sum > $max);
     }
@@ -688,8 +677,10 @@ sub norm_frobenius {
 sub norm_p {
     my ($v,$p) = @_;
     # sanity check on $p
-    croak "Math::MatrixReal:norm_p: argument must be a row or column vector" unless ( $v->is_row_vector || $v->is_col_vector );
-    croak "Math::MatrixReal::norm_p: $p must be >= 1" unless ($p =~ m/Inf(inity)?/i || $p >= 1);
+    croak "Math::MatrixReal:norm_p: argument must be a row or column vector" 
+        unless ( $v->is_row_vector || $v->is_col_vector );
+    croak "Math::MatrixReal::norm_p: $p must be >= 1" 
+        unless ($p =~ m/Inf(inity)?/i || $p >= 1);
 
     if( $p =~ m/^(Inf|Infinity)$/i ){
         my $max = $v->element(1,1);
@@ -706,8 +697,8 @@ sub norm_max  #  maximum of sums of each row
 {
     croak "Usage: \$norm_max = \$matrix->norm_max();" if (@_ != 1);
 
-    my($this) = @_;
-    my($rows,$cols) = ($this->[1],$this->[2]);
+    my($self) = @_;
+    my($rows,$cols) = ($self->[1],$self->[2]);
 
     my $max = 0.0;
     for (my $i = 0; $i < $rows; $i++)
@@ -715,7 +706,7 @@ sub norm_max  #  maximum of sums of each row
         my $sum = 0.0;
         for (my $j = 0; $j < $cols; $j++)
         {
-            $sum += abs( $this->[0][$i][$j] );
+            $sum += abs( $self->[0][$i][$j] );
         }
         $max = $sum if ($sum > $max);
     }
@@ -982,14 +973,32 @@ sub exponent {
 
 sub min
 {
-    croak "Usage: \$minimum = Math::MatrixReal::min(\$number1,\$number2);" if (@_ != 2);
 
-   $_[0] < $_[1] ? $_[0] : $_[1];
+    if ( @_ == 1 ) {
+        my $matrix = shift;
+
+        croak "Usage: \$minimum = Math::MatrixReal::min(\$number1,\$number2) or $matrix->min" if (@_ > 2);
+        croak "invalid" unless ref $matrix eq 'Math::MatrixReal';
+
+        my $min = $matrix->element(1,1);
+        $matrix->each( sub { my ($e,$i,$j) = @_; $min = $e if $e < $min; } );
+        return $min; 
+    } 
+    $_[0] < $_[1] ? $_[0] : $_[1];
 }
 
 sub max
 {
-    croak "Usage: \$maximum = Math::MatrixReal::max(\$number1,\$number2);" if (@_ != 2);
+    if ( @_ == 1 ) {
+        my $matrix = shift;
+
+        croak "Usage: \$maximum = Math::MatrixReal::max(\$number1,\$number2) or $matrix->max" if (@_ > 2);
+        croak "Math::MatrixReal::max(\$matrix) \$matrix is not a Math::MatrixReal matrix" unless ref $matrix eq 'Math::MatrixReal';
+ 
+        my $max = $matrix->element(1,1);
+        $matrix->each( sub { my ($e,$i,$j) = @_; $max = $e if $e > $max; } );
+        return $max; 
+    } 
 
     $_[0] > $_[1] ? $_[0] : $_[1];
 }
@@ -1465,8 +1474,10 @@ sub length
     my($rows,$cols) = ($vector->[1],$vector->[2]);
     my($k,$comp,$sum);
 
-    croak "Math::MatrixReal::length(): vector is not a column vector"
-      unless ($cols == 1);
+    croak "Math::MatrixReal::length(): vector is not a row or column vector"
+      unless ($cols == 1 || $rows ==1 );
+
+    $vector = ~$vector if ($rows == 1 );
 
     $sum = 0;
     for ( $k = 0; $k < $rows; $k++ )
@@ -2602,7 +2613,7 @@ LATEX
         $s = "\$$args{name} = \$ " . $s;
     }
     $m->each( 
-        sub { my($x,$i,$j)=@_;
+        ub { my($x,$i,$j)=@_;
 
             $x = sprintf($args{format},$x);
 
@@ -3156,16 +3167,13 @@ the costs associated with each edge).
 =head2 Constructor Methods And Such
 
 =over 4
-=item *
 
-C<use Math::MatrixReal;>
+=item * use Math::MatrixReal;
 
 Makes the methods and overloaded operators of this module available
 to your program.
 
-=item *
-
-C<$new_matrix = new Math::MatrixReal($rows,$columns);>
+=item * $new_matrix = new Math::MatrixReal($rows,$columns);
 
 The matrix object constructor method. A new matrix of size $rows by $columns
 will be created, with the value C<0.0> for all elements.
@@ -3173,17 +3181,13 @@ will be created, with the value C<0.0> for all elements.
 Note that this method is implicitly called by many of the other methods
 in this module.
 
-=item *
-
-C<$new_matrix = $some_matrix-E<gt>>C<new($rows,$columns);>
+=item * $new_matrix = $some_matrix-E<gt>new($rows,$columns);
 
 Another way of calling the matrix object constructor method.
 
-Matrix "C<$some_matrix>" is not changed by this in any way.
+Matrix $some_matrix is not changed by this in any way.
 
-=item *
-
-C<$new_matrix = $matrix-E<gt>new_from_cols( [ $column_vector|$array_ref|$string, ... ] )>
+=item * $new_matrix = $matrix-E<gt>new_from_cols( [ $column_vector|$array_ref|$string, ... ] )
 
 Creates a new matrix given a reference to an array of any of the following:
 
@@ -3194,7 +3198,7 @@ Creates a new matrix given a reference to an array of any of the following:
 =item * references to arrays
 
 =item * strings properly formatted to create a column with Math::MatrixReal's
-C<new_from_string> command
+new_from_string command
 
 =back
 
@@ -3210,9 +3214,7 @@ will print
     [  2.000000000000E+00  4.000000000000E+00 ]
 
 
-=item * 
-
-C<new_from_rows( [ $row_vector|$array_ref|$string, ... ] )>
+=item * new_from_rows( [ $row_vector|$array_ref|$string, ... ] )
 
 Creates a new matrix given a reference to an array of any of the following:
 
@@ -3222,7 +3224,7 @@ Creates a new matrix given a reference to an array of any of the following:
 
 =item * references to arrays
 
-=item * strings properly formatted to create a row with Math::MatrixReal's C<new_from_string> command
+=item * strings properly formatted to create a row with Math::MatrixReal's new_from_string command
 
 =back
 
@@ -3238,9 +3240,7 @@ will print
         [  3.000000000000E+00  4.000000000000E+00 ]
 
 
-=item *
-
-C<$new_matrix = Math::MatrixReal-E<gt>new_random($rows, $cols, %options );>
+=item * $new_matrix = Math::MatrixReal-E<gt>new_random($rows, $cols, %options );
 
 This method allows you to create a random matrix with various properties controlled
 by the %options matrix, which is optional. The default values of the %options matrix
@@ -3259,9 +3259,7 @@ will print a random diagonal matrix with integer entries between zero and ten, s
     [  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00  8.000000000000E+00 ]
 
 
-=item *
-
-C<$new_matrix = Math::MatrixReal-E<gt>new_diag( $array_ref );>
+=item * $new_matrix = Math::MatrixReal-E<gt>new_diag( $array_ref );
 
 This method allows you to create a diagonal matrix by only specifying
 the diagonal elements. Example: 
@@ -3277,9 +3275,23 @@ will print
     [  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00  4.000000000000E+00 ]
 
 
-=item *
+=item * $new_matrix = Math::MatrixReal-E<gt>new_tridiag( $lower, $diag, $upper );
 
-C<$new_matrix = Math::MatrixReal-E<gt>>C<new_from_string($string);>
+This method allows you to create a tridiagonal matrix by only specifying
+the lower diagonal, diagonal and upper diagonal, respectively.
+
+    $matrix = Math::MatrixReal->new_tridiag( [ 6, 4, 2 ], [1,2,3,4], [1, 8, 9] );
+    print $matrix;
+
+will print
+
+    [  1.000000000000E+00  1.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
+    [  6.000000000000E+00  2.000000000000E+00  8.000000000000E+00  0.000000000000E+00 ]
+    [  0.000000000000E+00  4.000000000000E+00  3.000000000000E+00  9.000000000000E+00 ]
+    [  0.000000000000E+00  0.000000000000E+00  2.000000000000E+00  4.000000000000E+00 ]
+
+
+=item * $new_matrix = Math::MatrixReal-E<gt>new_from_string($string);
 
 This method allows you to read in a matrix from a string (for
 instance, from the keyboard, from a file or from your code).
@@ -3403,27 +3415,21 @@ the following warning will be printed to STDERR:
 If everything is okay, the method returns an object reference to the
 (newly allocated) matrix containing the elements you specified.
 
-=item *
-
-C<$new_matrix = $some_matrix-E<gt>shadow();>
+=item * $new_matrix = $some_matrix-E<gt>shadow();
 
 Returns an object reference to a B<NEW> but B<EMPTY> matrix
 (filled with zero's) of the B<SAME SIZE> as matrix "C<$some_matrix>".
 
 Matrix "C<$some_matrix>" is not changed by this in any way.
 
-=item *
-
-C<$matrix1-E<gt>copy($matrix2);>
+=item * $matrix1-E<gt>copy($matrix2);
 
 Copies the contents of matrix "C<$matrix2>" to an B<ALREADY EXISTING>
 matrix "C<$matrix1>" (which must have the same size as matrix "C<$matrix2>"!).
 
 Matrix "C<$matrix2>" is not changed by this in any way.
 
-=item *
-
-C<$twin_matrix = $some_matrix-E<gt>clone();>
+=item * $twin_matrix = $some_matrix-E<gt>clone();
 
 Returns an object reference to a B<NEW> matrix of the B<SAME SIZE> as
 matrix "C<$some_matrix>". The contents of matrix "C<$some_matrix>" have
@@ -3437,9 +3443,9 @@ Matrix "C<$some_matrix>" is not changed by this in any way.
 
 =head2 Matrix Row, Column and Element operations
 
-=item *
+=over 4
 
-C<$row_vector = $matrix-E<gt>row($row);>
+=item * $row_vector = $matrix-E<gt>row($row);
 
 This is a projection method which returns an object reference to
 a B<NEW> matrix (which in fact is a (row) vector since it has only
@@ -3448,9 +3454,7 @@ already been copied.
 
 Matrix "C<$matrix>" is not changed by this in any way.
 
-=item *
-
-C<$column_vector = $matrix-E<gt>column($column);>
+=item * $column_vector = $matrix-E<gt>column($column);
 
 This is a projection method which returns an object reference to
 a B<NEW> matrix (which in fact is a (column) vector since it has
@@ -3459,24 +3463,18 @@ only one column) to which column number "C<$column>" of matrix
 
 Matrix "C<$matrix>" is not changed by this in any way.
 
-=item *
-
-C<$matrix-E<gt>assign($row,$column,$value);>
+=item * $matrix-E<gt>assign($row,$column,$value);
 
 Explicitly assigns a value "C<$value>" to a single element of the
 matrix "C<$matrix>", located in row "C<$row>" and column "C<$column>",
 thereby replacing the value previously stored there.
 
-=item *
-
-C<$value = $matrix-E<gt>>C<element($row,$column);>
+=item * $value = $matrix-E<gt>element($row,$column);
 
 Returns the value of a specific element of the matrix "C<$matrix>",
 located in row "C<$row>" and column "C<$column>".
 
-=item *
-
-C<$new_matrix = $matrix-E<gt>each( \&function )>;
+=item * $new_matrix = $matrix-E<gt>each( \&function );
 
 Creates a new matrix by evaluating a code reference on each element of the 
 given matrix. The function is passed the element, the row index and the column
@@ -3501,9 +3499,7 @@ and stores the row and column indexes in $i and $j. Then it sets element [$i,$j]
 to the determinant of C<$matrix-E<gt>minor($i,$j)> if it is an "even" element, or C<-1*$matrix-E<gt>minor($i,$j)>
 if it is an "odd" element.
 
-=item *
-
-C<$new_matrix = $matrix-E<gt>each_diag( \&function )>;
+=item * $new_matrix = $matrix-E<gt>each_diag( \&function );
 
 Creates a new matrix by evaluating a code reference on each diagonal element of the 
 given matrix. The function is passed the element, the row index and the column
@@ -3511,36 +3507,31 @@ index, in that order. The value the function returns ( or the value of the last
 executed statement ) is the value given to the corresponding element in $new_matrix.
 
 
-=item * 
-
-C<$matrix-E<gt>swap_col( $col1, $col2 );>
+=item * $matrix-E<gt>swap_col( $col1, $col2 );
 
 This method takes two one-based column numbers and swaps the values of each element in each column.
 C<$matrix-E<gt>swap_col(2,3)> would replace column 2 in $matrix with column 3, and replace column
 3 with column 2. 
 
-=item * 
-
-C<$matrix-E<gt>swap_row( $row1, $row2 );>
+=item * $matrix-E<gt>swap_row( $row1, $row2 );
 
 This method takes two one-based row numbers and swaps the values of each element in each row.
 C<$matrix-E<gt>swap_row(2,3)> would replace row 2 in $matrix with row 3, and replace row
 3 with row 2. 
 
-=item * 
-
-C<$matrix-E<gt>assign_row( $row_number , $new_row_vector );>
+=item * $matrix-E<gt>assign_row( $row_number , $new_row_vector );
 
 This method takes a one-based row number and assigns row $row_number of $matrix 
 with $new_row_vector and returns the resulting matrix.
 C<$matrix-E<gt>assign_row(5, $x)> would replace row 2 in $matrix with the row vector $x.
 
+=back
 
 =head2 Matrix Operations
 
-=item *
+=over 4
 
-C<$det = $matrix-E<gt>det();>
+=item * $det = $matrix-E<gt>det();
 
 Returns the determinant of the matrix, without going through
 the rigamarole of computing a LR decomposition. This method should
@@ -3795,8 +3786,11 @@ C<$adjoint = $matrix-E<gt>adjoint();>
 The adjoint is just the transpose of the cofactor matrix. This method is 
 just an alias for C< ~($matrix-E<gt>cofactor)>.
 
+=back
 
 =head2 Arithmetic Operations
+
+=over 4
 
 =item *
 
@@ -3885,8 +3879,11 @@ be an integer. If it is zero, the identity matrix is returned. If a negative
 integer is given, the inverse will be computed (if it exists) and then raised
 the the absolute value of C<$integer>. The matrix must be quadratic.
 
+=back
 
 =head2 Boolean Matrix Operations
+
+=over 4
 
 =item * 
 
@@ -4048,6 +4045,8 @@ Returns a boolean value indicating if the matrix is a col vector.
 A col vector is a matrix which is nx1. Note that the 1x1 matrix is
 both a row and column vector.
 
+=back 
+
 =head2 Eigensystems
 
 =over 2
@@ -4138,9 +4137,7 @@ operation is similar to the householder() method, but potentially
 a little more efficient as the transformation matrix is not
 computed.
 
-=item *
-
-C<$l = $T-E<gt>tri_eigenvalues();>
+=item * $l = $T-E<gt>tri_eigenvalues();
 
 This method computesthe eigenvalues of the symmetric
 tridiagonal matrix B<T>. On output, $l is a vector
@@ -4152,9 +4149,9 @@ when eigenvectors are not needed.
 
 =head2 Miscellaneous 
 
-=item *
+=over 4
 
-C<$matrix-E<gt>zero();>
+=item * $matrix-E<gt>zero();
 
 Assigns a zero to every element of the matrix "C<$matrix>", i.e.,
 erases all values previously stored there, thereby effectively
@@ -4167,9 +4164,7 @@ characteristic of a Ring is that multiplication is not commutative,
 i.e., in general, "C<matrix1 * matrix2>" is not the same as
 "C<matrix2 * matrix1>"!)
 
-=item *
-
-C<$matrix-E<gt>one();>
+=item * $matrix-E<gt>one();
 
 Assigns one's to the elements on the main diagonal (elements (1,1),
 (2,2), (3,3) and so on) of matrix "C<$matrix>" and zero's to all others,
@@ -4259,14 +4254,23 @@ same matrix format.
 =item *
 
 C<$minimum = Math::MatrixReal::min($number1,$number2);>
+C<$minimum = Math::MatrixReal::min($matrix);>
+C<$minimum = $matrix->min;>
 
-Returns the minimum of the two numbers "C<number1>" and "C<number2>".
+Returns the minimum of the two numbers "C<number1>" and "C<number2>" if called with two arguments, 
+or returns the value of the smallest element of a matrix if called with one argument or as an object
+method.
 
 =item *
 
 C<$maximum = Math::MatrixReal::max($number1,$number2);>
+C<$maximum = Math::MatrixReal::max($number1,$number2);>
+C<$maximum = Math::MatrixReal::max($matrix);>
+C<$maximum = $matrix->max;>
 
-Returns the maximum of the two numbers "C<number1>" and "C<number2>".
+Returns the maximum of the two numbers "C<number1>" and "C<number2>" if called with two arguments,
+or returns the value of the largest element of a matrix if called with one arguemnt or as on object
+method.
 
 =item *
 
@@ -4742,10 +4746,10 @@ This is actually a shortcut for
 
   $length = sqrt( $vector->scalar_product($vector) );
 
-and returns the length of a given (column!) vector "C<$vector>".
+and returns the length of a given column or row vector "C<$vector>".
 
 Note that the "length" calculated by this method is in fact the
-"two"-norm of a vector "C<$vector>"!
+"two"-norm (also know as the Euclidean norm) of a vector "C<$vector>"!
 
 The general definition for norms of vectors is the following:
 
@@ -4962,6 +4966,8 @@ Experiment!
 
 Remember that in most cases, it is probably advantageous to first
 "normalize()" your equation system prior to solving it!
+
+=back
 
 =head1 OVERLOADED OPERATORS
 
