@@ -1,3 +1,14 @@
+Changes in v2.05 - leto 
+Sun Feb 24 14:33:52 EST 2008 
+----------------------------
+    * fix accidental use of "our" that broke old (like 5.5) Perl's
+      Thanks to srezic@cpan.org for the first FAILed report
+    * added $matrix->print_precision($n) to easily change the output 
+        to something a bit easier to read 
+        $a->print_precision(0) is useful for printing integer matrices nicely
+
+    * t/printprecision.t created
+
 Changes in v2.04 - leto 
 Sat Feb 23 20:59:08 EST 2008 
 ---------------------------
@@ -14,7 +25,7 @@ Sat Feb 23 20:59:08 EST 2008
 
 	new_random($n, %options ) # returns a square matrix
 
-      This have proven to be pretty useful in the unit tests of Math::MatrixReal so I figured 
+      This has proven to be pretty useful in the unit tests of Math::MatrixReal so I figured 
       others may want an easy way to generate a random matrix of your own flavor
 
     * t/rand.t created

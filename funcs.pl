@@ -1,5 +1,5 @@
 $DEBUG = 0;
-our $eps = 1e-8;
+my $eps = 1e-8;
 ######### help funcs
 sub ok_matrix ($$$)
 {

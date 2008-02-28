@@ -15,7 +15,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.04';
+$VERSION = '2.05';
 
 use overload
      '.'   => '_concat',
@@ -64,21 +64,15 @@ sub new
 
     my $this = [ [ ], $rows, $cols ];
 
-    # Creates first empty row
+    # Create the first empty row and pre-lengthen 
     my $empty = [ ];
-    $#$empty = $cols - 1;               # pre-lengthens the array
-   
+    $#$empty = $cols - 1;          
+
     map { $empty->[$_] = 0.0 } ( 0 .. $cols-1 );
 
-    $this->[0][0] = $empty;
+    # Create a row at a time
+    map { $this->[0][$_] = [ @$empty ] } ( 0 .. $rows-1);
 
-    # Creates other rows (by copying)
-    for (my $i = 1; $i < $rows; $i++)
-    {
-        my $arow = [ ];
-        @$arow = @$empty;
-        $this->[0][$i] = $arow;
-    }
     bless $this, $class;
 }
 
@@ -324,6 +318,13 @@ sub shadow
     return $matrix->new($matrix->[1],$matrix->[2]);
 }
 
+sub print_precision 
+{
+    my ($self,$n) = @_;
+    croak "\$matrix->print_precision(\$digits): \$digits must be a number >= 0"
+        unless (defined $n && $n >= 0);
+    $self->[4] = int $n;
+}
 
 sub copy
 {
@@ -505,10 +506,11 @@ sub cofactor {
         unless ($rows == $cols);
 
     # black magic ahead
-    my $cofactor = $matrix->each( sub { my($v,$i,$j) = @_;
-        ($i+$j) % 2 == 0 ? $matrix->minor($i,$j)->det()
-        : -1*$matrix->minor($i,$j)->det(); 
-        } );
+    my $cofactor = $matrix->each( 
+        sub { 
+            my($v,$i,$j) = @_;
+            ($i+$j) % 2 == 0 ? $matrix->minor($i,$j)->det() : -1*$matrix->minor($i,$j)->det(); 
+        });
     return ($cofactor);
 }
 
@@ -516,6 +518,7 @@ sub adjoint {
     my ($matrix) = @_;
     return ~($matrix->cofactor);
 }
+
 sub row
 {
     croak "Usage: \$row_vector = \$matrix->row(\$row);"
@@ -538,23 +541,22 @@ sub row
 sub col{ return (shift)->column(shift) }
 sub column
 {
-    croak "Usage: \$column_vector = \$matrix->column(\$column);"
-      if (@_ != 2);
+    croak "Usage: \$column_vector = \$matrix->column(\$column);" if (@_ != 2);
 
     my($matrix,$col) = @_;
     my($rows,$cols) = ($matrix->[1],$matrix->[2]);
-    my($temp);
-    my($i);
+    #my($temp);
+    #my($i);
+    my $col_vector;
 
     croak "Math::MatrixReal::column(): column index out of range" if ($col < 1 || $col > $cols);
 
     $col--;
-    $temp = $matrix->new($rows,1);
-    for ( $i = 0; $i < $rows; $i++ )
-    {
-        $temp->[0][$i][0] = $matrix->[0][$i][$col];
-    }
-    return($temp);
+    $col_vector = $matrix->new($rows,1);
+
+    map { $col_vector->[0][$_][0] = $matrix->[0][$_][$col] } (0 .. $rows-1);
+
+    return $col_vector;
 }
 
 sub _undo_LR
@@ -2719,16 +2721,14 @@ sub _boolean
 #TODO: ugly copy+paste
 sub _not_boolean
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'!'"; 
-    my($rows,$cols) = ($object->[1],$object->[2]);
-    my($i,$j,$result);
+    my ($object) = @_;
+    my ($rows,$cols) = ($object->[1],$object->[2]);
 
-    $result = 1;
+    my $result = 1;
     NOTBOOL:
-    for ( $i = 0; $i < $rows; $i++ )
+    for ( my $i = 0; $i < $rows; $i++ )
     {
-        for ( $j = 0; $j < $cols; $j++ )
+        for ( my $j = 0; $j < $cols; $j++ )
         {
             if ($object->[0][$i][$j] != 0)
             {
@@ -2742,30 +2742,32 @@ sub _not_boolean
 
 sub _stringify
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = '""'; 
-    my($rows,$cols) = ($object->[1],$object->[2]);
-    my($i,$j,$s);
+    my ($self) = @_;
+    my ($rows,$cols) = ($self->[1],$self->[2]);
 
-    $s = '';
-    for ( $i = 0; $i < $rows; $i++ )
+    my $precision = $self->[4];
+
+    my $format = !defined $precision ? '% #-19.12E ' : '% #-19.'.$precision.'f ';
+    $format = '% #-12d' if defined $precision && $precision == 0;
+
+    my $s = '';
+    for ( my $i = 0; $i < $rows; $i++ )
     {
         $s .= "[ ";
-        for ( $j = 0; $j < $cols; $j++ )
+        for ( my $j = 0; $j < $cols; $j++ )
         {
-            $s .= sprintf("% #-19.12E ", $object->[0][$i][$j]);
+            $s .= sprintf $format , $self->[0][$i][$j];
         }
         $s .= "]\n";
     }
-    return($s);
+    return $s;
 }
 
 sub _norm
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "abs"; 
+    my ($self) = @_;
 
-    return( $object->norm_one() );
+    return $self->norm_one() ;
 }
 
 sub _add
@@ -3248,10 +3250,10 @@ are { integer => 0, symmetric => 0, tridiagonal => 0, diagonal => 0, bounded_by 
 
  Example: 
 
-    $matrix = Math::MatrixReal->new_random(4, 4, { diagonal => 1, integer => 1 }  );
+    $matrix = Math::MatrixReal->new_random(4, { diagonal => 1, integer => 1 }  );
     print $matrix;
 
-will print a random diagonal matrix with integer entries between zero and ten, something like
+will print a 4x4 random diagonal matrix with integer entries between zero and ten, something like
 
     [  5.000000000000E+00  0.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]
     [  0.000000000000E+00  2.000000000000E+00  0.000000000000E+00  0.000000000000E+00 ]

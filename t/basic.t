@@ -8,7 +8,7 @@ do 'funcs.pl';
 my $BENCH = 0; # Some basic benchmarks on operations
 my $DEBUG2 = 0;
 my $DEBUG = 0;
-my $bsize = 100; # For somebenches
+my $bsize = 200; # For somebenches
 
 my $string = "[ 1 2 3 ]\n[ 2 2 -1 ]\n[ 1 1 1 ]\n";
 my $matrix33 = Math::MatrixReal->new_from_string($string);

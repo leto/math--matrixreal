@@ -7,7 +7,9 @@ Kleene.pod
 lib/Math/MatrixReal.pm
 Makefile.PL
 MANIFEST
+META.yml
 README
+example/bench.pl
 t/adjoint.t
 t/arith.t
 t/assign.t
@@ -27,12 +29,13 @@ t/each.t
 t/eigen_3x3.t
 t/eigen_7x7.t
 t/eigen_NxN.t
+t/equality.t
 t/exponent.t
 t/ext1.t
-t/equality.t
 t/gramian.t
-t/inverse.t
+t/gsm.t
 t/inequality.t
+t/inverse.t
 t/is_LR.t
 t/isrowcol.t
 t/latex.t
@@ -41,6 +44,7 @@ t/matlab.t
 t/minimax.t
 t/minor.t
 t/norm.t
+t/normality.t
 t/orthogonal.t
 t/periodic.t
 t/positive.t
@@ -49,6 +53,7 @@ t/quadratic.t
 t/rand.t
 t/rank.t
 t/scinotation.t
+t/similar.t
 t/spectral.t
 t/stringify.t
 t/swap.t
@@ -58,5 +63,5 @@ t/transpose.t
 t/triang.t
 t/tridiag.t
 t/vecnorm.t
+t/yacas.t
 TODO
-META.yml
