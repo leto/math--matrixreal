@@ -79,13 +79,13 @@ sub new
 sub new_diag {
     croak "Usage: \$new_matrix = Math::MatrixReal->new_diag( [ 1, 2, 3] );" unless (@_ == 2 );
     my ($self,$diag) = @_;
-    my $matrix;
     my $n = scalar @$diag;
 
     croak "Math::MatrixReal::new_diag(): Third argument must be an arrayref" unless (ref($diag) eq "ARRAY");
 
-    $matrix = Math::MatrixReal->new($n,$n);
-    $matrix = $matrix->each_diag( sub { shift @$diag } );
+    my $matrix = Math::MatrixReal->new($n,$n);
+
+    map { $matrix->[0][$_][$_] = shift @$diag } ( 0 .. $n-1);
     return $matrix;
 }
 sub new_tridiag {
@@ -2674,11 +2674,9 @@ sub _concat
 }
 sub _negate
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "neg"; 
-    my($temp);
+    my($object) = @_;
 
-    $temp = $object->new($object->[1],$object->[2]);
+    my $temp = $object->new($object->[1],$object->[2]);
     $temp->negate($object);
     return($temp);
 }
@@ -2697,12 +2695,6 @@ sub _boolean
     my($rows,$cols) = ($object->[1],$object->[2]);
 
     my $result = 0;
-#    $object->each( sub { 
-#        my ($x,$i,$j)=@_; 
-#        $result = 1 if (defined $object->[0][$i][$j] && $object->[0][$i][$j] != 0); 
-#    } );
-
-#    return $result;
 
     BOOL:
     for ( my $i = 0; $i < $rows; $i++ )
@@ -2827,11 +2819,10 @@ sub _subtract
 
 sub _exponent 
 {
-    my($matrix,$argument,$flag) = @_;
+    my($matrix, $exp) = @_;
     my($rows,$cols) = ($matrix->[1],$matrix->[2]);
-    my($name) = "'**'"; 
 
-    return $matrix->exponent( $argument );
+    return $matrix->exponent( $exp );
 }
 sub _divide
 {
@@ -2928,30 +2919,27 @@ sub _multiply
 
 sub _assign_add
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'+='"; 
+    my($object,$argument) = @_;
 
     return( &_add($object,$argument,undef) );
 }
 
 sub _assign_subtract
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'-='"; 
+    my($object,$argument) = @_;
 
     return( &_subtract($object,$argument,undef) );
 }
 
 sub _assign_multiply
 {
-    my($object,$argument,$flag) = @_;
-#   my($name) = "'*='"; 
+    my($object,$argument) = @_;
 
     return( &_multiply($object,$argument,undef) );
 }
 
 sub _assign_exponent {
-    my($object,$arg,$flag) = @_;
+    my($object,$arg) = @_;
     return ( &_exponent($object,$arg,undef) );
 }
 
