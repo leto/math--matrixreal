@@ -5088,8 +5088,8 @@ Converts the given matrix into a string.
 Uses scientific representation to keep precision loss to a minimum in case
 you want to read this string back in again later with "new_from_string()".
 
-Uses a 13-digit mantissa and a 20-character field for each element so that
-lines will wrap nicely on an 80-column screen.
+By default a 13-digit mantissa and a 20-character field for each element is used
+so that lines will wrap nicely on an 80-column screen. 
 
 Examples:
 
