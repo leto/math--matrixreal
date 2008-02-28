@@ -48,6 +48,7 @@ t/normality.t
 t/orthogonal.t
 t/periodic.t
 t/positive.t
+t/printprecision.t
 t/product.t
 t/quadratic.t
 t/rand.t
