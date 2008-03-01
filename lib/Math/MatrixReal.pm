@@ -5329,10 +5329,12 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.04.
+This man page documents Math::MatrixReal version 2.05.
 
-The latest version can always be found at
-http://leto.net/code/Math-MatrixReal/
+The latest released version can always be found at
+http://leto.net/code/Math-MatrixReal/ and there is also a 
+subversion repository available at
+http://leto.net/svn/Math-MatrixReal/ .
 
 =head1 AUTHORS
 

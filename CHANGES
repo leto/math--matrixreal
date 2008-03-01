@@ -3,12 +3,12 @@ Fri Feb 29 21:58:47 EST 2008
 ----------------------------
     * fix accidental use of "our" that broke old (like 5.5) Perl's
       Thanks to srezic@cpan.org for the first FAILed report
-    * added $matrix->print_precision($n) to easily change the output 
+    * added $matrix->display_precision($n) to easily change the output 
         to something a bit easier to read 
-        $a->print_precision(0) is useful for printing integer matrices nicely
+        $a->display_precision(0) is useful for printing integer matrices nicely
     * NEED print_precision() docs near stringify
 
-    * t/printprecision.t created
+    * t/display_precision.t created
     * example/ directory created with some benchmark scripts
 
 Changes in v2.04 - leto 
