@@ -49,6 +49,43 @@ use overload
       '""' => '_stringify',
 'fallback' =>   undef;
 
+=head1 NAME
+
+Math::MatrixReal - Matrix of Reals
+
+Implements the data type "matrix of real numbers" (and consequently also
+"vector of real numbers").
+
+=head1 SYNOPSIS
+
+my $a = Math::MatrixReal->new_random(5, 5);
+
+my $b = $a->new_random(10, 30, { symmetric=>1, bounded_by=>[-1,1] });
+
+my $c = $b * $a ** 3;
+
+my $d = $b->new_from_rows( [ [ 5, 3 ,4], [3, 4, 5], [ 2, 4, 1 ] ] );
+
+print $a;
+
+my $row        = ($a * $b)->row(3);
+
+my $col        = (5*$c)->col(2);
+
+my $transpose  = ~$c;
+
+my $transpose  = $c->transpose;
+
+my $inverse    = $a->inverse; 
+
+my $inverse    = 1/$a;
+
+my $inverse    = $a ** -1;
+
+my $determinant= $a->det;
+
+=cut
+
 sub new
 {
     croak "Usage: \$new_matrix = Math::MatrixReal->new(\$rows,\$columns);" if (@_ != 3);
@@ -318,12 +355,29 @@ sub shadow
     return $matrix->new($matrix->[1],$matrix->[2]);
 }
 
-sub print_precision 
+=over 4
+
+=item * $matrix->display_precision($integer)
+
+Sets the default precision when matrices are printed or stringified.
+$matrix->display_precision(0) will only show the integer part of all the
+entries of $matrix and $matrix->display_precision() will return to the default
+scientific display notation. This method does not effect the precision of the
+calculations.
+
+=back
+
+=cut 
+
+sub display_precision 
 {
     my ($self,$n) = @_;
-    croak "\$matrix->print_precision(\$digits): \$digits must be a number >= 0"
-        unless (defined $n && $n >= 0);
-    $self->[4] = int $n;
+    if (defined $n) { 
+        croak "Usage: \$matrix->display_precision(\$nonnegative_integer);" if ($n < 0);
+        $self->[4] = int $n;
+    } else {
+        $self->[4] = undef;
+    }
 }
 
 sub copy
@@ -3122,37 +3176,8 @@ sub _clone
 42;
 __END__
 
-=head1 NAME
 
-Math::MatrixReal - Matrix of Reals
-
-Implements the data type "matrix of reals" (and consequently also
-"vector of reals").
-
-=head1 DESCRIPTION
-
-Implements the data type "matrix of reals", which can be used almost
-like any other basic Perl type thanks to B<OPERATOR OVERLOADING>, i.e.,
-
-  $product = $matrix1 * $matrix2;
-
-does what you would like it to do (a matrix multiplication).
-
-Also features many important operations and methods: matrix norm,
-matrix transposition, matrix inverse, determinant of a matrix, order
-and numerical condition of a matrix, scalar product of vectors, vector
-product of vectors, vector length, projection of row and column vectors,
-a comfortable way for reading in a matrix from a file, the keyboard or
-your code, and many more.
-
-Allows to solve linear equation systems using an efficient algorithm
-known as "L-R-decomposition" and several approximative (iterative) methods.
-
-Features an implementation of Kleene's algorithm to compute the minimal
-costs for all paths in a graph with weighted edges (the "weights" being
-the costs associated with each edge).
-
-=head1 SYNOPSIS
+=head1 FUNCTIONS
 
 =head2 Constructor Methods And Such
 

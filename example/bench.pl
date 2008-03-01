@@ -11,7 +11,7 @@ for my $matrix ( @matrices ) {
         my ($r,$c) = $matrix->dim;
         print "Benchmarking $r x $c matrix\n";
 
-        timethese($iter*10, {
+        timethese($iter, {
               'overload_left_multiply  '     => sub { 7*$matrix                          },
               'overload_right_multiply '     => sub { $matrix*7                          },
 

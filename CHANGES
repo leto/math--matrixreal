@@ -1,5 +1,5 @@
 Changes in v2.05 - leto 
-Wed Feb 27 22:12:40 EST 2008 
+Fri Feb 29 21:58:47 EST 2008 
 ----------------------------
     * fix accidental use of "our" that broke old (like 5.5) Perl's
       Thanks to srezic@cpan.org for the first FAILed report

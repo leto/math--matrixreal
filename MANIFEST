@@ -2,6 +2,7 @@ Build.PL
 CHANGES
 CREDITS
 example/bench.pl
+example/bench_mult.pl
 example/bench_new_diag.pl
 funcs.pl
 GOALS
