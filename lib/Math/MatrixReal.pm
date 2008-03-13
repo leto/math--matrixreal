@@ -163,7 +163,7 @@ sub new_random {
         if ($rows != $cols and $options->{symmetric} );
 
     croak "Math::MatrixReal::new_random(): number of rows must be integer > 0" 
-    	unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
+        unless ($rows > 0 and  $rows == int($rows) ) && ($cols > 0 and $cols == int($cols) ) ;
 
     croak "Math::MatrixReal::new_random(): bounded_by interval length must be > 0" 
         unless (defined $min && defined $max && $min < $max );
@@ -182,8 +182,8 @@ sub new_random {
     $options->{symmetric} ? 0.5*($matrix + ~$matrix) : $matrix;
 }
 	
-sub new_from_string
-{
+sub new_from_string#{{{
+{#{{{
     croak "Usage: \$new_matrix = Math::MatrixReal->new_from_string(\$string);"
       if (@_ != 2);
 
@@ -219,7 +219,7 @@ sub new_from_string
 			}
 		} 
 		return $this; 
-}
+}#}}}#}}}
 
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub new_from_cols { 
@@ -433,7 +433,22 @@ sub trace {
 
     return $trace;
 }
+sub submatrix {
+    my $self = shift;
+    my ($x1, $y1, $x2, $y2) = @_;
+    croak "Math::MatrixReal::submatrix(): indices must be positive integers"
+        unless ($x1 >= 1 && $x2 >= 1 && $y1 >=1 && $y2 >=1 );
+    my($rows,$cols) = ($self->[1],$self->[2]);
+    my($sr,$sc)     = ( 1+abs($x1-$x2), 1+abs($y1-$y2) );
+    my $submatrix = $self->new( $sr, $sc );
 
+    for (my $i = $x1-1; $i < $x2; $i++ ) {
+        for (my $j = $y1-1; $j < $y2; $j++ ) {
+            $submatrix->[0][$i-($x1-1)][$j-($y1-1)] = $self->[0][$i][$j];
+        }
+    }
+    return $submatrix;
+}
 ## return the minor corresponding to $r and $c
 ## eliminate row $r and col $c , and return the $r-1 by $c-1 matrix
 sub minor {

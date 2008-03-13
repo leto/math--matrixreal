@@ -58,6 +58,7 @@ t/similar.t
 t/spectral.t
 t/stringify.t
 t/swap.t
+t/submatrix.t
 t/symmetric.t
 t/trace.t
 t/transpose.t
