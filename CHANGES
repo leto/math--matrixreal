@@ -1,3 +1,14 @@
+Changes in v2.06 - leto 
+Sun Apr 13 19:57:25 EDT 2008 
+----------------------------
+    * added submatrix() (exactly the same behavior as sec() from PDL, for 2-D matrices )
+        Backstory: I was reading through "Mastering Algorithms with Perl" and
+        it says that it is not possible to do this in Math::MatrixReal without 
+        iterating through all the elements of the matrix.  Now it is wrong.
+    * t/submatrix.t created
+    * !!!NEED documentation for submatrix()
+
+
 Changes in v2.05 - leto 
 Fri Feb 29 21:58:47 EST 2008 
 ----------------------------

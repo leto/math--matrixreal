@@ -15,7 +15,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.05';
+$VERSION = '2.06';
 
 use overload
      '.'   => '_concat',
@@ -291,7 +291,10 @@ sub _new_from_rows_or_cols {
             } else {
                 $current_vector = $class->new_from_string( '[ '. join( " ]\n[ ", @array) ." ]\n" );
             }
-        } elsif ( $ref ne 'HASH' and $current_vector->isa('Math::MatrixReal') ) {
+        } elsif ( $ref ne 'HASH' and 
+                ( $current_vector->isa('Math::MatrixReal') || 
+                  $current_vector->isa('Math::MatrixComplex')
+                ) ) {
             # it's already a Math::MatrixReal something.
             # we don't need to do anything, it will all
             # work out
@@ -5344,7 +5347,7 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.05.
+This man page documents Math::MatrixReal version 2.06.
 
 The latest released version can always be found at
 http://leto.net/code/Math-MatrixReal/ and there is also a 
