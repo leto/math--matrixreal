@@ -62,4 +62,11 @@ sub _debug_info
     print "$text: \$obj='$object' \$arg='$argument' \$flag='$flag'\n";
 }
 
+sub assert_dies($;$)
+{
+    my ($code,$msg) = @_;
+    eval { &$code };
+    $@ ? ok(1, $msg) : ok (0, $msg );
+}
+
 1;

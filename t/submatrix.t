@@ -17,11 +17,13 @@ my $submatrix1 = $matrix->new_from_rows([ [5,6], [8,9] ]);
 my $submatrix2 = $matrix->new_from_rows([ [5] ]);
 ok_matrix($submatrix1, $matrix->submatrix(2,2,3,3) , "submatrix");
 ok_matrix($submatrix2, $matrix->submatrix(2,2,2,2) , "submatrix");
-print $matrix->submatrix(3,3,2,2);
+
+#print $matrix->submatrix(3,3,2,2);
 #ok_matrix($submatrix1, $matrix->submatrix(3,3,2,2) , "submatrix");
 
-eval { $matrix->submatrix(0,1,2,3); };
-$@ ? ok(1,"submatrix") : ok(0);
-
-eval { $matrix->submatrix(1,1,2,-3); };
-$@ ? ok(1,"submatrix") : ok(0);
+{
+    assert_dies ( sub { $matrix->submatrix(0,1,2,3) } , q{indices must be > 0} );
+}
+{
+    assert_dies ( sub { $matrix->submatrix(1,1,2,-3) }, q{indices cannot be negative} );
+}
