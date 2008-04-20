@@ -8,6 +8,7 @@ package Math::MatrixReal;
 
 use strict;
 use Carp;
+use Data::Dumper;
 use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
 require Exporter;
 
@@ -1366,6 +1367,7 @@ sub invert_LR
       unless ((defined $matrix->[3]) && ($rows == $cols));
 
     $n = $rows;
+    #print Dumper [ $matrix ];
     if ($matrix->[0][$n-1][$n-1] != 0)
     {
         $inv_matrix = $matrix->new($n,$n);
@@ -1388,7 +1390,10 @@ sub invert_LR
             }
         }
         return($inv_matrix);
-    } else { return; } # matrix is not invertible!
+    } else {   
+        warn __PACKAGE__ . qq{: matrix not invertible\n};
+        return; 
+    } 
 }
 
 sub condition
@@ -2838,14 +2843,13 @@ sub _add
 {
     my($object,$argument,$flag) = @_;
     my($name) = "'+'"; 
-    my($temp);
 
     if ((defined $argument) && ref($argument) &&
         (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/))
     {
         if (defined $flag)
         {
-            $temp = $object->new($object->[1],$object->[2]);
+            my $temp = $object->new($object->[1],$object->[2]);
             $temp->add($object,$argument);
             return($temp);
         }
@@ -2865,17 +2869,16 @@ sub _subtract
 {
     my($object,$argument,$flag) = @_;
     my($name) = "'-'"; 
-    my($temp);
 
     if ((defined $argument) && ref($argument) &&
         (ref($argument) !~ /^SCALAR$|^ARRAY$|^HASH$|^CODE$|^REF$/))
     {
         if (defined $flag)
         {
-            $temp = $object->new($object->[1],$object->[2]);
+            my $temp = $object->new($object->[1],$object->[2]);
             if ($flag) { $temp->subtract($argument,$object); }
             else       { $temp->subtract($object,$argument); }
-            return($temp);
+            return $temp;
         }
         else
         {
