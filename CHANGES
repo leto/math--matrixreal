@@ -6,6 +6,7 @@ Sun Apr 13 19:57:25 EDT 2008
         it says that it is not possible to do this in Math::MatrixReal without 
         iterating through all the elements of the matrix.  Now it is wrong.
     * t/submatrix.t created
+    * t/decompose_LR.t created
     * !!!NEED documentation for submatrix()
 
 

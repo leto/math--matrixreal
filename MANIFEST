@@ -22,6 +22,7 @@ t/bool.t
 t/cofactor.t
 t/concat.t
 t/condition.t
+t/decompose_LR.t
 t/det.t
 t/diag.t
 t/div.t
