@@ -27,6 +27,8 @@ END
 $correct->display_precision(0);
 ok( "$matrix" eq "$correct", 'display_precision(0)' );
 
-eval { $matrix->display_precision(-42) };
-
-ok( $@ , 'display_precision dies on negative arg, matey!' );
+{
+    assert_dies ( sub { Math::MatrixReal->new(5,5)->display_precision(-42) },
+                'display_precision dies on negative arg, matey!' 
+    );
+}
