@@ -16,7 +16,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.06';
+$VERSION = '2.07_01';
 
 use overload
      '.'   => '_concat',
@@ -5350,12 +5350,11 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.06.
+This man page documents Math::MatrixReal version 2.08.
 
 The latest released version can always be found at
-http://leto.net/code/Math-MatrixReal/ and there is also a 
-subversion repository available at
-http://leto.net/svn/Math-MatrixReal/ .
+http://leto.net/code/Math-MatrixReal/ and there is also a git repository at
+http://leto.net/gitweb/?p=Math-MatrixReal.git .
 
 =head1 AUTHORS
 
@@ -5373,7 +5372,7 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2008 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
+Copyright (c) 1996-2009 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
 All rights reserved.
 
 =head1 LICENSE AGREEMENT
