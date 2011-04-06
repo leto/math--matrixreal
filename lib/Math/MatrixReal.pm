@@ -9,6 +9,7 @@ package Math::MatrixReal;
 use strict;
 use Carp;
 use Data::Dumper;
+use Scalar::Util qw/reftype/;
 use vars qw(@ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
 require Exporter;
 
@@ -258,7 +259,7 @@ sub _new_from_rows_or_cols {
     # step back one frame because this private method is  not how the user called it
     my $caller_subname = (caller(1))[3];
 
-    croak "$caller_subname: need a reference to an array of ${vector_type}s" unless ref($ref_to_vectors) eq 'ARRAY';
+    croak "$caller_subname: need a reference to an array of ${vector_type}s" unless reftype($ref_to_vectors) eq 'ARRAY';
 
     my @vectors = @{$ref_to_vectors};
     my $matrix;
