@@ -1,3 +1,9 @@
+Changes in v2.08 - Jonathan "Duke" Leto
+April 11 2011
+---------------------------
+    * Fix t/matlab.t failing on Windows (RT #64629)
+    * Make reference check less strict in _new_from_row_or_cols (requested by MJD)
+
 Changes in v2.06 - leto 
 Sun Apr 13 19:57:25 EDT 2008 
 ----------------------------
