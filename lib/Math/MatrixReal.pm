@@ -4294,7 +4294,7 @@ same matrix format.
 
 C<$minimum = Math::MatrixReal::min($number1,$number2);>
 C<$minimum = Math::MatrixReal::min($matrix);>
-C<$minimum = $matrix->min;>
+C<<$minimum = $matrix->min;>>
 
 Returns the minimum of the two numbers "C<number1>" and "C<number2>" if called with two arguments, 
 or returns the value of the smallest element of a matrix if called with one argument or as an object
@@ -4305,7 +4305,7 @@ method.
 C<$maximum = Math::MatrixReal::max($number1,$number2);>
 C<$maximum = Math::MatrixReal::max($number1,$number2);>
 C<$maximum = Math::MatrixReal::max($matrix);>
-C<$maximum = $matrix->max;>
+C<<$maximum = $matrix->max;>>
 
 Returns the maximum of the two numbers "C<number1>" and "C<number2>" if called with two arguments,
 or returns the value of the largest element of a matrix if called with one arguemnt or as on object
