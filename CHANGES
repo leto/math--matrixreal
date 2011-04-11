@@ -2,6 +2,8 @@ Changes in v2.08 - Jonathan "Duke" Leto
 April 11 2011
 ---------------------------
     * Fix t/matlab.t failing on Windows (RT #64629)
+    * Applied patch from RT #51669 (POD rendering)
+    * Applied patch from RT #61334 (fix croak in new_from_string)
     * Make reference check less strict in _new_from_row_or_cols (requested by MJD)
 
 Changes in v2.06 - leto 
