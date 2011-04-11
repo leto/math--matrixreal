@@ -1,6 +1,6 @@
 #  Copyright (c) 1996, 1997 by Steffen Beyer. All rights reserved.
 #  Copyright (c) 1999 by Rodolphe Ortalo. All rights reserved.
-#  Copyright (c) 2001-2008 by Jonathan Leto. All rights reserved.
+#  Copyright (c) 2001-2011 by Jonathan Leto. All rights reserved.
 #  This package is free software; you can redistribute it and/or
 #  modify it under the same terms as Perl itself.
 
@@ -17,7 +17,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.07_01';
+$VERSION = '2.08';
 
 use overload
      '.'   => '_concat',
