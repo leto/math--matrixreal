@@ -20,7 +20,7 @@ swig/system.i
 MYMETA.yml
 META.yml
 Makefile.PL
-Math-MatrixReal-*.gz
+Math-MatrixReal-*
 cover_db/*
 META.json
 MYMETA.json
