@@ -210,8 +210,10 @@ sub new_from_string#{{{
 			$rows++; 
 	} 
 	if ($string !~ m/^\s*$/) {
-		print "Math::MatrixReal::new_from_string(): syntax error in input string";
-		print "String is\n$string\n---\n"; croak; } 
+        chomp $string;
+        my $error_msg = "Math::MatrixReal::new_from_string(): syntax error in input string: $string";
+        croak $error_msg;
+    }
 		if ($rows == 0) { croak "Math::MatrixReal::new_from_string(): empty input string"; } 
 		if ($warn) { warn "Math::MatrixReal::new_from_string(): missing elements will be set to zero!\n"; } 
 		$this = Math::MatrixReal::new($class,$rows,$cols); 
