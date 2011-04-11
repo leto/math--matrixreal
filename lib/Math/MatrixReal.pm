@@ -5353,9 +5353,8 @@ Set::IntegerRange, Set::IntegerFast .
 
 This man page documents Math::MatrixReal version 2.08.
 
-The latest released version can always be found at
-http://leto.net/code/Math-MatrixReal/ and there is also a git repository at
-http://leto.net/gitweb/?p=Math-MatrixReal.git .
+The latest code can be found at
+https://github.com/leto/math--matrixreal .
 
 =head1 AUTHORS
 
@@ -5373,7 +5372,7 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2009 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
+Copyright (c) 1996-2011 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
 All rights reserved.
 
 =head1 LICENSE AGREEMENT
