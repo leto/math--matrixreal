@@ -2694,8 +2694,8 @@ LATEX
     if( $args{name} ){
         $s = "\$$args{name} = \$ " . $s;
     }
-    $m->each( 
-        ub { my($x,$i,$j)=@_;
+    $m->each(
+        sub { my($x,$i,$j)=@_;
 
             $x = sprintf($args{format},$x);
 
