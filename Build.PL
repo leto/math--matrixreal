@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'Test::Most' => 0,
         'File::Spec' => 0,
     },
+    configure_requires => { 'Module::Build' => 0.38 },
     add_to_cleanup      => [ 'Math::MatrixReal-*' ],
     create_makefile_pl => 'traditional',
     meta_merge     => {
