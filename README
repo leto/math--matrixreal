@@ -1,47 +1,26 @@
 # Math::MatrixReal
 
-http://github.com/leto/math--matrixreal
+Report bugs and submit patches at http://github.com/leto/math--matrixreal
 
-Contents of this file:
-----------------------
-    -   Legal stuff
-    -   Requirements
-    -   What does it do
-    -   Preliminary steps for use with Perl prior to version 5.002
-    -   How to install it
-    -   Version history
-    -   Credits
-    -   Final note
+## Requirements:
 
-Legal stuff:
-------------
-Copyright (c) 1996, 1997 by Steffen Beyer.
-              1999 by Rodolphe Ortalo.
-	      2001-2008 by Jonathan Leto.
-All rights reserved.
-This package is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
-
-Requirements:
--------------
 Perl version 5.003 or higher capable of "overloading" (overload.pm).
 
-What does it do:
-----------------
+## What does it do:
 
-Math::MatrixReal - Matrix of Reals
+### Math::MatrixReal - Matrix of Reals
 
 Implements the data type "matrix of reals" (and consequently also
 "vector of reals") which can be used almost like any other basic
 Perl type thanks to OPERATOR OVERLOADING, i.e.,
 
-    $A = $matrix1 * $matrix2;
-    $B = $A ** 2;
-    $C = $A + 2*B;
-    $D = $C - $B/2;
+    $A       = $matrix1 * $matrix2;
+    $B       = $A ** 2;
+    $C       = $A + 2*B;
+    $D       = $C - $B/2;
     $inverse = $C ** -1;
     $inverse = 1/$C;
-    
+
 does what you would like it to do.
 
 Also features many important operations and methods: matrix norm,
@@ -61,70 +40,35 @@ the costs associated with each edge).
 Allows to solve the eigensystem of a real symmetric matrix, using
 Householder transformation and QL decomposition.
 
-New Module::Build Installation Instructions
-------------------------------------------------
+## Installation Instructions
 
 Since Math::MatrixReal 2.03, Module::Build is used for the build process, but
-a Makefile.PL is still generated for older installations. If you do not have Module::Build, please
-read the "Old Installation Instructions".
+a Makefile.PL is still generated for older installations. If you do not have
+Module::Build, please read the OLD_README file.
 
 The build and install Math::MatrixReal run the commands
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+    perl Build.PL
+    ./Build
+    ./Build test
+    ./Build install
 
-Or, if you're on a platform (like DOS or Windows) that doesn't require
-the "./" notation, you can do this:
-
-        perl Build.PL
-        Build
-        Build test
-        Build install
-
-
-Old Installation Instructions (should still work):
--------------------------------------------------
-
-Preliminary steps for use with Perl prior to version 5.002:
------------------------------------------------------------
-
-Edit the "Makefile.PL" file in this package and change the line
-
-    'VERSION_FROM'	=> 'MatrixReal.pm',
-
-to
-
-    'VERSION'		=> '2.04',
-
-
-How to install it:
-------------------
-
-Please unpack and build this package OUTSIDE the Perl source and distribution
-tree!!
-
- 1) Change directory to the directory that has been created by unpacking this
-    package ("Math-MatrixReal-1.3/").
-
- 2) Type "perl Makefile.PL".
-    (Or whatever the name and path of your Perl 5 binary is)
-    Alternatively you can type, e.g., "perl Makefile.PL PREFIX=/home/doe"
-    to install the module in the home directory, e.g. John Doe...
-
- 3) Type "make".
-
- 3.5) Optionally, type "make test" to test the build and/or benchmark
-    your system a little.
-
- 4) Type "make install".
-
-
-# Version history:
+## Version history:
 
 See the CHANGES file.
 
-# Credits:
+## Credits:
 
 See the CREDITS file.
+
+## Copyright
+
+Copyright (c)
+    1996, 1997 by Steffen Beyer.
+    1999 by Rodolphe Ortalo.
+    2001-2011 by Jonathan Leto.
+
+All rights reserved.
+
+This package is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
