@@ -71,3 +71,4 @@
 
 # Avoid archives of this distribution
 \bMath-MatrixReal-[\d\.\_]+
+\.*swp
