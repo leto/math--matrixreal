@@ -24,3 +24,4 @@ my $builder = Module::Build->new(
 );
 
 $builder->create_build_script();
+print "Have an awesome day!\n";
