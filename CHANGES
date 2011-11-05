@@ -212,5 +212,18 @@ Jan 10 2002
 	* t/orthogonal.t created
 	* is_orthogonal() function added
 	
-
 	
+Version 1.3 included the eigenvalues/eigenvectors computation methods,
+added by Rodolphe Ortalo. Some test/bench programs were added also,
+especially for these methods.
+
+The documentation of the "new_from_string()" method was also slightly
+changed because it had proven to be incomplete and misleading.
+
+Version 1.2 changed the "new()" and "new_from_string()" methods so
+that they don't fail anymore if an empty class name is given to them
+(instead, "Math::MatrixReal" is used as the default).
+
+Version 1.1 fixed a bug in the "kleene()" method.
+
+Version 1.0 was the initial release.

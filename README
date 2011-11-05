@@ -1,4 +1,4 @@
-Math::MatrixReal v2.06
+# Math::MatrixReal
 
 http://github.com/leto/math--matrixreal
 
@@ -121,71 +121,10 @@ tree!!
  4) Type "make install".
 
 
-Version history:
-----------------
+# Version history:
 
-Version 1.0 was the initial release.
+See the CHANGES file.
 
-Version 1.1 fixed a bug in the "kleene()" method.
+# Credits:
 
-Version 1.2 changed the "new()" and "new_from_string()" methods so
-that they don't fail anymore if an empty class name is given to them
-(instead, "Math::MatrixReal" is used as the default).
-
-The documentation of the "new_from_string()" method was also slightly
-changed because it had proven to be incomplete and misleading.
-
-Version 1.3 included the eigenvalues/eigenvectors computation methods,
-added by Rodolphe Ortalo. Some test/bench programs were added also,
-especially for these methods.
-
-Please see the CHANGES file for newer version history.
-
-(NOTE:  The change from 1.9 to version 2.01 was not a major change, 
-we just didn't start out with leading zeroes in the original versioning,
-and ran out of decimal digits for minor updates.)
-
-Credits:
---------
-
-As always, many thanks to Andreas Koenig <andreas.koenig@mind.de>
-for his relentless support and efforts as upload manager of the CPAN!
-
-Also many thanks to Stu Smith <stu@cs.uml.edu> for raising the questions
-concerning the "new_from_string()" method (whose documentation was mis-
-leading and incomplete)!
-
-Many thanks to Steffen Beyer himself for being very open to third-party
-additions. (Of course, this acknowledgment is due to Rodolphe. :-)
-
-Final note:
------------
-
-Please send all comments/bugs/patches to Jonathan Leto <jonathan@leto.net>,
-as I have taken over module maintainer-ship as of version 1.4.
-
-Original Final note:
-
-If you need any assistance or have any comments, problems, suggestions,
-findings, complaints, questions, insights, compliments or donations to give ;-)
-then please don't hesitate to send me a mail:
-
-sb@engelschall.com (Steffen Beyer)
-
-You can also contact me if you think it's relevant (e.g. especially
-for compliments or donations ;-)):
-
-ortalo@laas.fr (Rodolphe Ortalo)
-
-In fact I'd be glad if you could drop me an e-mail when you are using this
-package, so I can see how much interest exists in it and how much time is
-reasonable to spend on its further development.
-
-Therefore, I would also be glad to know what you liked and what you disliked
-about this package!
-
-And I would also be very interested to know what your application is in
-which you found this package to be useful, just to get an idea what can
-all be done with it and in which direction it should be developed further.
-
-Many thanks in advance!!
+See the CREDITS file.
