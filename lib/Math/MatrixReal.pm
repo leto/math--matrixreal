@@ -7,6 +7,7 @@
 package Math::MatrixReal;
 
 use strict;
+use warnings;
 use Carp;
 use Data::Dumper;
 use Scalar::Util qw/reftype/;
@@ -17,7 +18,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.08';
+$VERSION = '2.09';
 
 use overload
      '.'   => '_concat',
@@ -5357,7 +5358,7 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.08.
+This man page documents Math::MatrixReal version 2.09
 
 The latest code can be found at
 https://github.com/leto/math--matrixreal .
@@ -5365,9 +5366,9 @@ https://github.com/leto/math--matrixreal .
 =head1 AUTHORS
 
 Steffen Beyer <sb@engelschall.com>, Rodolphe Ortalo <ortalo@laas.fr>,
-Jonathan Leto <jonathan@leto.net>.
+Jonathan "Duke" Leto <jonathan@leto.net>.
 
-Currently maintained by Jonathan Leto, send all bugs/patches to me.
+Currently maintained by Jonathan "Duke" Leto, send all bugs/patches to me.
 
 =head1 CREDITS
 
@@ -5378,7 +5379,7 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2011 by Steffen Beyer, Rodolphe Ortalo, Jonathan Leto.
+Copyright (c) 1996-2011 by Steffen Beyer, Rodolphe Ortalo, Jonathan "Duke" Leto.
 All rights reserved.
 
 =head1 LICENSE AGREEMENT
