@@ -66,7 +66,7 @@ See the CREDITS file.
 Copyright (c)
     1996, 1997 by Steffen Beyer.
     1999 by Rodolphe Ortalo.
-    2001-2011 by Jonathan Leto.
+    2001-2011 by Jonathan "Duke" Leto.
 
 All rights reserved.
 
