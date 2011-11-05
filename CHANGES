@@ -1,3 +1,8 @@
+Changes in v2.09 - Jonathan "Duke" Leto
+November 2011
+--------------------------
+    * as_latex() now works and is tested properly
+
 Changes in v2.08 - Jonathan "Duke" Leto
 April 11 2011
 ---------------------------
