@@ -2666,23 +2666,22 @@ sub as_yacas{
 
     return $s;
 }
-#TODO: any ideas for a good test?
+
 sub as_latex{
     my ($m) = shift;
-    my %args = ( 
-        format => "%s",
-        name => "",
-        align => "c",
-        @_);
+    my %args = (
+        format       => "%s",
+        name         => "",
+        align        => "c",
+        display_math => 0,
+    @_);
 
 
     my ($row,$col) = $m->dim;
     my $inside;
     my $s = <<LATEX;
-\$
 \\left( \\begin{array}{%COLS%}
 %INSIDE%\\end{array} \\right)
-\$
 LATEX
     $args{align} = lc $args{align};
     if( $args{align} !~ m/^(c|l|r)$/ ){
@@ -2692,11 +2691,11 @@ LATEX
     $s =~ s/%COLS%/$args{align} x $col/em;
 
     if( $args{name} ){
-        $s = "\$$args{name} = \$ " . $s;
+        $s = "$args{name} = $s";
     }
     $m->each(
-        sub { my($x,$i,$j)=@_;
-
+        sub {
+            my ($x,$i,$j) = @_;
             $x = sprintf($args{format},$x);
 
             # last element in each row gets a \\
@@ -2710,6 +2709,11 @@ LATEX
             }
         } 
     );
+    if($args{displaymath}){
+            $s = "\\[$s\\]";
+    } else {
+            $s = "\$$s\$";
+    }
     $s =~ s/%INSIDE%/$inside/gm;
     return $s;
 }
@@ -3197,7 +3201,7 @@ sub _clone
     $temp->_undo_LR();
     return $temp;
 }
-42;
+{ no warnings; 42 }
 __END__
 
 
