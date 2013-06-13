@@ -5,6 +5,9 @@ use Math::MatrixReal;
 use strict;
 do 'funcs.pl';
 
+my $zero = sprintf '%E', 0;
+my ($pad) = $zero =~ /E00(\d+)$/;
+
 my $b = Math::MatrixReal->new_from_string(<<XXX);
 [ 1 1 0 0 ]
 [ 1 2 2 0 ]
@@ -31,6 +34,12 @@ my $correct = <<'MAT';
 [  0.000000000000E+00  4.000000000000E+00  3.000000000000E+00  9.000000000000E+00 ]
 [  0.000000000000E+00  0.000000000000E+00  2.000000000000E+00  4.000000000000E+00 ]
 MAT
+
+# Determine number of digits in exponents beyond the libc 'standard' of two
+# and pad out the expected result.
+my $zero = sprintf '%E', 0;
+my ($pad) = $zero =~ m/E\+00(\d+)$/;
+$correct =~ s/([eE])([+-])(\d\d)/$1$2$pad$3/g if defined $pad;
 
 ok( "$matrix" eq $correct, 'new_tridiag' );
 
