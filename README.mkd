@@ -1,8 +1,10 @@
 # Math::MatrixReal
 
-Report bugs and submit patches at http://github.com/leto/math--matrixreal
+NxN Real Matrices in Perl
 
-## Requirements:
+[![Build Status](https://secure.travis-ci.org/leto/math--matrixreal.png)](http://travis-ci.org/leto/math--matrixreal)
+
+Report bugs and submit patches at http://github.com/leto/math--matrixreal
 
 Perl version 5.003 or higher capable of "overloading" (overload.pm).
 
@@ -63,10 +65,11 @@ See the CREDITS file.
 
 ## Copyright
 
-Copyright (c)
-    1996, 1997 by Steffen Beyer.
+    1996-1997 by Steffen Beyer.
+
     1999 by Rodolphe Ortalo.
-    2001-2011 by Jonathan "Duke" Leto.
+
+    2001-2013 by Jonathan "Duke" Leto.
 
 All rights reserved.
 
