@@ -10,7 +10,7 @@ before_install:
     - cpanm Test::Pod # optional dependency
 
 install:
-    - cpanm -v --installdeps --notest
+    - cpanm -v --installdeps --notest .
 
 script: "perl Build.PL; ./Build test"
 # branches:
