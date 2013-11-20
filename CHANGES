@@ -1,3 +1,8 @@
+Changes in v2.10 - Jonathan "Duke" Leto
+November 2013
+--------------------------
+    * Fix tests on Windows, thanks to Russell Jenkins <veryrusty@gmail.com>
+
 Changes in v2.09 - Jonathan "Duke" Leto
 November 2011
 --------------------------

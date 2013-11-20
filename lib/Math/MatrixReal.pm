@@ -18,7 +18,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.09';
+$VERSION = '2.10';
 
 use overload
      '.'   => '_concat',
@@ -5358,7 +5358,7 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.09
+This man page documents Math::MatrixReal version 2.10
 
 The latest code can be found at
 https://github.com/leto/math--matrixreal .
