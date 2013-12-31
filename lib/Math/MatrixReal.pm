@@ -3565,9 +3565,9 @@ C<$matrix-E<gt>swap_row(2,3)> would replace row 2 in $matrix with row 3, and rep
 
 =item * $matrix-E<gt>assign_row( $row_number , $new_row_vector );
 
-This method takes a one-based row number and assigns row $row_number of $matrix 
+This method takes a one-based row number and assigns row $row_number of $matrix
 with $new_row_vector and returns the resulting matrix.
-C<$matrix-E<gt>assign_row(5, $x)> would replace row 2 in $matrix with the row vector $x.
+C<$matrix-E<gt>assign_row(5, $x)> would replace row 5 in $matrix with the row vector $x.
 
 =back
 
