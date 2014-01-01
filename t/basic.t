@@ -6,7 +6,7 @@ use Math::MatrixReal;
 do 'funcs.pl';
 
 my $BENCH = 0; # Some basic benchmarks on operations
-my $DEBUG2 = 10;
+my $DEBUG2 = 0;
 my $DEBUG = 0;
 my $bsize = 200; # For somebenches
 
