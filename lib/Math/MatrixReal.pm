@@ -3489,6 +3489,22 @@ Matrix "C<$some_matrix>" is not changed by this in any way.
 
 =over 4
 
+=item * $value = $matrix-E<gt>element($row,$column);
+
+Returns the value of a specific element of the matrix "C<$matrix>",
+located in row "C<$row>" and column "C<$column>".
+
+B<NOTE:> Unlike Perl, matrices are indexed with base-one indexes. Thus, the
+first element of the matrix is placed in the B<first> line, B<first> column:
+
+    $elem = $matrix->element(1, 1); # first element of the matrix.
+    
+=item * $matrix-E<gt>assign($row,$column,$value);
+
+Explicitly assigns a value "C<$value>" to a single element of the
+matrix "C<$matrix>", located in row "C<$row>" and column "C<$column>",
+thereby replacing the value previously stored there.
+
 =item * $row_vector = $matrix-E<gt>row($row);
 
 This is a projection method which returns an object reference to
@@ -3506,17 +3522,6 @@ only one column) to which column number "C<$column>" of matrix
 "C<$matrix>" has already been copied.
 
 Matrix "C<$matrix>" is not changed by this in any way.
-
-=item * $matrix-E<gt>assign($row,$column,$value);
-
-Explicitly assigns a value "C<$value>" to a single element of the
-matrix "C<$matrix>", located in row "C<$row>" and column "C<$column>",
-thereby replacing the value previously stored there.
-
-=item * $value = $matrix-E<gt>element($row,$column);
-
-Returns the value of a specific element of the matrix "C<$matrix>",
-located in row "C<$row>" and column "C<$column>".
 
 =item * $new_matrix = $matrix-E<gt>each( \&function );
 
