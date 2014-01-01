@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 7;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -6,7 +6,7 @@ use Math::MatrixReal;
 do 'funcs.pl';
 
 my $BENCH = 0; # Some basic benchmarks on operations
-my $DEBUG2 = 0;
+my $DEBUG2 = 10;
 my $DEBUG = 0;
 my $bsize = 200; # For somebenches
 
@@ -52,6 +52,27 @@ unless ($@){
 } else {
 	ok(0, 'new_from_string dies');
 }
+
+## Test Reshape
+my $matrix43 = Math::MatrixReal->new_from_string(<<"MATRIX");
+
+    [  1    5    9  ]
+    [  2    6   10  ]
+    [  3    7   11  ]
+    [  4    8   12  ]
+
+MATRIX
+print "$matrix43" if $DEBUG2;
+unless ($@){
+    ok(1, 'new_from_string doesn\'t die');
+} else {
+    ok(0, 'new_from_string dies');
+}
+
+my $matrix43_r = Math::MatrixReal->reshape(4, 3, [1..12]);
+print "$matrix43_r" if $DEBUG2;
+
+ok($matrix43_r == $matrix43, "Reshape works");
 
 #
 # test the LR decomposition
