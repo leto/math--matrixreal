@@ -21,7 +21,7 @@ require Exporter;
 $VERSION = '2.10';
 
 use overload
-     '.'   => '_concat',
+       '.' => '_concat',
      'neg' => '_negate',
        '~' => '_transpose',
     'bool' => '_boolean',
@@ -50,7 +50,7 @@ use overload
       'ge' => '_greater_than_or_equal',
        '=' => '_clone',
       '""' => '_stringify',
-'fallback' =>   undef;
+'fallback' => undef;
 
 =head1 NAME
 
@@ -70,6 +70,8 @@ my $c = $b * $a ** 3;
 my $d = $b->new_from_rows( [ [ 5, 3 ,4], [3, 4, 5], [ 2, 4, 1 ] ] );
 
 print $a;
+
+my ($nrows, $ncols) = $a->size;
 
 my $row        = ($a * $b)->row(3);
 
@@ -114,6 +116,11 @@ sub new
     map { $this->[0][$_] = [ @$empty ] } ( 0 .. $rows-1);
 
     bless $this, $class;
+}
+
+sub size {
+    my ($self) = @_;
+    return ($self->[1], $self->[2]);
 }
 
 sub new_diag {
@@ -3488,6 +3495,12 @@ Matrix "C<$some_matrix>" is not changed by this in any way.
 =head2 Matrix Row, Column and Element operations
 
 =over 4
+
+=item * ($nrows, $ncols) = $matrix-E<gt>size;
+
+This method returns the matrix sizes (number of rows and number of columns).
+It can be useful for different tasks, and namely for debugging operations with
+large matrices.
 
 =item * $row_vector = $matrix-E<gt>row($row);
 

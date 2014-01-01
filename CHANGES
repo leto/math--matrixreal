@@ -1,3 +1,6 @@
+
+    * Add size() accessor to obtain number of lines/columns for a matrix.
+
 Changes in v2.10 - Jonathan "Duke" Leto
 November 2013
 --------------------------
