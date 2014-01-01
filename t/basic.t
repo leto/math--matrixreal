@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 8;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
@@ -35,6 +35,8 @@ unless ($@){
 	ok(0, 'new_from_string dies');
 }
 
+
+
 my $c1 =   2  /  3;
 my $c2 =  -2  /  5;
 my $c3 =  26  /  9;
@@ -52,6 +54,26 @@ unless ($@){
 } else {
 	ok(0, 'new_from_string dies');
 }
+
+
+## Test matrix size accessors
+my $matrix23 = Math::MatrixReal->new_from_string(<<"MATRIX");
+
+      [   3    2    0   ]
+      [   0    3    2   ]
+
+MATRIX
+print "$matrix23" if $DEBUG2;
+unless ($@){
+    ok(1, 'new_from_string doesn\'t die');
+} else {
+    ok(0, 'new_from_string dies');
+}
+
+my @size = $matrix23->size;
+is $size[0], 2, 'Matrix has correct number of lines';
+is $size[1], 3, 'Matrix has correct number of columns';
+
 
 #
 # test the LR decomposition
