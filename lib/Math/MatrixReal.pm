@@ -247,6 +247,19 @@ sub new_from_rows {
     $self->_new_from_rows_or_cols(@_, $extra_args );
 }
 
+sub reshape {
+    my ($self, $rows, $cols, $values) = @_;
+
+    my @cols = ();
+    my $p = 0;
+    for my $c (1..$cols) {
+        push @cols, [@{$values}[$p .. $p + $rows - 1]];
+        $p += $rows;
+    }
+
+    return $self->new_from_cols( \@cols );
+}
+
 # from Math::MatrixReal::Ext1 (msouth@fulcrum.org)
 sub _new_from_rows_or_cols {
     my $proto = shift;
@@ -3482,6 +3495,22 @@ is the method that the operator "=" is overloaded to when you type
 C<$a = $b>, when C<$a> and C<$b> are matrices.
 
 Matrix "C<$some_matrix>" is not changed by this in any way.
+
+=item * $matrix = Math::MatrixReal->reshape($rows, $cols, $array_ref);
+
+Return a matrix with the specified dimensions (C<$rows> x C<$cols>)  whose
+elements are taken from the array reference C<$array_ref>.  The elements of
+the matrix are accessed in column-major order (like Fortran arrays are
+stored).
+
+     $matrix = Math::MatrixReal->reshape(4, 3, [1..12]);
+
+Creates the following matrix:
+
+    [ 1    5    9 ]
+    [ 2    6   10 ]
+    [ 3    7   11 ]
+    [ 4    8   12 ]
 
 =back
 
