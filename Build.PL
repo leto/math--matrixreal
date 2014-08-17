@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
     license           => 'perl',
     build_requires => {
         'Test::Most' => 0,
+        'File::Temp' => 0,
         'File::Spec' => 0,
     },
     configure_requires => { 'Module::Build' => 0.38 },
