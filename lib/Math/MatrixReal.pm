@@ -21,7 +21,7 @@ require Exporter;
 $VERSION = '2.11';
 
 use overload
-     '.'   => '_concat',
+       '.' => '_concat',
      'neg' => '_negate',
        '~' => '_transpose',
     'bool' => '_boolean',
