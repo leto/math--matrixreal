@@ -649,6 +649,21 @@ sub column
     return $col_vector;
 }
 
+sub as_list
+{
+    croak "Usage: \$matrix->as_list();" if (@_ != 1);
+
+    my($self) = @_;
+    my($rows,$cols) = ($self->[1], $self->[2]);
+    my @list;
+    for(my $i = 0; $i < $rows; $i++ ){
+        for(my $j = 0; $j < $rows; $j++){
+            push @list, $self->[0][$i][$j];
+        }
+    }
+    return @list;
+}
+
 sub _undo_LR
 {
     croak "Usage: \$matrix->_undo_LR();"
@@ -3624,6 +3639,15 @@ only one column) to which column number "C<$column>" of matrix
 "C<$matrix>" has already been copied.
 
 Matrix "C<$matrix>" is not changed by this in any way.
+
+=item * @all_elements = $matrix-E<gt>as_list;
+
+Get the contents of a Math::MatrixReal object as a Perl list.
+
+Example:
+
+   my $matrix = Math::MatrixReal->new_from_rows([ [1, 2], [3, 4] ]);
+   my @list = $matrix->as_list; # 1, 2, 3, 4
 
 =item * $new_matrix = $matrix-E<gt>each( \&function );
 
