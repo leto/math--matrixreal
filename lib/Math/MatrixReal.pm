@@ -18,7 +18,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.11';
+$VERSION = '2.12';
 
 use overload
      '.'   => '_concat',
@@ -647,6 +647,21 @@ sub column
     map { $col_vector->[0][$_][0] = $matrix->[0][$_][$col] } (0 .. $rows-1);
 
     return $col_vector;
+}
+
+sub as_list
+{
+    croak "Usage: \$matrix->as_list();" if (@_ != 1);
+
+    my($self) = @_;
+    my($rows,$cols) = ($self->[1], $self->[2]);
+    my @list;
+    for(my $i = 0; $i < $rows; $i++ ){
+        for(my $j = 0; $j < $rows; $j++){
+            push @list, $self->[0][$i][$j];
+        }
+    }
+    return @list;
 }
 
 sub _undo_LR
@@ -3624,6 +3639,15 @@ only one column) to which column number "C<$column>" of matrix
 "C<$matrix>" has already been copied.
 
 Matrix "C<$matrix>" is not changed by this in any way.
+
+=item * @all_elements = $matrix-E<gt>as_list;
+
+Get the contents of a Math::MatrixReal object as a Perl list.
+
+Example:
+
+   my $matrix = Math::MatrixReal->new_from_rows([ [1, 2], [3, 4] ]);
+   my @list = $matrix->as_list; # 1, 2, 3, 4
 
 =item * $new_matrix = $matrix-E<gt>each( \&function );
 
