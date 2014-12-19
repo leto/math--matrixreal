@@ -1,3 +1,8 @@
+Changes in v2.12 - Jonathan "Duke" Leto
+December 2014
+--------------------------
+    * Added as_list() function. (Ivan Baidakou (basiliscos))
+
 Changes in v2.11 - Jonathan "Duke" Leto
 January 2014
 --------------------------
