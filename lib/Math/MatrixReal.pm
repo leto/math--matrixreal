@@ -1,6 +1,6 @@
 #  Copyright (c) 1996, 1997 by Steffen Beyer. All rights reserved.
 #  Copyright (c) 1999 by Rodolphe Ortalo. All rights reserved.
-#  Copyright (c) 2001-2011 by Jonathan Leto. All rights reserved.
+#  Copyright (c) 2001-2015 by Jonathan Leto. All rights reserved.
 #  This package is free software; you can redistribute it and/or
 #  modify it under the same terms as Perl itself.
 
@@ -5534,7 +5534,8 @@ https://github.com/leto/math--matrixreal .
 Steffen Beyer <sb@engelschall.com>, Rodolphe Ortalo <ortalo@laas.fr>,
 Jonathan "Duke" Leto <jonathan@leto.net>.
 
-Currently maintained by Jonathan "Duke" Leto, send all bugs/patches to me.
+Currently maintained by Jonathan "Duke" Leto, send all bugs/patches
+to Github Issues: https://github.com/leto/math--matrixreal/issues
 
 =head1 CREDITS
 
@@ -5545,11 +5546,11 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2011 by Steffen Beyer, Rodolphe Ortalo, Jonathan "Duke" Leto.
-All rights reserved.
+Copyright (c) 1996-2015 by various authors including the original developer
+Steffen Beyer, Rodolphe Ortalo, the current maintainer Jonathan "Duke" Leto and
+all the wonderful people in the AUTHORS file. All rights reserved.
 
 =head1 LICENSE AGREEMENT
 
 This package is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
-
+modify it under the same terms as Perl itself. Fuck yeah.
