@@ -1,9 +1,9 @@
 # Contributing to Math::MatrixReal
 
-These are other great documents to learn about Pull Requests:
+To learn more about Pull Requests:
 
-https://github.com/CPAN-PRC/resources/wiki/My-first-Pull-Request
-https://help.github.com/articles/using-pull-requests/
+[My First Pull Request](https://github.com/CPAN-PRC/resources/wiki/My-first-Pull-Request)
+[Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
 
 * Create a branch, probably from master
 
