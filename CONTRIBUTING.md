@@ -1,7 +1,8 @@
 # Contributing to Math::MatrixReal
 
+I suggest reading
 [My First Pull Request](https://github.com/CPAN-PRC/resources/wiki/My-first-Pull-Request)
-and [Using Pull Requests](https://help.github.com/articles/using-pull-requests/)
+and [Using Pull Requests](https://help.github.com/articles/using-pull-requests/) to learn more about pull requests.
 
 * Create a branch, probably from master
 
