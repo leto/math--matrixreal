@@ -21,7 +21,7 @@ require Exporter;
 $VERSION = '2.12';
 
 use overload
-     '.'   => '_concat',
+       '.' => '_concat',
      'neg' => '_negate',
        '~' => '_transpose',
     'bool' => '_boolean',
@@ -2827,6 +2827,40 @@ sub _min_column {
 	return ($m, $mp);
 }
 
+
+sub save_to_file {
+    my ($matrix, $filename) = @_;
+
+    open my $fh, ">", $filename or
+      croak "Math::MatrixReal save_to_file: could not create file '$filename': $!";
+
+    # probably faster than creating a full string in memory
+    my ($rows, $cols) = $matrix->dim();
+
+    for my $r (0..$rows-1) {
+        for my $c (0..$cols-1) {
+            print $fh $matrix->[0][$r][$c];
+            print $fh "\t" unless $c == $cols-1;
+        }
+        print $fh "\n";
+    }
+    close $fh;
+}
+
+sub new_from_file {
+    my ($class, $filename) = @_;
+    my $m = [];
+
+    open my $fh, "<", $filename or
+        croak "Math::MatrixReal new_from_file: could not open file '$filename': $!";
+
+    while (<$fh>) {
+        chomp;
+        push @$m, [split /\s+/];
+    }
+
+    return $class->new_from_rows($m);
+}
 
 
                 ########################################
