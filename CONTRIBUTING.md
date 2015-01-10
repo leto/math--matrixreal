@@ -1,5 +1,10 @@
 # Contributing to Math::MatrixReal
 
+These are other great documents to learn about Pull Requests:
+
+https://github.com/CPAN-PRC/resources/wiki/My-first-Pull-Request
+https://help.github.com/articles/using-pull-requests/
+
 * Create a branch, probably from master
 
   ```git checkout -b descriptive_branch_name```
