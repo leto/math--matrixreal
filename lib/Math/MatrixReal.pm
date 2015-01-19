@@ -3741,7 +3741,9 @@ When used in list context:
 
 =over 4
 
-=item * $det = $matrix-E<gt>det();
+=item *
+
+C<$det = $matrix-E<gt>det();>
 
 Returns the determinant of the matrix, without going through
 the rigamarole of computing a LR decomposition. This method should
