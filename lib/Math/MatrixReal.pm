@@ -4000,6 +4000,45 @@ just an alias for C< ~($matrix-E<gt>cofactor)>.
 
 =back
 
+=item *
+
+C<$part_of_matrix = $matrix-E<gt>submatrix(x1,y1,x2,Y2);>
+
+Submatrix permit to select only part of existing matrix in order to produce a new one.
+This method take four arguments to define a selection area:
+
+=over 6
+
+=item    - firstly: Coordinate of top left corner to select (x1,y1)
+
+=item    - secondly: Coordinate of bottom right corner to select (x2,y2)
+    
+=back
+
+Example:
+
+    my $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
+    [  0  0  0  0  0  0  0  ]
+    [  0  0  0  0  0  0  0  ]
+    [  0  0  0  0  0  0  0  ]
+    [  0  0  0  0  0  0  0  ]
+    [  0  0  0  0  1  0  1  ]
+    [  0  0  0  0  0  1  0  ]
+    [  0  0  0  0  1  0  1  ]
+    MATRIX
+    
+    my $submatrix = $matrix->submatrix(5,5,7,7);
+    $submatrix->display_precision(0);
+    print $submatrix;
+
+Output:
+
+    [  1  0  1  ]
+    [  0  1  0  ]
+    [  1  0  1  ]
+
+=back
+
 =head2 Arithmetic Operations
 
 =over 4
