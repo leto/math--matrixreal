@@ -3649,6 +3649,35 @@ Example:
    my $matrix = Math::MatrixReal->new_from_rows([ [1, 2], [3, 4] ]);
    my @list = $matrix->as_list; # 1, 2, 3, 4
 
+This method is suitable for use with OpenGL. For example, there is need to
+rotate model around X-axis to 90 degrees clock-wise. That could be achieved via:
+
+ use Math::Trig;
+ use OpenGL;
+ ...;
+ my $axis = [1, 0, 0];
+ my $angle = 90;
+ ...
+ my ($x, $y, $z) = @$axis;
+ my $f = $angle;
+ my $cos_f = cos(deg2rad($f));
+ my $sin_f = sin(deg2rad($f));
+ my $rotation = Math::MatrixReal->new_from_rows([
+    [$cos_f+(1-$cos_f)*$x**2,    (1-$cos_f)*$x*$y-$sin_f*$z, (1-$cos_f)*$x*$z+$sin_f*$y, 0 ],
+    [(1-$cos_f)*$y*$z+$sin_f*$z, $cos_f+(1-$cos_f)*$y**2 ,   (1-$cos_f)*$y*$z-$sin_f*$x, 0 ],
+    [(1-$cos_f)*$z*$x-$sin_f*$y, (1-$cos_f)*$z*$y+$sin_f*$x, $cos_f+(1-$cos_f)*$z**2    ,0 ],
+    [0,                          0,                          0,                          1 ],
+ ]);
+ ...;
+ my $model_initial = Math::MatrixReal->new_diag( [1, 1, 1, 1] ); # identity matrix
+ my $model = $model_initial * $rotation;
+ $model = ~$model; # OpenGL operates on transposed matrices
+ my $model_oga = OpenGL::Array->new_list(GL_FLOAT, $model->as_list);
+ $shader->SetMatrix(model => $model_oga); # instance of OpenGL::Shader
+
+See L<OpenGL>, L<OpenGL::Shader>, L<OpenGL::Array>,
+L<rotation matrix|https://en.wikipedia.org/wiki/Rotation_matrix>.
+
 =item * $new_matrix = $matrix-E<gt>each( \&function );
 
 Creates a new matrix by evaluating a code reference on each element of the 
