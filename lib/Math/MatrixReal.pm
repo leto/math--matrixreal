@@ -657,7 +657,7 @@ sub as_list
     my($rows,$cols) = ($self->[1], $self->[2]);
     my @list;
     for(my $i = 0; $i < $rows; $i++ ){
-        for(my $j = 0; $j < $rows; $j++){
+        for(my $j = 0; $j < $cols; $j++){
             push @list, $self->[0][$i][$j];
         }
     }
