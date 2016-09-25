@@ -1,3 +1,9 @@
+Changes in v2.13 - Jonathan "Duke" Leto
+September 2015
+--------------------------
+    * Fix bug where as_list() did not work correctly for non-square matrices.
+      Reported by Elia Liitiäinen in RT #116968
+
 Changes in v2.12 - Jonathan "Duke" Leto
 December 2014
 --------------------------

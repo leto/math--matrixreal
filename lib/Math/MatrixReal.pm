@@ -1,6 +1,6 @@
 #  Copyright (c) 1996, 1997 by Steffen Beyer. All rights reserved.
 #  Copyright (c) 1999 by Rodolphe Ortalo. All rights reserved.
-#  Copyright (c) 2001-2015 by Jonathan Leto. All rights reserved.
+#  Copyright (c) 2001-2016 by Jonathan Leto. All rights reserved.
 #  This package is free software; you can redistribute it and/or
 #  modify it under the same terms as Perl itself.
 
@@ -18,7 +18,7 @@ require Exporter;
 @EXPORT = qw();
 @EXPORT_OK = qw(min max);
 %EXPORT_TAGS = (all => [@EXPORT_OK]);
-$VERSION = '2.12';
+$VERSION = '2.13';
 
 use overload
      '.'   => '_concat',
@@ -657,7 +657,7 @@ sub as_list
     my($rows,$cols) = ($self->[1], $self->[2]);
     my @list;
     for(my $i = 0; $i < $rows; $i++ ){
-        for(my $j = 0; $j < $rows; $j++){
+        for(my $j = 0; $j < $cols; $j++){
             push @list, $self->[0][$i][$j];
         }
     }
@@ -5594,7 +5594,7 @@ Set::IntegerRange, Set::IntegerFast .
 
 =head1 VERSION
 
-This man page documents Math::MatrixReal version 2.10
+This man page documents Math::MatrixReal version 2.13
 
 The latest code can be found at
 https://github.com/leto/math--matrixreal .
@@ -5616,7 +5616,7 @@ lectures in Numerical Analysis!
 
 =head1 COPYRIGHT
 
-Copyright (c) 1996-2015 by various authors including the original developer
+Copyright (c) 1996-2016 by various authors including the original developer
 Steffen Beyer, Rodolphe Ortalo, the current maintainer Jonathan "Duke" Leto and
 all the wonderful people in the AUTHORS file. All rights reserved.
 
