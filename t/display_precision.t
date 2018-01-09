@@ -1,8 +1,7 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{assert_dies};
 
 my $matrix  = Math::MatrixReal->new_diag([1,2,3,4]);
 $matrix->display_precision(5);
@@ -29,6 +28,6 @@ ok( "$matrix" eq "$correct", 'display_precision(0)' );
 
 {
     assert_dies ( sub { Math::MatrixReal->new(5,5)->display_precision(-42) },
-                'display_precision dies on negative arg, matey!' 
+                'display_precision dies on negative arg, matey!'
     );
 }

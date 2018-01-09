@@ -1,10 +1,9 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
 
-my ($a,$b);
+my ($a, $b);
 eval { $a = Math::MatrixReal->new_from_cols([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) };
 if ($@){
 	ok(0, 'new_from_cols scientific notation fails');

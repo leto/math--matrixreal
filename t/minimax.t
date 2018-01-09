@@ -1,11 +1,7 @@
 use Test::More tests => 6;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal qw/:all/;
-use strict;
-use warnings;
-
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
 
 my ($x,$y) = (7,42);
 
@@ -26,4 +22,3 @@ $min = $a->min;
 my $eps = 1e-8;
 ok( $max <= 10 , 'symmetric random matrix adheres to bounded_by, max=' . $max);
 ok( $min >= 0  , 'symmetric random matrix adheres to bounded_by, min=' . $min);
-

@@ -1,10 +1,9 @@
 use Test::More tests => 6;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
 
-my ($a,$b);
+my ($a, $b, @n);
 my $eps = 1e-6;
 $a = Math::MatrixReal->new_from_cols([[1,2,3]]);
 
@@ -15,10 +14,9 @@ if($@) {
 } else {
 	ok(1,'norm_p seems to work');
 }
-	
+
 ok(similar($n[0], 6, $eps),'one norm seems cool');
 ok(similar($n[1],sqrt(14) , $eps), 'two norm feeling good' );
 ok(similar($n[2], 6**(2/3) , $eps), 'three norm is happy' );
 ok(similar($n[3], 2**(1/4)*sqrt(7), $eps), 'four norm is kosher' );
 ok(similar($n[4], 3, $eps), 'infinity norm is mighty fine' );
-

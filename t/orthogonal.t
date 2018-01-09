@@ -1,11 +1,10 @@
 use Test::More tests => 5;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
-$eps ||= 1e-8;
+use lib 't/lib';
+use Test::Matrices;
+my $eps ||= 1e-8;
 
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 2 2 ]
 [ 2 1 -2 ]
 [ -2 2 -1 ]

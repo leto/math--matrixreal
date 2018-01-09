@@ -1,17 +1,16 @@
 use Test::More tests => 6;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix};
 
 {
     ## compute a 2x2 inverse
-    $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+    my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [  3.0  7.0  ]
 [  2.0  5.0  ]
 MATRIX
 
-    $inverse = Math::MatrixReal->new_from_string(<<"MATRIX");
+    my $inverse = Math::MatrixReal->new_from_string(<<"MATRIX");
 [  5.0 -7.0 ]
 [ -2.0  3.0 ]
 MATRIX
@@ -25,7 +24,7 @@ MATRIX
     my $one = $matrix->clone();
     $one->one();
 
-    ok_matrix($matrix * $matrix ** -1, $one );
+    ok_matrix($matrix * $matrix ** -1, $one, 'one' );
 }
 
 {
@@ -37,13 +36,13 @@ MATRIX
 
 {
     my $matrix = Math::MatrixReal->new_random(3);
-    ok_matrix( $matrix->inverse->inverse, $matrix );
+    ok_matrix( $matrix->inverse->inverse, $matrix, 'random' );
 }
 
 {
     my $a = Math::MatrixReal->new_random(5);
     my $b = Math::MatrixReal->new_random(5);
-    ok_matrix( ($a*$b)->inverse, ($b->inverse * $a->inverse) );
+    ok_matrix( ($a*$b)->inverse, ($b->inverse * $a->inverse), 'inverse' );
 
 }
 

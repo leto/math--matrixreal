@@ -1,9 +1,7 @@
 use Test::More tests => 7;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix};
 
 my $BENCH = 0; # Some basic benchmarks on operations
 my $DEBUG2 = 0;

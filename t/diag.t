@@ -1,10 +1,7 @@
 use Test::More tests => 8;
 use Math::MatrixReal;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
-
-do 'funcs.pl';
-
+use lib 't/lib';
+use Test::Matrices;
 ##########################
 ## test to see if is_diagonal works
 my $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
@@ -81,5 +78,3 @@ $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');
 [  0  0  0  0  0  4 ]
 MATRIX
 ok(! $matrix->is_tridiagonal() );
-
-

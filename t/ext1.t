@@ -1,20 +1,20 @@
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
+use Test::More;
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
 
 print "1..21\n";
 print "ok 1\n";
 my $verbose = grep @ARGV, '--verbose';
 
 # below we are basically checking the
-# various ways that the new_from_* methods 
+# various ways that the new_from_* methods
 # are supposed to work--with strings, array refs,
 # or Math::MatrixReal vectors.  They are also
 # supposed to work for mixtures of those things,
 # so we are checking that too.
 
-my $matrix2 = Math::MatrixReal->new_from_cols([[11,21], [12,22]]); 
+my $matrix2 = Math::MatrixReal->new_from_cols([[11,21], [12,22]]);
 print &check_matrix($matrix2) ? "ok 2\n" : "not ok 2\n";
 
 my $col1 = $matrix2->column(1);
@@ -48,7 +48,7 @@ print &check_matrix($matrix8) ? "ok 8\n" : "not ok 8\n";
 my $matrix9 = Math::MatrixReal->new_from_rows( ["[ 11 12 13 ]\n", $row82, $matrix8->row(3)] );
 print &check_matrix($matrix9) ? "ok 9\n" : "not ok 9\n";
 
-# testing for pre-0.05 problem where if ref( $vec ) 
+# testing for pre-0.05 problem where if ref( $vec )
 # didn't start with Math::MatrixReal
 # new_from_* wouldn't recognize it
 package Foo;
@@ -157,7 +157,7 @@ else {
     print "not ok 19\n";
 }
 
-$matrix1 = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix1 = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 2 3 ]
 [ 4 5 6 ]
 [ 7 8 9 ]
@@ -171,7 +171,7 @@ similar($matrix1,$matrix3)  ? print "ok 21\n" : print "not ok 21\n";
 
 # ok, the matrix we're making in every case is like
 # this (or possibly a different-sized/shaped version):
-#  
+#
 #  11  12  13
 #  21  22  23
 #  31  32  33

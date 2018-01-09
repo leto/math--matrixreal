@@ -1,11 +1,7 @@
 use Test::Most tests => 2;
-use strict;
-use warnings;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
-
+use lib 't/lib';
+use Test::Matrices;
 {
 my $latex1=<<'LATEX';
 $\left( \begin{array}{cc}
@@ -41,4 +37,3 @@ chomp $latex2;
     my $s = $b->as_latex( ( format => "%.2f", align => "l",name => "A" ) );
     eq_or_diff(lc $s, lc $latex2,'as_latex format options seem to work');
 }
-

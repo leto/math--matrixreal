@@ -1,11 +1,8 @@
 use Test::More tests => 16;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-
-do 'funcs.pl';
-
-$matrix = Math::MatrixReal->new_from_string(<<MATRIX);
+use lib 't/lib';
+use Test::Matrices;
+my $matrix = Math::MatrixReal->new_from_string(<<MATRIX);
 
    [ 1 4 7 ]
    [ 2 5 8 ]
@@ -13,7 +10,7 @@ $matrix = Math::MatrixReal->new_from_string(<<MATRIX);
 
 MATRIX
 
-$vector = Math::MatrixReal->new_from_string(<<MATRIX);
+my $vector = Math::MatrixReal->new_from_string(<<MATRIX);
 
    [ 1 9 4 7 ]
 

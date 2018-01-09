@@ -1,9 +1,7 @@
 use Test::More tests => 5;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-use strict;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix};
 
 my $zero = sprintf '%E', 0;
 my ($pad) = $zero =~ /E00(\d+)$/;
@@ -37,9 +35,8 @@ MAT
 
 # Determine number of digits in exponents beyond the libc 'standard' of two
 # and pad out the expected result.
-my $zero = sprintf '%E', 0;
-my ($pad) = $zero =~ m/E\+00(\d+)$/;
+$zero = sprintf '%E', 0;
+($pad) = $zero =~ m/E\+00(\d+)$/;
 $correct =~ s/([eE])([+-])(\d\d)/$1$2$pad$3/g if defined $pad;
 
 ok( "$matrix" eq $correct, 'new_tridiag' );
-

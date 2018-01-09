@@ -1,7 +1,7 @@
 use Test::Simple tests =>7;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices;
 
 my $eye = Math::MatrixReal->new_diag([ 1,1,1] );
 my $full = Math::MatrixReal->new_from_string(<<MATRIX);
@@ -29,7 +29,7 @@ my $concat2= $full. $eye;
 
 ok( ref $concat eq "Math::MatrixReal" , 'Concatenation returns the correct object');
 
-my ($rows,$cols) = $concat->dim(); 
+my ($rows,$cols) = $concat->dim();
 ok( $rows == 3, 'Concatenation preserves number of rows');
 ok( $cols == 6, 'Concatenation does the right thing for cols');
 
@@ -67,5 +67,3 @@ my $dc = Math::MatrixReal->new_from_string(<<MATRIX);
 MATRIX
 $eps = 1e-8;
 ok( abs( $dc - ($d.$c) ) < $eps, 'Concatenation of matrices with different number of columns works');
-
-
