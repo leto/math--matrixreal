@@ -1,12 +1,12 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices qw{similar};
+no lib 't/lib';
 
-do 'funcs.pl';
 my $eps ||= 1e-8;
 
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 [ 0 2 0 0 0 ]
 [ 0 0 3 0 0 ]

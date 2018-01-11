@@ -1,10 +1,10 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_eigenvectors ok_matrix};
+no lib 't/lib';
 
-my $DEBUG2 = 0;
+my $DEBUG = 0;
 # Set this one if you want the REAL benchmarking to be done!
 my $REALBENCH = 1;
 my $bigsize = 25; # Size of big matrix REAL tests (be careful: n^3!)
@@ -48,5 +48,3 @@ else
 {
 	SKIP: { skip "because", 3; };
 }
-
-

@@ -1,6 +1,8 @@
 use Test::Simple tests => 7;
 use Math::MatrixReal;
-
+use lib 't/lib';
+use Test::Matrices;
+no lib 't/lib';
 my $div_mat_by_scalar=Math::MatrixReal->new_from_string(<<EOF);
 [  1.500000000000E+00  2.420000000000E+00  5.000000000000E-01 ]
 [  2.000000000000E+00  1.500000000000E+00  2.500000000000E+00 ]
@@ -67,7 +69,7 @@ my $colvec =  Math::MatrixReal->new_from_string(<<MATRIX);
 MATRIX
 
 #TODO:
-#solve $full * x = $colvec 
+#solve $full * x = $colvec
 #$res = $full / $colvec;
 #print $res;
 

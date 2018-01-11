@@ -1,11 +1,11 @@
 use Test::More tests => 5;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
+no lib 't/lib';
 
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 [ 0 2 0 0 2 ]
 [ 0 0 3 0 0 ]
@@ -21,6 +21,3 @@ $matrix = $matrix->new_from_rows( [ [3,-1],[-1,3] ] );
 ok( similar($matrix->spectral_radius,4) );
 $matrix = $matrix->new_from_rows( [ [1.5,0.5],[.5,1.5] ] );
 ok(similar($matrix->spectral_radius,2) );
-
-
-

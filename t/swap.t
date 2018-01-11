@@ -1,25 +1,24 @@
 use Test::More tests => 2;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
-do 'funcs.pl';
-
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 ]
 [ 0 2 0 0 ]
 [ 0 0 3 0 ]
 [ 0 0 0 4 ]
 MATRIX
 
-$matrix14 = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix14 = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 4 ]
 [ 0 2 0 0 ]
 [ 0 0 3 0 ]
 [ 1 0 0 0 ]
 MATRIX
 
-$matrix14_col = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix14_col = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 0 0 0 1 ]
 [ 0 2 0 0 ]
 [ 0 0 3 0 ]

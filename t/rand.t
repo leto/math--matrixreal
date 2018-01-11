@@ -1,11 +1,11 @@
 use Test::More tests => 16;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices qw{assert_dies};
+no lib 't/lib';
+
 my ($e,$res) = (0,0);
 my $eps = 1e-8;
-
-do 'funcs.pl';
 
 {
     my $matrix = Math::MatrixReal->new_random( 10,10, { integer => 1 } );
@@ -22,15 +22,15 @@ do 'funcs.pl';
     ok( $res < $eps, 'new_random option type integer works' );
 }
 {
-    $matrix = Math::MatrixReal->new_random( 5 );
-    ($rows,$cols) = $matrix->dim;
+    my $matrix = Math::MatrixReal->new_random( 5 );
+    my ($rows, $cols) = $matrix->dim;
     ok( $rows == 5 && $cols == 5, 'new_random is square if called with one argument' );
 }
 
 {
-    ($rows,$cols) = (1+int(rand(10)), 1+int(rand(10)) );
+    my ($rows,$cols) = (1+int(rand(10)), 1+int(rand(10)) );
     my $matrix = Math::MatrixReal->new_random( $rows,$cols, { bounded_by => [-$rows, $rows] } );
-    my $min = $matrix->element(1,1); 
+    my $min = $matrix->element(1,1);
     my $max = $min;
     for my $r ( 1 .. $rows ){
         for my $c ( 2 .. $cols ) {
@@ -43,7 +43,7 @@ do 'funcs.pl';
 }
 {
     assert_dies( sub { my $matrix = Math::MatrixReal->new_random },
-                 q{new_random fails with no args} 
+                 q{new_random fails with no args}
     );
 }
 {
@@ -53,7 +53,7 @@ do 'funcs.pl';
 }
 
 {
-    assert_dies( sub { my $matrix = Math::MatrixReal->new_random(10,20, { bounded_by => [] } ) }, 
+    assert_dies( sub { my $matrix = Math::MatrixReal->new_random(10,20, { bounded_by => [] } ) },
                  q{new_random fails with invalid bounded_by}
     );
 }
@@ -62,7 +62,7 @@ do 'funcs.pl';
                  q{new_random fails with invalid bounded_by range}
     );
 }
-{ 
+{
     assert_dies( sub { my $matrix = Math::MatrixReal->new_random(10,20, { symmetric => 1 } ) },
                  q{new_random fails with rectangular + symmetric}
     );
@@ -82,11 +82,11 @@ do 'funcs.pl';
 }
 
 {
-    ok( Math::MatrixReal->new_random(10, { symmetric => 1 } )->is_symmetric, 
+    ok( Math::MatrixReal->new_random(10, { symmetric => 1 } )->is_symmetric,
         'new_random can do symmetric');
 }
 {
-    ok( Math::MatrixReal->new_random(5, { tridiag => 1, integer => 1 } )->is_tridiagonal, 
+    ok( Math::MatrixReal->new_random(5, { tridiag => 1, integer => 1 } )->is_tridiagonal,
         'new_random with tridiag works');
 }
 {

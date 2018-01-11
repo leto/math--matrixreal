@@ -1,11 +1,11 @@
 use Test::More tests => 2;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::Complex;
 use Math::MatrixReal;
 use Data::Dumper;
 
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 {
     my $a = Math::MatrixReal->new_from_rows([ [ 2 ] ] );
@@ -14,6 +14,3 @@ do 'funcs.pl';
     ok_matrix( $a->new_from_rows( [[ 1/2 ]]) , $a->inverse, q{decompose_LR works for 1x1 matrices} );
 
 }
-
-
-

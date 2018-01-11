@@ -1,9 +1,8 @@
 use Test::More tests => 2;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
-
+use lib 't/lib';
+use Test::Matrices;
+no lib 't/lib';
 # Determine number of digits in exponents beyond the libc 'standard' of two
 # and pad out the expected result.
 my $zero = sprintf '%E', 0;

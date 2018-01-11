@@ -1,9 +1,10 @@
 use Test::More tests => 10;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do  'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_eigenvectors ok_matrix ok_matrix_orthogonal};
+no lib 't/lib';
 
+my $DEBUG = $Test::Matrices::DEBUG = 0;
 my $DEBUG2 = 0;
 
 #
@@ -46,8 +47,8 @@ print "eigenvalues L:\n$L_2 eigenvectors:\n$V_2" if $DEBUG2;
 ok_eigenvectors($symm2, $L_2, $V_2);
 ok_matrix_orthogonal( $V_2);
 # Double check the equality
-ok_matrix( $L_2, $L);
-ok_matrix( $V_2, $V);
+ok_matrix( $L_2, $L, 'equality');
+ok_matrix( $V_2, $V, 'equality');
 
 #
 # Now test the eigenvalues only computations...
@@ -59,4 +60,3 @@ my $altL = $altT2->tri_eigenvalues();
 ok_matrix( $altL, $L, 'tri_eigenvalues for 7x7');
 my $altL_2 = $symm2->sym_eigenvalues();
 ok_matrix( $altL_2, $L_2, 'sym_eigenvalues for 7x7');
-

@@ -1,10 +1,10 @@
 use Test::More tests => 13;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices qw{ok_matrix ok_matrix_orthogonal ok_eigenvectors};
+no lib 't/lib';
 
-do 'funcs.pl';
-
+my $DEBUG = $Test::Matrices::DEBUG = 0;
 my $DEBUG2 = 0;
 
 my $string = "[ 1 2 3 ]\n[ 2 2 -1 ]\n[ 1 1 1 ]\n";
@@ -35,7 +35,7 @@ print "Diagonalization of tridiagonal...\n" if $DEBUG;
 my ($L1, $V1) = $T->tri_diagonalize($Q);
 print "eigenvalues L:\n$L1 eigenvectors:\n$V1" if $DEBUG2;
 ok_eigenvectors($symm, $L1, $V1);
-	
+
 # Get first eigenvector
 my $aev1 = $V1->column(1);
 my $al1 = $L1->element(1,1);
@@ -51,8 +51,8 @@ print "eigenvalues L:\n$L12 eigenvectors:\n$V12" if $DEBUG2;
 ok_eigenvectors($symm, $L12, $V12);
 ok_matrix_orthogonal($V12);
 # Double check the equality
-ok_matrix( $L12, $L1);
-ok_matrix( $V12, $V1);
+ok_matrix( $L12, $L1, 'equality');
+ok_matrix( $V12, $V1, 'equality');
 
 #
 # Now test the eigenvalues only computations...

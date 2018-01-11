@@ -1,7 +1,6 @@
-use Test::More tests => 1;
-use File::Spec::Functions;
 use strict;
 use warnings;
+use Test::More tests => 1;
 
 BEGIN { use_ok('Math::MatrixReal') }
 

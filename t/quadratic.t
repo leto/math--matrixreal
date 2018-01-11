@@ -1,10 +1,9 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
-
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+use lib 't/lib';
+use Test::Matrices;
+no lib 't/lib';
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 [ 0 2 0 0 0 ]
 [ 0 0 3 0 0 ]
@@ -25,4 +24,3 @@ $matrix = Math::MatrixReal->new_from_string(<<MATRIX);
 [ 1 ]
 MATRIX
 ok( $matrix->is_square(), '1x1 matrix is square' );
-

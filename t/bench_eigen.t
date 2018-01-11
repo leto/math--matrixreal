@@ -1,15 +1,14 @@
 use Test::More tests => 3;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{ok_eigenvectors ok_matrix};
+no lib 't/lib';
 
 ### First, some preparation
-
+my $DEBUG = $Test::Matrices::DEBUG = 0;
 my $DEBUG2 = 0;
 # Set this one if you want the REAL benchmarking to be done!
-my $REALBENCH = 0;
+my $REALBENCH = $ENV{AUTHOR_TESTING} || 0;
 my $bigsize = 150; # Size of big matrix for estimation
                    # and REAL tests (be careful: n^3!)
 use Benchmark;
@@ -124,7 +123,7 @@ if ($REALBENCH)
     my $altLbig_2;
     my $tt = timeit(1, sub { $altLbig_2 = $big->sym_eigenvalues(); });
     print "Timing of ".$bigsize."x".$bigsize." direct eigenvalues computation:\n  ".timestr($tt)."\n";
-    
+
     # We check the results anyway (just in case...)
     ok_matrix($altLbig_2, $Lbig_2, 'eigenvalues of large matrix are correct');
 }
@@ -135,6 +134,3 @@ else
     ok(1 == 1,'benchmarch fake test' );
     ok(1 == 1,'benchmarch fake test' );
 }
-
-
-

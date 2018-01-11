@@ -1,10 +1,8 @@
 use Test::More tests => 4;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-use strict;
-
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{assert_dies ok_matrix};
+no lib 't/lib';
 my $eps ||= 1e-8;
 
 my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");

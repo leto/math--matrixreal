@@ -1,11 +1,8 @@
 use Test::More tests => 6;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal qw/:all/;
-use strict;
-use warnings;
-
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my ($x,$y,$z) = (42, 42.0001,42.0000001);
 

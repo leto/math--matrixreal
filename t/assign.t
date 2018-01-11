@@ -1,17 +1,16 @@
 use Test::Simple tests => 5;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices qw{assert_dies};
+no lib 't/lib';
 
-do 'funcs.pl';
-
-$matrix = Math::MatrixReal->new_from_string(<<MATRIX);
+my $matrix = Math::MatrixReal->new_from_string(<<MATRIX);
 [  1 0 -1 0  3 ]
 [ -1 0  1 1 -3 ]
 [  2 0 -2 2  0 ]
 MATRIX
 
-$matrix2 = Math::MatrixReal->new_from_string(<<MATRIX);
+my $matrix2 = Math::MatrixReal->new_from_string(<<MATRIX);
 [  1 0 -1 0  3 ]
 [ -1 0  1 1 -3 ]
 [  1 1  1 1  1 ]
@@ -36,7 +35,7 @@ MATRIX
 }
 
 {
-    assert_dies( sub { $matrix->assign_row($a) }, 
+    assert_dies( sub { $matrix->assign_row($a) },
 	             'assign_row fails when not enough args');
 }
 {

@@ -1,11 +1,12 @@
 use Test::More tests => 13;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+use lib 't/lib';
+use Test::Matrices qw{similar};
+no lib 't/lib';
+
 my $eps ||= 1e-8;
 
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 [ 0 2 0 0 2 ]
 [ 0 0 3 0 0 ]
@@ -54,8 +55,8 @@ $matrix = Math::MatrixReal->new_random(5, {bounded_by=>[1,10],
 ############
 my($r,$c) = $matrix->dim;
 ok( $r == 5 && $c == 5, 'new_random returns square matrix');
-$inverse = $matrix->inverse();
-$det = $matrix->det();
+my $inverse = $matrix->inverse();
+my $det = $matrix->det();
 $det1=1/$det;
 $det2=$inverse->det();
 ok( abs($det1-$det2) < $eps , sprintf("%.12f =? %.12f",$det1,$det2) );
@@ -75,5 +76,3 @@ for ( 1 .. 5 ){
 	$ev->each( sub { $det2*=(shift); } );
 	ok( similar( $det1, $det2,$eps), 'product of eigenvalues equals the determinant');
 }
-
-

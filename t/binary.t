@@ -1,11 +1,10 @@
 use Test::More tests => 4;
-use File::Spec;
-use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
+use lib 't/lib';
+use Test::Matrices;
+no lib 't/lib';
 
-do 'funcs.pl';
-
-$matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
+my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 [ 0 2 0 0 2 ]
 [ 0 0 3 0 0 ]
@@ -21,6 +20,3 @@ $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]
 MATRIX
 ok($matrix->is_binary, 'vector is binary');
-
-
-

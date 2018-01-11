@@ -1,5 +1,19 @@
-$DEBUG = 0;
+package Test::Matrices;
+use strict;
+use warnings;
+use Test::More;
+use Exporter;
+our @EXPORT_OK =
+  qw{assert_dies ok_matrix ok_matrix_orthogonal ok_eigenvectors similar};
+our $DEBUG = 0;
 my $eps = 1e-8;
+
+sub import {
+  strict->import;
+  warnings->import;
+  goto &Exporter::import;
+}
+
 ######### help funcs
 sub ok_matrix ($$$)
 {
