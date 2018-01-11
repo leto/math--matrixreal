@@ -2,6 +2,7 @@ use Test::More tests => 16;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{assert_dies};
+no lib 't/lib';
 
 my ($e,$res) = (0,0);
 my $eps = 1e-8;

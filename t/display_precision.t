@@ -2,6 +2,7 @@ use Test::More tests => 3;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{assert_dies};
+no lib 't/lib';
 
 my $matrix  = Math::MatrixReal->new_diag([1,2,3,4]);
 $matrix->display_precision(5);

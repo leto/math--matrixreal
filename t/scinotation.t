@@ -2,6 +2,7 @@ use Test::More tests => 3;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my ($a, $b);
 eval { $a = Math::MatrixReal->new_from_cols([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) };

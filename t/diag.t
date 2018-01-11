@@ -2,6 +2,8 @@ use Test::More tests => 8;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
+
 ##########################
 ## test to see if is_diagonal works
 my $matrix = Math::MatrixReal->new_from_string(<<'MATRIX');

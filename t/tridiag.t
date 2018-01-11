@@ -2,6 +2,7 @@ use Test::More tests => 5;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 my $zero = sprintf '%E', 0;
 my ($pad) = $zero =~ /E00(\d+)$/;

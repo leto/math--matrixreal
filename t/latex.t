@@ -2,6 +2,7 @@ use Test::Most tests => 2;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 {
 my $latex1=<<'LATEX';
 $\left( \begin{array}{cc}

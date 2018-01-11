@@ -2,6 +2,7 @@ use Test::Simple tests =>7;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $eye = Math::MatrixReal->new_diag([ 1,1,1] );
 my $full = Math::MatrixReal->new_from_string(<<MATRIX);

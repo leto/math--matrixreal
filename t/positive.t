@@ -2,6 +2,7 @@ use Test::More tests => 8;
 use Math::MatrixReal qw/:all/;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $a = Math::MatrixReal->new_diag( [ 1, 2, -3 ] );
 ok( ! $a->is_positive_definite, 'positive_definite' );

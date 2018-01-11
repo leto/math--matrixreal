@@ -2,6 +2,7 @@ use Test::More tests => 7;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $matrix = new Math::MatrixReal (10,10);
 $matrix->one;

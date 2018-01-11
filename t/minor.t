@@ -2,6 +2,7 @@ use Test::More tests => 3;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 my $matrix  = Math::MatrixReal->new_diag( [ 1, 2, 3 ] );
 my $minor11 = Math::MatrixReal->new_from_rows ( [ [2,0],[0,3] ] );

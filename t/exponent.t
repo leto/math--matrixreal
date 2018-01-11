@@ -2,6 +2,7 @@ use Test::More tests => 6;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 ###############################
 ## compute A^2 , compare to A*A

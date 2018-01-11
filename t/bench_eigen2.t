@@ -2,6 +2,7 @@ use Test::More tests => 3;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_eigenvectors ok_matrix};
+no lib 't/lib';
 
 my $DEBUG = 0;
 # Set this one if you want the REAL benchmarking to be done!

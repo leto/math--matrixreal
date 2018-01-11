@@ -2,6 +2,7 @@ use Test::More tests => 1;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $eps = 1e-6;
 my $A = Math::MatrixReal->new_from_string(<<"MATRIX");
@@ -18,7 +19,7 @@ SKIP : {
     skip  'solve_GSM ? ', 1;
 
 if ( my $xn = $A->solve_GSM($x0,$b,$eps) ) {
-    print $xn;  
+    print $xn;
     ok( ($xn - $sol) < $eps, 'solve_GSM seems to work');
 } else {
     ok( 0, 'solve_GSM' );

@@ -2,6 +2,7 @@ use Test::More tests => 6;
 use Math::MatrixReal qw/:all/;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my ($x,$y,$z) = (42, 42.0001,42.0000001);
 

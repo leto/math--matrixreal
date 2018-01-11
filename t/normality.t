@@ -2,6 +2,7 @@ use Test::More tests => 2;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $a = Math::MatrixReal->new_from_rows([ [1, 2], [-2, 1] ] );
 my $b = Math::MatrixReal->new_from_rows([ [1, 2], [3, 1] ] );

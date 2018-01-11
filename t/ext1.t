@@ -2,6 +2,7 @@ use Test::More;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 print "1..21\n";
 print "ok 1\n";

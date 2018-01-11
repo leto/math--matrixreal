@@ -2,6 +2,7 @@ use Test::More;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 
 my $matrix = Math::MatrixReal->new_from_rows([ [1, 2], [3, 4] ]);
 my @list = $matrix->as_list;

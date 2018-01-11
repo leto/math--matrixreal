@@ -2,6 +2,7 @@ use Test::More tests => 2;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices;
+no lib 't/lib';
 my $eps = 1e-8;
 
 my $vec1 = Math::MatrixReal->new_from_string(<<MAT);

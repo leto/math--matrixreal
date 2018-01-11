@@ -2,6 +2,7 @@ use Test::More tests => 7;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 my $BENCH = 0; # Some basic benchmarks on operations
 my $DEBUG2 = 0;

@@ -2,6 +2,7 @@ use Test::More tests => 6;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my ($a, $b, @n);
 my $eps = 1e-6;

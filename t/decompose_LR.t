@@ -5,6 +5,7 @@ use Data::Dumper;
 
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 {
     my $a = Math::MatrixReal->new_from_rows([ [ 2 ] ] );

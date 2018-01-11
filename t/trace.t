@@ -2,6 +2,7 @@ use Test::More tests => 8;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 ###############################
 ## 2x2 inverse

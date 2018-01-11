@@ -3,6 +3,7 @@ use Math::MatrixReal;
 
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 1 ]

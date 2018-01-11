@@ -2,6 +2,7 @@ use Test::Simple tests => 5;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{assert_dies};
+no lib 't/lib';
 
 my $matrix = Math::MatrixReal->new_from_string(<<MATRIX);
 [  1 0 -1 0  3 ]

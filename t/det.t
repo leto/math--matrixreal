@@ -2,6 +2,7 @@ use Test::More tests => 13;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{similar};
+no lib 't/lib';
 
 my $eps ||= 1e-8;
 

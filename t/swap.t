@@ -2,6 +2,7 @@ use Test::More tests => 2;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix};
+no lib 't/lib';
 
 my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 ]

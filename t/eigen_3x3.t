@@ -2,6 +2,7 @@ use Test::More tests => 13;
 use Math::MatrixReal;
 use lib 't/lib';
 use Test::Matrices qw{ok_matrix ok_matrix_orthogonal ok_eigenvectors};
+no lib 't/lib';
 
 my $DEBUG = $Test::Matrices::DEBUG = 0;
 my $DEBUG2 = 0;
