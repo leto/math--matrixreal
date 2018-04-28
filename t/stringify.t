@@ -2,7 +2,7 @@ use Test::More tests => 2;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 # Determine number of digits in exponents beyond the libc 'standard' of two
 # and pad out the expected result.

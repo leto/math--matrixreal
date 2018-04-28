@@ -2,7 +2,7 @@ use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 my ($a,$b);
 eval { $a = Math::MatrixReal->new_from_cols([[ 1.41e-05, 6.82E-06, 3.18e-06 ]]) };

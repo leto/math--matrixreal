@@ -5,7 +5,7 @@ use Math::MatrixReal;
 
 my $DEBUG = 0;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 $matrix = Math::MatrixReal->new_diag( [ 1, 2, 3 ] );
 $cofactor = Math::MatrixReal->new_from_string(<<MATRIX);

@@ -2,7 +2,7 @@ use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 $matrix = Math::MatrixReal->new_diag( [ 1, 2, 3 ] );
 $minor11 = Math::MatrixReal->new_from_rows ( [ [2,0],[0,3] ] );

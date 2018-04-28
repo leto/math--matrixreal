@@ -5,7 +5,7 @@ use Math::MatrixReal;
 my ($e,$res) = (0,0);
 my $eps = 1e-8;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 {
     my $matrix = Math::MatrixReal->new_random( 10,10, { integer => 1 } );

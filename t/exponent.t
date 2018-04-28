@@ -2,7 +2,7 @@ use Test::More tests => 6;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 ###############################
 ## compute A^2 , compare to A*A

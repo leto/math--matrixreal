@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 ### First, some preparation
 

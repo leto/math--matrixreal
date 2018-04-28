@@ -3,7 +3,7 @@ use Math::MatrixReal;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 
-do 'funcs.pl';
+do './funcs.pl';
 
 ##########################
 ## test to see if is_diagonal works

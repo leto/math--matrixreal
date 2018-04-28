@@ -2,7 +2,7 @@ use Test::More tests => 7;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 $matrix1 = Math::MatrixReal->new_from_string(<<"MATRIX");
 [ 1 0 0 0 ]

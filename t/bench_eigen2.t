@@ -2,7 +2,7 @@ use Test::More tests => 3;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 my $DEBUG2 = 0;
 # Set this one if you want the REAL benchmarking to be done!

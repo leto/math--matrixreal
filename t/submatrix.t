@@ -4,7 +4,7 @@ use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 use strict;
 
-do 'funcs.pl';
+do './funcs.pl';
 my $eps ||= 1e-8;
 
 my $matrix = Math::MatrixReal->new_from_string(<<"MATRIX");

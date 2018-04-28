@@ -2,7 +2,7 @@ use Test::More tests => 2;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 my $eps = 1e-8;
 
 $vec1 = Math::MatrixReal->new_from_string(<<MAT);

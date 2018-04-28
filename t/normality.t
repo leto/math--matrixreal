@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 my $a = Math::MatrixReal->new_from_rows([ [1, 2], [-2, 1] ] );
 my $b = Math::MatrixReal->new_from_rows([ [1, 2], [3, 1] ] );

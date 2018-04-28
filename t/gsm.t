@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+do './funcs.pl';
 $eps = 1e-6;
 my $A = Math::MatrixReal->new_from_string(<<"MATRIX");
 [  1   2   3  ]

@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal qw/:all/;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 my $a = Math::MatrixReal->new_diag( [ 1, 2, -3 ] );
 ok( ! $a->is_positive_definite, 'positive_definite' );

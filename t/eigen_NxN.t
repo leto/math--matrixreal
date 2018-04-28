@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 my $DEBUG2 = 0;
 my $bigsize = 30; # Size of big matrix tests (be careful: n^3!)

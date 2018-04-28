@@ -1,7 +1,7 @@
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 print "1..21\n";
 print "ok 1\n";

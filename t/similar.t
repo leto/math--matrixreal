@@ -5,7 +5,7 @@ use Math::MatrixReal qw/:all/;
 use strict;
 use warnings;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 my ($x,$y,$z) = (42, 42.0001,42.0000001);
 

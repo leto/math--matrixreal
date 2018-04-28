@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 $matrix = Math::MatrixReal->new_diag( [ 1, 2, 3 ] );
 $matrix2 = Math::MatrixReal->new_random(10);

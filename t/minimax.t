@@ -5,7 +5,7 @@ use Math::MatrixReal qw/:all/;
 use strict;
 use warnings;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 my ($x,$y) = (7,42);
 

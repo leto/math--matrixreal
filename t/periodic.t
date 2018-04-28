@@ -2,7 +2,7 @@ use Test::More tests => 7;
 use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
-do 'funcs.pl';
+do './funcs.pl';
 
 my $matrix = new Math::MatrixReal (10,10);
 $matrix->one;

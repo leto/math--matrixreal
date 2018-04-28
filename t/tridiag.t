@@ -3,7 +3,7 @@ use File::Spec;
 use lib File::Spec->catfile("..","lib");
 use Math::MatrixReal;
 use strict;
-do 'funcs.pl';
+do './funcs.pl';
 
 my $zero = sprintf '%E', 0;
 my ($pad) = $zero =~ /E00(\d+)$/;

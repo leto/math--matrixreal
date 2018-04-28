@@ -5,7 +5,7 @@ use Math::Complex;
 use Math::MatrixReal;
 use Data::Dumper;
 
-do 'funcs.pl';
+do './funcs.pl';
 
 {
     my $a = Math::MatrixReal->new_from_rows([ [ 2 ] ] );
