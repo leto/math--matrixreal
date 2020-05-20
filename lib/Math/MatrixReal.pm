@@ -4027,8 +4027,6 @@ C<$adjoint = $matrix-E<gt>adjoint();>
 The adjoint is just the transpose of the cofactor matrix. This method is 
 just an alias for C< ~($matrix-E<gt>cofactor)>.
 
-=back
-
 =item *
 
 C<$part_of_matrix = $matrix-E<gt>submatrix(x1,y1,x2,Y2);>
